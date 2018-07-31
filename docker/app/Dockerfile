@@ -15,7 +15,7 @@ RUN apt-get update && \
 
 RUN apt-get update && \
     # some utilies for ubuntu
-    apt-get install -y nano vim git curl zip unzip supervisor sqlite3 \
+    apt-get install -y nano vim git curl wget zip unzip supervisor sqlite3 \
     # install apache
     apache2 libapache2-mod-php \
     # install php
@@ -33,3 +33,19 @@ RUN apt-get update && \
     apt-get -y autoremove && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN cd /tmp && \
+    wget http://mirrors.kernel.org/ubuntu/pool/multiverse/liba/libapache-mod-fastcgi/libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb && \
+    dpkg -i libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb && \
+    apt install -f && \
+    a2enmod actions fastcgi alias proxy_fcgi
+
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
+    service apache2 start && \
+    rm -f /var/www/html/index.html
+
+COPY docker/app/index.php /var/www/html/index.php
+COPY docker/app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/app/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+CMD ["supervisord"]
