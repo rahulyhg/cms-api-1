@@ -9,3 +9,5 @@ This is a docker boiler plate for all my php project which run on Ubuntu 18.04 (
 3. Combine our image file with pre-made images (MySQL/Redis)
 4. Assemble all to gather in (docker-compose.yml)
 5. Create a shortcut way to build or run docker 
+
+# Tested by PHPStorm
