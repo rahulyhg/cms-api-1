@@ -34,6 +34,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# install and active phpfpm, PHP FastCGI implementation with some additional features useful for sites of any size, especially busier sites.
 RUN cd /tmp && \
     wget http://mirrors.kernel.org/ubuntu/pool/multiverse/liba/libapache-mod-fastcgi/libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb && \
     dpkg -i libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb && \
