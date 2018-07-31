@@ -1,5 +1,5 @@
 # Docker containers
-This is a docker boiler palte for all my php project which run on Ubuntu18.04 (LAMP)
+This is a docker boiler palte for all my php project which run on Ubuntu 18.04 (LAMP)
 
 1. Run a dev environment in docker
     - Apache2/PHP
