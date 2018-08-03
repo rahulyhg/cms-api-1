@@ -1,0 +1,10 @@
+version: 3
+services:
+networks:
+  appnet:
+    driver: bridge
+valumes:
+  dbData:
+    driver: local
+  cacheData:
+    driver: local
