@@ -45,7 +45,8 @@ RUN cd /tmp && \
 RUN ln -sf /dev/stdout /var/log/apache2/access.log && \
     ln -sf /dev/stderr /var/log/apache2/error.log
 
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
+    a2enmod rewrite
 
 COPY docker/app/php-fpm.conf /etc/php/7.2/fpm/php-fpm.conf
 COPY docker/app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf

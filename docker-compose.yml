@@ -1,0 +1,42 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    image: nardic/app:latest
+    container_name: nardic_app
+    working_dir: /var/www/html
+    networks:
+      - appnet
+    volumes:
+      - ./application:/var/www/html
+    ports:
+      - 8080:80
+  cache:
+    image: redis:alpine
+    container_name: nardic_cache
+    networks:
+      - appnet
+    volumes:
+      - cacheData:/data
+  db:
+    image: mysql:5.7
+    container_name: nardic_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: homestead
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: secret
+    networks:
+      - appnet
+    volumes:
+      - dbData:/var/lib/mysql
+networks:
+  appnet:
+    driver: bridge
+volumes:
+  dbData:
+    driver: local
+  cacheData:
+    driver: local
