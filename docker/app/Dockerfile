@@ -51,4 +51,11 @@ COPY docker/app/php-fpm.conf /etc/php/7.2/fpm/php-fpm.conf
 COPY docker/app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/app/000-default.conf /etc/apache2/sites-available/000-default.conf
 
-CMD ["supervisord"]
+# ADD and COPY they are same but in add you can add url link
+ADD docker/app/start-point.sh /usr/bin/start-point.sh
+RUN chmod +x /usr/bin/start-point.sh
+
+# This will run at the end when we run an image if we did not pass any other command while we use "dokcer run"
+#CMD ["supervisord"]
+
+ENTRYPOINT ["start-point"]
