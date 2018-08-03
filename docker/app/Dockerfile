@@ -58,4 +58,4 @@ RUN chmod +x /usr/bin/start-point.sh
 # This will run at the end when we run an image if we did not pass any other command while we use "dokcer run"
 #CMD ["supervisord"]
 
-ENTRYPOINT ["start-point"]
+ENTRYPOINT ["start-point.sh"]
