@@ -41,12 +41,22 @@ RUN cd /tmp && \
     apt install -f && \
     a2enmod actions fastcgi alias proxy_fcgi
 
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
-    service apache2 start && \
-    rm -f /var/www/html/index.html
+# link apache log files with docker logger
+RUN ln -sf /dev/stdout /var/log/apache2/access.log && \
+    ln -sf /dev/stderr /var/log/apache2/error.log
 
-COPY docker/app/index.php /var/www/html/index.php
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
+    a2enmod rewrite
+
+COPY docker/app/php-fpm.conf /etc/php/7.2/fpm/php-fpm.conf
 COPY docker/app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/app/000-default.conf /etc/apache2/sites-available/000-default.conf
 
-CMD ["supervisord"]
+# ADD and COPY they are same but in add you can add url link
+ADD docker/app/start-point.sh /usr/bin/start-point.sh
+RUN chmod +x /usr/bin/start-point.sh
+
+# This will run at the end when we run an image if we did not pass any other command while we use "dokcer run"
+#CMD ["supervisord"]
+
+ENTRYPOINT ["start-point.sh"]
