@@ -12,7 +12,7 @@ services:
     volumes:
       - ./application:/var/www/html
     ports:
-      - 8080:80
+      - ${APP_PORT}:80
   cache:
     image: redis:alpine
     container_name: nardic_cache
@@ -23,11 +23,14 @@ services:
   db:
     image: mysql:5.7
     container_name: nardic_db
+    # If you change these env variables an see effects of them you should also delete all volumes
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: test
       MYSQL_DATABASE: homestead
       MYSQL_USER: homestead
       MYSQL_PASSWORD: secret
+    ports:
+      - ${DB_PORT}:3306
     networks:
       - appnet
     volumes:
