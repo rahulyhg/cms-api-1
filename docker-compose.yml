@@ -20,6 +20,18 @@ services:
       - appnet
     volumes:
       - cacheData:/data
+  node:
+    build:
+      context: ./docker/node
+      dockerfile: Dockerfile
+    image: nardic/node:latest
+    container_name: nardic_node
+    networks:
+     - appnet
+    volumes:
+     - ./application:/opt
+    working_dir: /opt
+    command: echo Hi
   db:
     image: mysql:5.7
     container_name: nardic_db
