@@ -27,6 +27,11 @@ if [ $# -gt 0 ]; then
     elif [ "$1" == "gulp" ]; then
         shift 1
         docker-compose run --rm node ./node_modules/.bin/gulp "$@"
+
+    elif [ "$1" == "zf2" ]; then
+        shift 1
+        docker-compose exec web composer create-project zendframework/skeleton-application . ^2.4
+
     else
         docker-compose "$@"
     fi
