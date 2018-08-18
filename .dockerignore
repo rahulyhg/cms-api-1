@@ -1,0 +1,5 @@
+# This ignore file is used for build
+
+**/node_modules
+**/.git
+**/vendor

@@ -1,57 +1,58 @@
-version: '3'
+version: '3.2'
 services:
-  app:
+  web:
     build:
       context: .
       dockerfile: ./docker/app/Dockerfile
     image: nardic/app:latest
-    container_name: nardic_app
+    container_name: web
     working_dir: /var/www/html
+    depends_on:
+      - db
     networks:
       - appnet
     volumes:
-      - ./application:/var/www/html
+      - ./source:/var/www/html
     ports:
       - ${APP_PORT}:80
   cache:
     image: redis:alpine
-    container_name: nardic_cache
+    container_name: cache
     networks:
       - appnet
     volumes:
-      - cacheData:/data
+      - type: bind
+        source: ./data/cache
+        target: /var/lib/mysql
   node:
     build:
       context: ./docker/node
       dockerfile: Dockerfile
     image: nardic/node:latest
-    container_name: nardic_node
+    container_name: node
     networks:
      - appnet
     volumes:
-     - ./application:/opt
+     - ./source:/opt
     working_dir: /opt
     command: echo Hi
   db:
     image: mysql:5.7
     container_name: nardic_db
-    # If you change these env variables an see effects of them you should also delete all volumes
+    # If you change these env variables and want to see effects of them you should also delete all volumes
     environment:
       MYSQL_ROOT_PASSWORD: test
-      MYSQL_DATABASE: homestead
-      MYSQL_USER: homestead
-      MYSQL_PASSWORD: secret
+      MYSQL_DATABASE: web_db
+      MYSQL_USER: devuser
+      MYSQL_PASSWORD: devpass
     ports:
       - ${DB_PORT}:3306
     networks:
       - appnet
     volumes:
-      - dbData:/var/lib/mysql
+      - type: bind
+        source: ./data/database
+        target: /var/lib/mysql
 networks:
   appnet:
     driver: bridge
-volumes:
-  dbData:
-    driver: local
-  cacheData:
-    driver: local
