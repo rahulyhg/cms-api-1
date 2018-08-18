@@ -2,11 +2,7 @@
 
 if [ $# -gt 0 ]; then
 
-    if [ "$1" == "build" ]; then
-        docker build -t nari/wep -f ./docker/app/Dockerfile .
-        docker build -t nari/node -f ./docker/node/Dockerfile .
-
-    elif [ "$1" == "start" ]; then
+    if [ "$1" == "start" ]; then
         docker-compose up -d
 
     elif [ "$1" == "stop" ]; then
@@ -35,6 +31,10 @@ if [ $# -gt 0 ]; then
         docker-compose "$@"
     fi
 
+#    docker images
+#    docker ps -a
+#    docker build -t nari/wep -f ./docker/app/Dockerfile .
+#    docker build -t nari/node -f ./docker/node/Dockerfile .
 else
     docker-compose ps
 fi

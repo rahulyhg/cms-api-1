@@ -4,13 +4,13 @@ services:
     build:
       context: .
       dockerfile: ./docker/app/Dockerfile
-    image: nardic/app:latest
+    image: nari/web:latest
     container_name: web
     working_dir: /var/www/html
     depends_on:
       - db
     networks:
-      - appnet
+      - narinet
     volumes:
       - ./source:/var/www/html
     ports:
@@ -19,7 +19,7 @@ services:
     image: redis:alpine
     container_name: cache
     networks:
-      - appnet
+      - narinet
     volumes:
       - type: bind
         source: ./data/cache
@@ -28,17 +28,17 @@ services:
     build:
       context: ./docker/node
       dockerfile: Dockerfile
-    image: nardic/node:latest
+    image: nari/node:latest
     container_name: node
     networks:
-     - appnet
+     - narinet
     volumes:
      - ./source:/opt
     working_dir: /opt
     command: echo Hi
   db:
     image: mysql:5.7
-    container_name: nardic_db
+    container_name: db
     # If you change these env variables and want to see effects of them you should also delete all volumes
     environment:
       MYSQL_ROOT_PASSWORD: test
@@ -48,11 +48,11 @@ services:
     ports:
       - ${DB_PORT}:3306
     networks:
-      - appnet
+      - narinet
     volumes:
       - type: bind
         source: ./data/database
         target: /var/lib/mysql
 networks:
-  appnet:
+  narinet:
     driver: bridge
