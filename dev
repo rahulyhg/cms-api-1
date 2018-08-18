@@ -2,23 +2,23 @@
 
 if [ $# -gt 0 ]; then
 
-    if [ "$1" == "start" ]; then
+    if [ "$1" == "build" ]; then
+        docker build -t nari/wep -f ./docker/app/Dockerfile .
+        docker build -t nari/node -f ./docker/node/Dockerfile .
+
+    elif [ "$1" == "start" ]; then
         docker-compose up -d
 
     elif [ "$1" == "stop" ]; then
         docker-compose down
 
-    elif [ "$1" == "artisan" ] | [ "$1" == "art" ]; then
-        shift 1
-        docker-compose exec app php artisan "$@"
-
     elif [ "$1" == "composer" ] || [ "$1" == "comp" ]; then
         shift 1
-        docker-compose exec app composer "$@"
+        docker-compose exec web composer "$@"
 
-    elif [ "$1" == "test" ]; then
+    elif [ "$1" == "unit_test" ]; then
         shift 1
-        docker-compose exec app ./vendor/bin/phpunit "$@"
+        docker-compose exec web ./vendor/bin/phpunit "$@"
 
     elif [ "$1" == "npm" ]; then
         shift 1

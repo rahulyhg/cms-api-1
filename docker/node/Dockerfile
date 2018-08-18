@@ -1,6 +1,5 @@
 FROM node:latest
 
-MAINTAINER "Shahrokh Nabavi <info@nabavi.nl>"
 LABEL Version="1.0" \
       Author="Shahrokh" \
       Maintainer="Shahrokh Nabavi <info@nabavi.nl>"
