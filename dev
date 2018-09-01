@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 
+function uppercase() {
+    echo `echo $1 | tr [a-z] [A-Z]`
+}
+
+function lower() {
+    echo `echo $1 | tr [A-Z] [a-z]`
+}
+
+function ufirst() {
+    first=`echo $1 | cut -c1 | tr [a-z] [A-Z]`
+    second=`echo $1 | cut -c2-`
+    echo $first$second
+}
+
 if [ $# -gt 0 ]; then
 
     if [ "$1" == "start" ]; then
@@ -32,13 +46,17 @@ if [ $# -gt 0 ]; then
         shift 1
         docker-compose run --rm node ./node_modules/.bin/gulp "$@"
 
-    elif [ "$1" == "zf2" ]; then
-        shift 1
-        docker-compose exec web composer create-project zendframework/skeleton-application . ^2.4
-
     elif [ "$1" == "zf" ]; then
-        shift 1
-        docker-compose exec web composer create-project zendframework/skeleton-application .
+        if [ "$2" == "module" ]; then
+            moduleName=./source/module/`ufirst $3`
+            mkdir -p "$moduleName"/config && touch "$moduleName"/config/module.config.php
+            mkdir -p "$moduleName"/src/Controller && touch "$moduleName"/src/Module.php
+            touch "$moduleName"/src/Controller/IndexController.php
+            mkdir -p "$moduleName"/view/`lower $3`/index && touch "$moduleName"/view/`lower $3`/index/index.phtml
+
+        else
+            docker-compose exec web composer create-project -n -sdev zendframework/skeleton-application .
+        fi
 
     else
         docker-compose "$@"
