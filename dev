@@ -46,6 +46,11 @@ if [ $# -gt 0 ]; then
         shift 1
         docker-compose run --rm node ./node_modules/.bin/gulp "$@"
 
+    elif [ "$1" == "doctrine" ]; then
+        docker-compose exec web ./vendor/bin/doctrine-module orm:convert:mapping \
+                    --namespace="`ufirst $2`\\Entity\\" --force \
+                    --from-database annotation ./module/`ufirst $2`/src/
+
     elif [ "$1" == "zf" ]; then
         if [ "$2" == "module" ]; then
             moduleName=./source/module/`ufirst $3`
