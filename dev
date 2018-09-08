@@ -42,9 +42,9 @@ if [ $# -gt 0 ]; then
         shift 1
         docker-compose run --rm node yarn "$@"
 
-    elif [ "$1" == "gulp" ]; then
+    elif [ "$1" == "grunt" ]; then
         shift 1
-        docker-compose run --rm node ./node_modules/.bin/gulp "$@"
+        docker-compose run --rm node grunt "$@"
 
     elif [ "$1" == "doctrine" ]; then
         docker-compose exec web ./vendor/bin/doctrine-module orm:convert:mapping \
