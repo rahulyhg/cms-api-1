@@ -20,7 +20,7 @@ module.exports = function ( grunt ) {
             css: {
                 src: [
                     'assets/styles/global/**/*.css',
-                    '<%= sass.build.files.dest %>'
+                    'assets/styles/style.css'
                 ],
                 dest: 'public/css/built.css'
             }
@@ -100,5 +100,11 @@ module.exports = function ( grunt ) {
         'uglify:build',
         'cssmin:build',
         'copy'
+    ]);
+
+    grunt.registerTask('dev', [
+        'concat:js',
+        'sass',
+        'concat:css'
     ]);
 };
