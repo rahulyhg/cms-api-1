@@ -47,12 +47,12 @@ module.exports = function ( grunt ) {
         cssmin: {
             options: {
                 mergeIntoShorthands: false,
-                roundingPrecision: -1
+                roundingPrecision: -1,
+                keepSpecialComments: 0
             },
             build: {
                 files: {
-                    src: '<%= concat.css.dest %>',
-                    dest: '<%= concat.css.dest %>'
+                    '<%= concat.css.dest %>': '<%= concat.css.dest %>',
                 }
             }
         },
@@ -79,8 +79,19 @@ module.exports = function ( grunt ) {
                 cwd: 'assets/fonts/',
                 src: ['**'],
                 dest: 'public/fonts/'
-            },
+            }
         },
+        postcss: {
+            options: {
+                map: true,
+                processors: [
+                    require('autoprefixer')({browsers: 'last 2 versions'})
+                ]
+            },
+            dist: {
+                src: 'assets/styles/style.css'
+            }
+        }
     });
 
     // Load NPM
@@ -91,11 +102,13 @@ module.exports = function ( grunt ) {
     grunt.loadNpmTasks('grunt-contrib-csslint');
     grunt.loadNpmTasks('grunt-typescript');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-postcss');
 
     // User define task
     grunt.registerTask('default', [
         'concat:js',
         'sass',
+        'postcss',
         'concat:css',
         'uglify:build',
         'cssmin:build',
