@@ -33,6 +33,12 @@ $ ./dev composer development-enable
 $ ./dev composer development-disable
 ```
 
+Create Module
+-------------
+```bash
+$ ./dev zf module blog
+```
+
 Doctrine Components
 -----------
 - rename ./source/config/autoload/doctrine.local.php.dist to doctrine.local.php and change db username and pass if
@@ -66,8 +72,9 @@ Apigility
 ------------
 if you are in development mode you can browse admin panel of apigility by going to `http://localhost:8080/apigility/ui/`
 
-### Docker
 
+Docker
+-----------
 To build docker image: 
 ```docker build -t main/app -f ./docker/app/Dockerfile .```
 To run image and create container:

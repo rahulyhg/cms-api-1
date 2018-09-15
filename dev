@@ -61,11 +61,7 @@ if [ $# -gt 0 ]; then
 
     elif [ "$1" == "zf" ]; then
         if [ "$2" == "module" ]; then
-            moduleName=./source/module/`ufirst $3`
-            mkdir -p "$moduleName"/config && touch "$moduleName"/config/module.config.php
-            mkdir -p "$moduleName"/src/Controller && touch "$moduleName"/src/Module.php
-            touch "$moduleName"/src/Controller/IndexController.php
-            mkdir -p "$moduleName"/view/`lower $3`/index && touch "$moduleName"/view/`lower $3`/index/index.phtml
+            docker-compose exec web php ./zend/zf-module-creator.php create $3
 
         else
             docker-compose exec web composer create-project -sdev zendframework/skeleton-application .
