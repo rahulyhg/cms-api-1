@@ -1,0 +1,16 @@
+<?php
+
+return [
+    'modules' => [
+        'ZF\Apigility\Admin',
+        'ZF\Configuration',
+        'ZendDeveloperTools',
+    ],
+    'module_listener_options' => [
+        'config_glob_paths' => [
+            __DIR__ . '/autoload/{,*.}{global,local}-development.php',
+        ],
+        'config_cache_enabled' => false,
+        'module_map_cache_enabled' => false,
+    ],
+];
