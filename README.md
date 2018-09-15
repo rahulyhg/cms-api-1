@@ -35,32 +35,32 @@ $ ./dev composer development-disable
 
 Doctrine Components
 -----------
-- run following command
-```bash
-$ ./dev composer require doctrine/doctrine-orm-module
+- rename ./source/config/autoload/doctrine.local.php.dist to doctrine.local.php and change db username and pass if
+it is necessary
+- configuration for each module
+```php
+    'doctrine' => [
+        'driver' => [
+            __NAMESPACE__ . '_driver' => [
+                'class' => AnnotationDriver::class,
+                'cache' => 'array',
+                'paths' => [__DIR__ . '/../src/Entity']
+            ],
+            'orm_default' => [
+                'drivers' => [
+                    __NAMESPACE__ . '\Entity' => __NAMESPACE__ . '_driver'
+                ]
+            ]
+        ]
+    ]
 ```
 
 Doctrine/Migration
 ------------
-- in `config/autoload/global.php` add following config
-```php
-    'doctrine' => [        
-        // migrations configuration
-        'migrations_configuration' => [
-            'orm_default' => [
-                'directory' => 'data/Migrations',
-                'name'      => 'Doctrine Database Migrations',
-                'namespace' => 'Migrations',
-                'table'     => 'migrations',
-            ],
-        ],
-    ],
-```
-- then create `APP_DIR/data/Migrations` directory
-- to run migrations command use
-```bash
-$ ./dev migrations
-```
+- get list of all migrations command `./dev doctrine-module`
+- create a new migration `./dev doctrine-module migration:generate`
+- commit all new migrations `./dev doctrine-module migration:migrate`
+
 
 Apigility
 ------------

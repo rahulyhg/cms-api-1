@@ -46,12 +46,12 @@ if [ $# -gt 0 ]; then
         shift 1
         docker-compose run --rm node grunt "$@"
 
-    elif [ "$1" == "migrations" ]; then
+    elif [ "$1" == "doctrine-module" ]; then
         if [ $# == 1 ]; then
             docker-compose exec web ./vendor/bin/doctrine-module list
         else
             shift 1
-            docker-compose exec web ./vendor/bin/doctrine-module migrations:"$@"
+            docker-compose exec web ./vendor/bin/doctrine-module "$@"
         fi
 
     elif [ "$1" == "doctrine" ]; then
