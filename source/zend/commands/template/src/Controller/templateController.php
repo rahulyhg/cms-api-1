@@ -1,5 +1,5 @@
 <?php
-/*
+/* REMOVE
 namespace {$module}\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;

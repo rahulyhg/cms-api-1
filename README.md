@@ -33,10 +33,15 @@ $ ./dev composer development-enable
 $ ./dev composer development-disable
 ```
 
-Create Module
+Zend Framework Customized Commands
 -------------
+- Create module
 ```bash
-$ ./dev zf module blog
+$ ./dev zf module -c blog
+```
+- Remove module
+```bash
+$ ./dev zf module -r blog
 ```
 
 Doctrine Components

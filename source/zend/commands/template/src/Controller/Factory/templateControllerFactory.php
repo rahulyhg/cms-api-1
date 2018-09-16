@@ -1,5 +1,5 @@
 <?php
-/*
+/* REMOVE
 namespace {$module}\Controller\Factory;
 
 use Interop\Container\ContainerInterface;

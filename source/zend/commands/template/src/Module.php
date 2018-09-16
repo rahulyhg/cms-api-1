@@ -1,5 +1,5 @@
 <?php
-/*
+/* REMOVE
 namespace {$module};
 
 use Zend\ModuleManager\Feature\ConfigProviderInterface;

@@ -1,5 +1,5 @@
 <?php
-/*
+/* REMOVE
 namespace {$module};
 
 use {$module}\Controller\{$module}Controller;
@@ -9,10 +9,10 @@ use Zend\Router\Http\Literal;
 return [
     'router' => [
         'routes' => [
-            'blog' => [
+            '{$lowerModule}' => [
                 'type' => Literal::class,
                 'options' => [
-                    'route' => '/blog',
+                    'route' => '/{$lowerModule}',
                     'defaults' => [
                         'controller' => {$module}Controller::class,
                         'action' => 'index'

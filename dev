@@ -60,12 +60,37 @@ if [ $# -gt 0 ]; then
                     --from-database annotation ./module/`ufirst $2`/src/
 
     elif [ "$1" == "zf" ]; then
-        if [ "$2" == "module" ]; then
-            docker-compose exec web php ./zend/zf-module-creator.php create $3
+        shift; command=$1; shift
+        case "$command" in
+            "module")
+                while getopts "c:r:" opt; do
+                    case ${opt} in
+                        c )
+                            docker-compose exec web php ./zend/zf.php create ${OPTARG}
+                            ;;
+                        r )
+                            docker-compose exec web php ./zend/zf.php remove ${OPTARG}
+                            ;;
+                        \? )
+                            echo "Invalid Option: -$OPTARG" 1>&2;
+                            echo "./dev zf module -c NewModuleName\n"
+                            echo "./dev zf module -r ModuleName\n"
+                            exit 1
+                            ;;
+                    esac
+                done
+                ;;
+            "install")
+                docker-compose exec web composer create-project -sdev zendframework/skeleton-application .
+                ;;
+        esac
 
-        else
-            docker-compose exec web composer create-project -sdev zendframework/skeleton-application .
-        fi
+#        if [ "$2" == "module" ] && [ "$3" == "" ]; then
+#
+#
+#        else
+#
+#        fi
 
     else
         docker-compose "$@"

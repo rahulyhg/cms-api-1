@@ -1,9 +1,5 @@
 <?php
 
-define('_BASE_', __DIR__.'/..');
-
-$command = $argv[1];
-
 /**
  * Copy template of module into the actual module
  *
@@ -16,22 +12,24 @@ function createTemplate(string $path, string $module): void
 {
     $moduleDir = _BASE_.'/module/'.$module.$path.'/';
     $templateDir = __DIR__.'/template'.$path.'/';
+    $lcModule= strtolower($module);
 
     $currentDirectory = dir($templateDir);
     while ($entry = $currentDirectory->read()) {
         if ($entry != "." && $entry != "..") {
 
             if (is_dir($templateDir.$entry)) {
-                $dir = str_replace('template', strtolower($module), $moduleDir.$entry);
+                $dir = str_replace('template', $lcModule, $moduleDir.$entry);
                 system("mkdir {$dir} -p");
                 createTemplate($path.'/'.$entry, $module);
             } else {
                 $template = file_get_contents($templateDir.$entry);
                 $template = str_replace('{$module}', $module, $template);
-                $template = str_replace('/*', '', $template);
+                $template = str_replace('{$lowerModule}', $lcModule, $template);
+                $template = str_replace('/* REMOVE', '', $template);
 
                 $entry = str_replace('template', $module, $entry);
-                $moduleDir = str_replace('template', strtolower($module), $moduleDir.$entry);
+                $moduleDir = str_replace('template', $lcModule, $moduleDir.$entry);
                 file_put_contents($moduleDir, $template);
             }
         }
@@ -49,7 +47,11 @@ function updateNamespace(string $module): void
     $composer = _BASE_.'/composer.json';
 
     $oldJson = json_decode(file_get_contents($composer), true);
-    unset($oldJson['autoload']['psr-4'][$module.'\\']);
+
+    if (isset($oldJson['autoload']['psr-4'][$module.'\\'])) {
+        echo "Namespace autoload is already exist.\n";
+        return;
+    }
 
     file_put_contents(
         $composer,
@@ -58,6 +60,7 @@ function updateNamespace(string $module): void
             $oldJson
         ), JSON_PRETTY_PRINT)
     );
+    system('composer dump-autoload');
 }
 
 /**
@@ -85,22 +88,15 @@ function updateApplicationModule(string $module): void
     );
 }
 
-switch ($command) {
-    case "create":
-        if (empty($argv[2])) {
-            die("Module name is empty\n");
-        }
 
-        $module = ucfirst($argv[2]);
-        system("rm -rf "._BASE_.'/module/'.$module.'/');
+return function(string $module) {
+    echo "______________________________\nCreating module...\n";
+    system("rm -rf "._BASE_.'/module/'.$module.'/');
 
-        createTemplate('', $module);
-        updateNamespace($module);
-        updateApplicationModule($module);
-        system('composer dump-autoload');
-        echo "End.\n";
-        break;
-    default:
-        echo "Welcome to ZF2 Module Creator\n";
-        break;
-}
+    createTemplate('', $module);
+    updateNamespace($module);
+    updateApplicationModule($module);
+    echo "\nModule is created successfully.".
+         "\n-------------------------------".
+         "\n";
+};
