@@ -71,6 +71,14 @@ Doctrine/Migration
 - get list of all migrations command `./dev doctrine-module`
 - create a new migration `./dev doctrine-module migration:generate`
 - commit all new migrations `./dev doctrine-module migration:migrate`
+- commit all new migrations `./dev doctrine-module migrations:execute YYYYMMDDHHMMSS --down`
+- commit all new migrations `./dev doctrine-module migrations:execute YYYYMMDDHHMMSS --up`
+- migrate up to the last `./dev doctrine-module migrations:migrate latest`
+- migrate up to the next `./dev doctrine-module migrations:migrate next`
+- migrate down to the prev `./dev doctrine-module migrations:migrate prev`
+- migrate down to the first `./dev doctrine-module migrations:migrate first`
+- migrate up to 3 `./dev doctrine-module migrations:migrate current+3`
+- migrate down to 3 `./dev doctrine-module migrations:migrate current-3`
 
 
 Apigility
