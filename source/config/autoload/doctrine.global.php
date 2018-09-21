@@ -1,7 +1,6 @@
 <?php
 
 use Doctrine\DBAL\Driver\PDOMySql\Driver as PDOMySqlDriver;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 
 return [
     'doctrine' => [
@@ -27,20 +26,6 @@ return [
                 'namespace' => 'Migrations',
                 'table' => 'migrations',
             ],
-        ],
-        'driver' => [
-            'my_annotation_driver' => [
-                'class' => AnnotationDriver::class,
-                'cache' => 'array',
-                'paths' => [
-                    __DIR__.'../../module/Application/Entity',
-                ],
-            ],
-            'orm_default' => [
-                'drivers' => [
-                    'Application' => 'my_annotation_driver',
-                ],
-            ],
-        ],
+        ]
     ],
 ];

@@ -1,6 +1,4 @@
 .vagrant/
 vendor/
 config/development.config.php
-!data/cache/.gitkeep
-data/cache/*
 phpunit.xml

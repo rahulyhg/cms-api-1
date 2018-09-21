@@ -66,6 +66,10 @@ it is necessary
     ]
 ```
 
+- get list of all migrations command `./dev doctrine-module orm:schema-tool:create`
+- get list of all migrations command `./dev doctrine-module orm:schema-tool:update --force`
+- get list of all migrations command `./dev doctrine-module orm:validate-schema`
+
 Doctrine/Migration
 ------------
 - get list of all migrations command `./dev doctrine-module`

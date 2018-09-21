@@ -2,8 +2,9 @@
 /* REMOVE
 namespace {$module};
 
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use {$module}\Controller\{$module}Controller;
-use {$module}\Controller\Factory\{$module}ControllerFactory;
+use {$module}\Factory\{$module}ControllerFactory;
 use Zend\Router\Http\Literal;
 
 return [
@@ -30,20 +31,20 @@ return [
 //            },
         ],
     ],
-//    'doctrine' => [
-//        'driver' => [
-//            __NAMESPACE__.'_driver' => [
-//                'class' => AnnotationDriver::class,
-//                'cache' => 'array',
-//                'paths' => [__DIR__.'/../src/Entity'],
-//            ],
-//            'orm_default' => [
-//                'drivers' => [
-//                    __NAMESPACE__.'\Entity' => __NAMESPACE__.'_driver',
-//                ],
-//            ],
-//        ],
-//    ],
+    'doctrine' => [
+        'driver' => [
+            __NAMESPACE__.'_driver' => [
+                'class' => AnnotationDriver::class,
+                'cache' => 'array',
+                'paths' => [__DIR__.'/../src/Entity'],
+            ],
+            'orm_default' => [
+                'drivers' => [
+                    __NAMESPACE__.'\Entity' => __NAMESPACE__.'_driver',
+                ],
+            ],
+        ],
+    ],
     'view_manager' => [
         'template_path_stack' => [
             __DIR__.'/../view'

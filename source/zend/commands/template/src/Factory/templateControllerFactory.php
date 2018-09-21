@@ -1,6 +1,6 @@
 <?php
 /* REMOVE
-namespace {$module}\Controller\Factory;
+namespace {$module}\Factory;
 
 use Interop\Container\ContainerInterface;
 use {$module}\Controller\{$module}Controller;
