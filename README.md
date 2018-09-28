@@ -24,6 +24,8 @@ $ ./dev npm install
 ```bash
 $ ./dev grunt
 ```
+- copy `source/backend/config/development.config.php.dist` to `source/backend/config/development.config.php` if you want
+to activate development mode
 - for developing your app active development enviroment by running following command
 ```bash
 $ ./dev composer development-enable

@@ -16,17 +16,18 @@ function ufirst() {
 
 if [ $# -gt 0 ]; then
 
-    if [ "$1" == "start" ]; then
-        docker-compose up
+    if [ "$1" == "up" ]; then
+        shift 1
+        docker-compose up "$@"
 
-    elif [ "$1" == "stop" ]; then
+    elif [ "$1" == "down" ]; then
         docker-compose down
 
     elif [ "$1" == "php" ]; then
         shift 1
         docker-compose exec web php "$@"
 
-    elif [ "$1" == "composer" ] || [ "$1" == "comp" ]; then
+    elif [ "$1" == "composer" ]; then
         shift 1
         docker-compose exec web composer "$@"
 
@@ -45,6 +46,21 @@ if [ $# -gt 0 ]; then
     elif [ "$1" == "grunt" ]; then
         shift 1
         docker-compose run --rm node grunt "$@"
+
+    elif [ "$1" == "ng" ]; then
+        shift; command=$1; shift
+        case "$command" in
+            "new-app")
+                docker-compose run --rm angular ng new $1 -SG --directory ./
+                ;;
+            "serve")
+                docker-compose run --rm -p 4200:4200 angular ng serve --host 0.0.0.0
+                ;;
+            *)
+                docker-compose run --rm angular ng $command "$@"
+                ;;
+        esac
+        # ./dev ng new cmsAdmin --directory ./ --skip-install
 
     elif [ "$1" == "doctrine-module" ]; then
         if [ $# == 1 ]; then
@@ -66,10 +82,10 @@ if [ $# -gt 0 ]; then
                 while getopts "c:r:" opt; do
                     case ${opt} in
                         c )
-                            docker-compose exec web php ./zend/zf.php create ${OPTARG}
+                            docker-compose exec zend php ./zf.php create ${OPTARG}
                             ;;
                         r )
-                            docker-compose exec web php ./zend/zf.php remove ${OPTARG}
+                            docker-compose exec zend php ./zf.php remove ${OPTARG}
                             ;;
                         \? )
                             echo "Invalid Option: -$OPTARG" 1>&2;
@@ -84,14 +100,6 @@ if [ $# -gt 0 ]; then
                 docker-compose exec web composer create-project -sdev zendframework/skeleton-application .
                 ;;
         esac
-
-#        if [ "$2" == "module" ] && [ "$3" == "" ]; then
-#
-#
-#        else
-#
-#        fi
-
     else
         docker-compose "$@"
     fi

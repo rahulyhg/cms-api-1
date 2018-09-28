@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:10.11.0-jessie
 
 LABEL Version="1.0" \
       Author="Shahrokh" \
@@ -10,6 +10,7 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && apt-get update \
     && apt-get install -y git yarn \
     && npm install -g grunt-cli \
+    && npm install -g @angular/cli \
     && apt-get -y autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

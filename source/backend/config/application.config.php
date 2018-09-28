@@ -5,6 +5,7 @@
  * @see https://docs.zendframework.com/tutorials/advanced-config/#environment-specific-system-configuration
  * @see https://docs.zendframework.com/tutorials/advanced-config/#environment-specific-application-configuration
  */
+
 return [
     // Retrieve list of modules used in this application.
     'modules' => require __DIR__.'/modules.config.php',
@@ -16,7 +17,7 @@ return [
         // namespace, the value of that key the specific path to that module's
         // Module class.
         'module_paths' => [
-            './module',
+            './backend/module',
             './vendor',
         ],
 

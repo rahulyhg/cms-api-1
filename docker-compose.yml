@@ -1,4 +1,5 @@
 version: '3.2'
+
 services:
   web:
     build:
@@ -15,6 +16,14 @@ services:
       - ./source:/var/www/html
     ports:
       - ${APP_PORT}:80
+  zend:
+    image: nari/web:latest
+    container_name: zend_tools
+    depends_on:
+      - web
+    volumes:
+     - ./:/var/www/html
+    working_dir: /var/www/html/zend
   cache:
     image: redis:alpine
     container_name: cache
@@ -22,7 +31,7 @@ services:
       - narinet
     volumes:
       - type: bind
-        source: ./data/cache
+        source: ./local-data/cache
         target: /var/lib/mysql
   node:
     build:
@@ -35,7 +44,17 @@ services:
     volumes:
      - ./source:/opt
     working_dir: /opt
-    command: echo Hi
+    command: npm -v && node -v
+  angular:
+    image: nari/node:latest
+    container_name: angular
+    depends_on:
+      - node
+    volumes:
+     - ./source:/opt
+    working_dir: /opt/ui/angular
+    ports:
+      - 4200:4200
   db:
     image: mysql:5.7
     container_name: db
@@ -51,7 +70,7 @@ services:
       - narinet
     volumes:
       - type: bind
-        source: ./data/database
+        source: ./local-data/database
         target: /var/lib/mysql
 networks:
   narinet:

@@ -1,6 +1,6 @@
 <?php
 
-define('_BASE_', __DIR__.'/..');
+define('_BASE_', __DIR__.'/../source/backend');
 
 $command = $argv[1];
 

@@ -1,5 +1,5 @@
 .idea
-./data
+local-data/**
 **/node_modules
 **/vendor
 
