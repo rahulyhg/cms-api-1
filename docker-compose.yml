@@ -13,7 +13,7 @@ services:
     networks:
       - narinet
     volumes:
-      - ./source:/var/www/html
+      - ./source/backend:/var/www/html
     ports:
       - ${APP_PORT}:80
   zend:
@@ -52,7 +52,7 @@ services:
       - node
     volumes:
      - ./source:/opt
-    working_dir: /opt/ui/angular
+    working_dir: /opt/frontend
     ports:
       - 4200:4200
   db:
