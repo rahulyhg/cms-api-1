@@ -26,6 +26,23 @@ class UserService implements UserServiceInterface
     }
 
     /**
+     * @param string $field
+     * @param int    $id
+     *
+     * @return bool
+     */
+    private function isExist(string $field, int $id): bool
+    {
+        $validator = new ValidatorChain();
+        $validator->attach(new ObjectExists([
+            'object_repository' => $this->getRepository(),
+            'fields' => $field
+        ]));
+
+        return $validator->isValid($id);
+    }
+
+    /**
      * @return array
      */
     public function getAll(): array
@@ -40,16 +57,31 @@ class UserService implements UserServiceInterface
      */
     public function getById(int $id): ?User
     {
-        $validator = new ValidatorChain();
-        $validator->attach(new ObjectExists([
-            'object_repository' => $this->getRepository(),
-            'fields' => 'id'
-        ]));
-
-        if (!$validator->isValid($id)) {
+        if (!$this->isExist('id', $id)) {
             return null;
         }
 
-        return $this->getRepository()->find($id);
+        /** @var User $user */
+        $user = $this->getRepository()->find($id);
+        return $user;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return null|User
+     */
+    public function delete(int $id): ?User
+    {
+        if (!$this->isExist('id', $id)) {
+            return null;
+        }
+
+        /** @var User $user */
+        $user = $this->getRepository()->find($id);
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+
+        return $user;
     }
 }

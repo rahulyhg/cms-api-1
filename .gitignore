@@ -3,8 +3,4 @@ local-data/**
 **/node_modules
 **/vendor
 
-source/assets/styles/style.css
-source/assets/styles/style.css.map
-source/public/css/*
-source/public/js/*
-source/public/fonts/*
+source/backend/data/cache

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true" bootstrap="./bootstrap.php">
+    <testsuites>
+        <testsuite name="Unit Test">
+            <directory>./ModuleTests</directory>
+        </testsuite>
+    </testsuites>
+    <logging>
+        <log type="coverage-html"
+             target="./_report/codeCoverage"
+             lowUpperBound="50"
+             highLowerBound="80"
+             showUncoveredFiles="false" />
+    </logging>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./../module/*/src</directory>
+        </whitelist>
+    </filter>
+</phpunit>

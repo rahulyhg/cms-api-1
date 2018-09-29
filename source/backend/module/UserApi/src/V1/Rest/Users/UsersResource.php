@@ -39,7 +39,13 @@ class UsersResource extends AbstractResourceListener
      */
     public function delete($id)
     {
-        die('delete one user');
+        $result = $this->userService->delete($id);
+
+        if (!$result) {
+            return new ApiProblem(404, 'User not find');
+        }
+
+        return (bool) $result;
     }
 
     /**
