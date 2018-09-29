@@ -10,7 +10,7 @@ Zend App
 ==============================
 - After clone the repository, run docker by type the following command:
 ```bash
-$ ./dev start
+$ ./dev up -d
 ```
 - to install all dependencies of ZF3 install composer
 ```bash
@@ -68,13 +68,16 @@ it is necessary
     ]
 ```
 
-- get list of all migrations command `./dev doctrine-module orm:schema-tool:create`
-- get list of all migrations command `./dev doctrine-module orm:schema-tool:update --force`
-- get list of all migrations command `./dev doctrine-module orm:validate-schema`
+- get list of all DoctrineModule, command `./dev doctrine-module`
+- create tables based on Entity Mapping, command `./dev doctrine-module orm:schema-tool:create`
+- update tables based on Entity Mapping,  command `./dev doctrine-module orm:schema-tool:update --force`
+- validate tables based on Entity Mapping , command `./dev doctrine-module orm:validate-schema`
+- get info, command `./dev doctrine-module orm:info`
 
 Doctrine/Migration
 ------------
 - get list of all migrations command `./dev doctrine-module`
+- generate migration by comparing db to Entity Mapping `./dev doctrine-module migrations:diff`
 - create a new migration `./dev doctrine-module migration:generate`
 - commit all new migrations `./dev doctrine-module migration:migrate`
 - commit all new migrations `./dev doctrine-module migrations:execute YYYYMMDDHHMMSS --down`
