@@ -1,8 +1,13 @@
 <?php
+
+use UserApi\Factory\UserServiceFactory;
+use UserApi\Service\UserService;
+
 return [
     'service_manager' => [
         'factories' => [
             \UserApi\V1\Rest\Users\UsersResource::class => \UserApi\V1\Rest\Users\UsersResourceFactory::class,
+            UserService::class => UserServiceFactory::class
         ],
     ],
     'router' => [

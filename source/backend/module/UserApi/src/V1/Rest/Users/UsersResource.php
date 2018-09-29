@@ -1,12 +1,23 @@
 <?php
 namespace UserApi\V1\Rest\Users;
 
+use UserApi\Service\UserServiceInterface;
 use Zend\Paginator\Adapter\ArrayAdapter;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 
 class UsersResource extends AbstractResourceListener
 {
+    /**
+     * @var UserServiceInterface
+     */
+    private $userService;
+
+    public function __construct(UserServiceInterface $userService)
+    {
+        $this->userService = $userService;
+    }
+
     /**
      * Create a resource
      *
@@ -16,9 +27,6 @@ class UsersResource extends AbstractResourceListener
     public function create($data)
     {
         die('create user');
-        return [
-            'result' => 'User created'
-        ];
     }
 
     /**
@@ -30,9 +38,6 @@ class UsersResource extends AbstractResourceListener
     public function delete($id)
     {
         die('delete one user');
-        return [
-            'result' => 'User deleted'
-        ];
     }
 
     /**
@@ -44,9 +49,6 @@ class UsersResource extends AbstractResourceListener
     public function deleteList($data)
     {
         die('delete all user');
-        return [
-            'result' => 'all delete'
-        ];
     }
 
     /**
@@ -58,9 +60,6 @@ class UsersResource extends AbstractResourceListener
     public function fetch($id)
     {
         die('get one user');
-        return [
-            'result' => 'get one user'
-        ];
     }
 
     /**
@@ -71,11 +70,8 @@ class UsersResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
-//        die('get all user');
         $collection = new UsersCollection(
-            new ArrayAdapter([
-                ''
-            ])
+            new ArrayAdapter($this->userService->getAll())
         );
         return $collection;
     }
