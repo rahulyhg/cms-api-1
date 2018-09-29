@@ -4,7 +4,9 @@ namespace UserApi\Service;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use DoctrineModule\Validator\ObjectExists;
 use UserApi\Entity\User;
+use Zend\Validator\ValidatorChain;
 
 class UserService implements UserServiceInterface
 {
@@ -30,5 +32,24 @@ class UserService implements UserServiceInterface
     {
         $users = $this->getRepository()->findAll();
         return $users;
+    }
+
+    /**
+     * @param int $id
+     * @return null|User
+     */
+    public function getById(int $id): ?User
+    {
+        $validator = new ValidatorChain();
+        $validator->attach(new ObjectExists([
+            'object_repository' => $this->getRepository(),
+            'fields' => 'id'
+        ]));
+
+        if (!$validator->isValid($id)) {
+            return null;
+        }
+
+        return $this->getRepository()->find($id);
     }
 }

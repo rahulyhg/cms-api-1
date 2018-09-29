@@ -1,8 +1,10 @@
 <?php
 namespace UserApi\V1\Rest\Users;
 
+use DoctrineModule\Validator\ObjectExists;
 use UserApi\Service\UserServiceInterface;
 use Zend\Paginator\Adapter\ArrayAdapter;
+use Zend\Validator;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 
@@ -52,28 +54,25 @@ class UsersResource extends AbstractResourceListener
     }
 
     /**
-     * Fetch a resource
-     *
-     * @param  mixed $id
-     * @return ApiProblem|mixed
+     * Get a user
      */
     public function fetch($id)
     {
-        die('get one user');
+        $user = $this->userService->getById($id);
+        if (!$user) {
+            return new ApiProblem(404, 'User not find');
+        }
+        return $user;
     }
 
     /**
-     * Fetch all or a subset of resources
-     *
-     * @param  array $params
-     * @return ApiProblem|mixed
+     * Get list of users
      */
     public function fetchAll($params = [])
     {
-        $collection = new UsersCollection(
+        return new UsersCollection(
             new ArrayAdapter($this->userService->getAll())
         );
-        return $collection;
     }
 
     /**

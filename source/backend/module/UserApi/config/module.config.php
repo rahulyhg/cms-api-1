@@ -16,6 +16,9 @@ return [
                 'type' => 'Segment',
                 'options' => [
                     'route' => '/users[/:users_id]',
+                    'constraints' => [
+                        'users_id' => '[1-9]+[0-9]*'
+                    ],
                     'defaults' => [
                         'controller' => 'UserApi\\V1\\Rest\\Users\\Controller',
                     ],
