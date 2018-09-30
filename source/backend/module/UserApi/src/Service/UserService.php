@@ -92,6 +92,7 @@ class UserService implements UserServiceInterface
      */
     public function getByEmail(string $email): User
     {
+        /** @var User $user */
         $user = $this->getRepository()->findOneBy([
             'email' => $email
         ]);
@@ -99,9 +100,19 @@ class UserService implements UserServiceInterface
         return $user;
     }
 
-    public function getByStatus()
+    /**
+     * @param int $status
+     *
+     * @return User[]
+     */
+    public function getByStatus(int $status): array
     {
+        /** @var User[] $users */
+        $users = $this->getRepository()->findBy([
+            'status' => $status
+        ]);
 
+        return $users;
     }
 
     public function getByEmailConfirmedToken()

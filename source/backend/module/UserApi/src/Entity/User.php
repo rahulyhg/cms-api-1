@@ -14,6 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User
 {
+    const STATUS_DISABLE = 0;
+    const STATUS_ENABLE = 1;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -76,7 +79,7 @@ class User
         $this->setPassword($values['password']);
         $this->setCreatedAt($values['createdAt'] ?? new \DateTime());
         $this->setUpdatedAt($values['updatedAt'] ?? new \DateTime());
-        $this->setStatus($values['status'] ?? 0);
+        $this->setStatus($values['status'] ?? self::STATUS_DISABLE);
         $this->setIsEmailConfirmed($values['isEmailConfirmed'] ?? false);
         $this->setResetToken($values['resetToken'] ?? null);
         $this->setEmailConfirmToken($values['emailConfirmToken'] ?? null);

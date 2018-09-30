@@ -68,13 +68,15 @@ class UserServiceTest extends TestCase
                 [
                     'email' => 'user2+unit_test@email.com',
                     'password' => 'test1234',
-                    'status' => 0,
+                    'status' => User::STATUS_ENABLE,
                     'isEmailConfirmed' => false,
                     'resetToken' => null,
                     'emailConfirmToken' => null,
                     'createdAt' => new \DateTime(strtotime('2018-09-22 07:36:13')),
                     'updatedAt' => new \DateTime(strtotime('2018-09-22 07:36:13')),
                 ],
+                ['email'=>'user3@yahoo.com', 'password'=>'123', 'status'=>User::STATUS_ENABLE],
+                ['email'=>'user4@yahoo.com', 'password'=>'123', 'status'=>User::STATUS_ENABLE],
             ],
             'unsaved' => [
                 ['email' => 'new+unit_test@email.com', 'password' => 'test1234'],
@@ -92,8 +94,9 @@ class UserServiceTest extends TestCase
 
     public function testGetAllUsers()
     {
+        $fetchUser = $this->getUsers();
         $users = $this->userService->getAll();
-        $this->assertCount(2, $users);
+        $this->assertCount(count($fetchUser), $users);
     }
 
     public function testGetUserById()
@@ -116,11 +119,21 @@ class UserServiceTest extends TestCase
 
     public function testGetUserByEmail()
     {
-        $fetchUser = $this->getUsers(1);
+        $id = 1;
+        $fetchUser = $this->getUsers($id);
         /** @var User $user */
         $user = $this->userService->getByEmail($fetchUser['email']);
 
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals($fetchUser['email'], $user->getEmail());
+    }
+
+    public function testGetAllUsersByStatusActive()
+    {
+        /** @var User[] $users */
+        $users = $this->userService->getByStatus(User::STATUS_ENABLE);
+
+        $this->count(3, $users);
+        $this->assertInstanceOf(User::class, $users[0]);
     }
 }
