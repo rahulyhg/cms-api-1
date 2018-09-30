@@ -18,7 +18,7 @@ if [ $# -gt 0 ]; then
 
     if [ "$1" == "up" ]; then
         shift 1
-        docker-compose up "$@"
+        docker-compose up -d "$@"
 
     elif [ "$1" == "down" ]; then
         docker-compose down

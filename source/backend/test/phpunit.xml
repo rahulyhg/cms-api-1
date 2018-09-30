@@ -5,16 +5,22 @@
             <directory>./ModuleTests</directory>
         </testsuite>
     </testsuites>
-    <!--<logging>-->
-        <!--<log type="coverage-html"-->
-             <!--target="./_report/codeCoverage"-->
-             <!--lowUpperBound="50"-->
-             <!--highLowerBound="80"-->
-             <!--showUncoveredFiles="false" />-->
-    <!--</logging>-->
+    <logging>
+        <log type="coverage-html"
+             target="./_report/codeCoverage"
+             lowUpperBound="50"
+             highLowerBound="80"
+             showUncoveredFiles="false" />
+    </logging>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./../module/*/src</directory>
         </whitelist>
     </filter>
+    <php>
+        <var name="DB_DSN" value="mysql:dbname=test_db;host=db" />
+        <var name="DB_USER" value="root" />
+        <var name="DB_PASSWD" value="test" />
+        <var name="DB_DBNAME" value="test_db" />
+    </php>
 </phpunit>

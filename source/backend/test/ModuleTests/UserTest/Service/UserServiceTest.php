@@ -2,138 +2,242 @@
 
 namespace ModuleTests\UsersTest;
 
-use Doctrine\ORM\EntityManager;
 use ModuleTests\Bootstrap;
+use PDO;
+use PHPUnit\DbUnit\Database\Connection;
+use PHPUnit\DbUnit\DataSet\IDataSet;
+use PHPUnit\DbUnit\TestCaseTrait;
 use PHPUnit\Framework\TestCase;
 use UserApi\Entity\User;
 use UserApi\Service\UserService;
+use UserApi\Type\UserStatus;
+use Zend\Crypt\Password\Bcrypt;
 
 class UserServiceTest extends TestCase
 {
+    use TestCaseTrait;
+
     /**
      * @var UserService
      */
-    private $userService;
+    static private $userService;
 
-    protected function setUp()
+    static private $pdo = null;
+
+    private $conn;
+
+    /**
+     * @return null|Connection
+     */
+    final public function getConnection()
     {
-        parent::setUp();
-        $this->userService = Bootstrap::getServiceManager()->get(UserService::class);
-
-        $this->clearDb();
-
-        // Initialize DB
-        $this->haveInDb();
-    }
-
-    protected function tearDown()
-    {
-        $this->userService = null;
-        parent::tearDown();
-    }
-
-    protected function clearDb()
-    {
-        $connection = $this->entityManager()->getConnection();
-        $platform = $connection->getDatabasePlatform();
-
-        $connection->executeUpdate($platform->getTruncateTableSQL('users', true /* whether to cascade */));
-    }
-
-    protected function entityManager(): EntityManager
-    {
-        return Bootstrap::getServiceManager()->get(EntityManager::class);
-    }
-
-    protected function haveInDb()
-    {
-        $users = $this->getUsers();
-        $emUser = $this->entityManager();
-
-        foreach ($users as $user) {
-            $emUser->persist(new User($user));
+        if ($this->conn === null) {
+            if (self::$pdo == null) {
+                self::$pdo = new PDO($GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+            }
+            $this->conn = $this->createDefaultDBConnection(self::$pdo, $GLOBALS['DB_DBNAME']);
         }
-        $emUser->flush();
+
+        return $this->conn;
     }
 
-    protected function getUsers(?int $singleUserIndex = null, bool $unsaved = false): array
+    /**
+     * @return IDataSet
+     */
+    public function getDataSet()
     {
-        $users = [
-            'saved' => [
-                [
-                    'email' => 'user1+unit_test@email.com',
-                    'password' => 'test1234',
-                    'createdAt' => new \DateTime(strtotime('2018-09-22 07:36:13')),
-                ],
-                [
-                    'email' => 'user2+unit_test@email.com',
-                    'password' => 'test1234',
-                    'status' => User::STATUS_ENABLE,
-                    'isEmailConfirmed' => false,
-                    'resetToken' => null,
-                    'emailConfirmToken' => null,
-                    'createdAt' => new \DateTime(strtotime('2018-09-22 07:36:13')),
-                    'updatedAt' => new \DateTime(strtotime('2018-09-22 07:36:13')),
-                ],
-                ['email'=>'user3@yahoo.com', 'password'=>'123', 'status'=>User::STATUS_ENABLE],
-                ['email'=>'user4@yahoo.com', 'password'=>'123', 'status'=>User::STATUS_ENABLE],
-            ],
-            'unsaved' => [
-                ['email' => 'new+unit_test@email.com', 'password' => 'test1234'],
-            ],
+        return $this->createFlatXMLDataSet(APPLICATION_PATH.'/test/_files/users-seed.xml');
+    }
+
+    public static function setUpBeforeClass()
+    {
+        self::$userService = Bootstrap::getServiceManager()->get(UserService::class);
+    }
+
+    public static function tearDownAfterClass()
+    {
+        self::$userService = null;
+    }
+
+    private function expectedUser(int $id): array
+    {
+        $user = $this->getDataSet()->getTable("users");
+
+        return [
+            'id' => $id,
+            'email' => $user->getValue($id - 1, 'email'),
+            'password' => $user->getValue($id - 1, 'password'),
+            'status' => $user->getValue($id - 1, 'status'),
+            'createdAt' => new \DateTime($user->getValue($id - 1, 'createdAt')),
+            'updatedAt' => new \DateTime($user->getValue($id - 1, 'updatedAt')),
         ];
-
-        $status = $unsaved ? 'unsaved' : 'saved';
-
-        if ($singleUserIndex !== null) {
-            return $users[$status][$singleUserIndex - 1];
-        }
-
-        return $users[$status];
     }
 
     public function testGetAllUsers()
     {
-        $fetchUser = $this->getUsers();
-        $users = $this->userService->getAll();
-        $this->assertCount(count($fetchUser), $users);
+        $expectedRows = $this->getDataSet()->getTable("users")->getRowCount();
+        $users = self::$userService->getAll();
+        $this->assertCount($expectedRows, $users);
     }
 
     public function testGetUserById()
     {
         $id = 2;
-        $fetchUser = $this->getUsers($id);
+        $expectedUser = $this->expectedUser($id);
+
         /** @var User $user */
-        $user = $this->userService->getById($id);
+        $user = self::$userService->getById($id);
 
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals($id, $user->getId());
-        $this->assertEquals($fetchUser['email'], $user->getEmail());
-        $this->assertEquals($fetchUser['status'], $user->getStatus());
+        $this->assertEquals($expectedUser['email'], $user->getEmail());
+        $this->assertEquals($expectedUser['status'], $user->getStatus());
         $this->assertFalse($user->isEmailConfirmed());
         $this->assertNull($user->getResetToken());
         $this->assertNull($user->getEmailConfirmToken());
-        $this->assertEquals($fetchUser['createdAt'], $user->getCreatedAt());
-        $this->assertEquals($fetchUser['updatedAt'], $user->getUpdatedAt());
+        $this->assertEquals($expectedUser['createdAt'], $user->getCreatedAt());
+        $this->assertEquals($expectedUser['updatedAt'], $user->getUpdatedAt());
     }
 
     public function testGetUserByEmail()
     {
         $id = 1;
-        $fetchUser = $this->getUsers($id);
+        $expectedUser = $this->expectedUser($id);
         /** @var User $user */
-        $user = $this->userService->getByEmail($fetchUser['email']);
+        $user = self::$userService->getByEmail($expectedUser['email']);
 
         $this->assertInstanceOf(User::class, $user);
-        $this->assertEquals($fetchUser['email'], $user->getEmail());
+        $this->assertEquals($id, $user->getId());
     }
 
     public function testGetAllUsersByStatusActive()
     {
         /** @var User[] $users */
-        $users = $this->userService->getByStatus(User::STATUS_ENABLE);
+        $users = self::$userService->getByStatus(UserStatus::STATUS_ENABLE);
 
         $this->count(3, $users);
         $this->assertInstanceOf(User::class, $users[0]);
+    }
+
+    public function testAddUserByAdmin()
+    {
+        $newUser = [
+            'email' => 'shahrokh@email.com',
+            'password' => 'test1234',
+        ];
+
+        $beforeRows = $this->getDataSet()->getTable("users")->getRowCount();
+        $this->assertEquals($beforeRows, $this->getConnection()->getRowCount('users'));
+
+        $user = self::$userService->addUserByAdmin($newUser['email'], $newUser['password']);
+
+        $this->assertEquals($beforeRows + 1, $this->getConnection()->getRowCount('users'));
+        $this->assertEquals($newUser['email'], $user->getEmail());
+        $this->assertEquals(UserStatus::STATUS_ENABLE, $user->getStatus());
+
+        $bcrypt = new Bcrypt(['cost' => 14]);
+        $this->assertTrue($bcrypt->verify($newUser['password'], $user->getPassword()));
+    }
+
+    public function testRegisterUser()
+    {
+        $newUser = [
+            'email' => 'shahrokh@email.com',
+            'password' => 'test1234',
+        ];
+
+        $user = self::$userService->register($newUser['email'], $newUser['password']);
+        $this->assertEquals(UserStatus::STATUS_DISABLE, $user->getStatus());
+    }
+
+    public function testCreateUserExceptionAlreadyExist()
+    {
+        $existedUser = $this->expectedUser(1);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(User::ERR_CODE_ALREADY_EXIST);
+        self::$userService->addUserByAdmin($existedUser['email'], $existedUser['password']);
+    }
+
+    public function testDeleteUserById()
+    {
+        $existedUser = $this->expectedUser(1);
+
+        $sql = 'SELECT * FROM users WHERE id = '.$existedUser['id'];
+        $queryTable = $this->getConnection()->createQueryTable('users', $sql);
+        $this->assertEquals(1, $queryTable->getRowCount());
+
+        $deletedUser = self::$userService->delete($existedUser['id']);
+
+        $this->assertInstanceOf(User::class, $deletedUser);
+        $queryTable = $this->getConnection()->createQueryTable('users', $sql);
+        $this->assertEquals(0, $queryTable->getRowCount());
+    }
+
+    public function testDeleteUserByInvalidId()
+    {
+        $deletedUser = self::$userService->delete(0);
+        $this->assertNull($deletedUser);
+    }
+
+    public function testDeleteListOfUsers()
+    {
+        $beforeRows = $this->getDataSet()->getTable("users")->getRowCount();
+        $this->assertEquals($beforeRows, $this->getConnection()->getRowCount('users'));
+
+        $deleteIds = [1, 2, 3];
+        $users = self::$userService->deleteUsers($deleteIds);
+
+        $count = count($deleteIds);
+        $this->assertCount($count, $users);
+        $this->assertEquals($beforeRows - $count, $this->getConnection()->getRowCount('users'));
+    }
+
+    public function testDeleteListExceptionInvalidIds()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(User::ERR_CODE_INVALID_ID_TYPE);
+        self::$userService->deleteUsers([true, '', [2, 1]]);
+    }
+
+    public function testChangeUserStatusExceptionNotFound()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(User::ERR_CODE_NOT_FOUND);
+        self::$userService->changeStatus(100, UserStatus::STATUS_ENABLE);
+    }
+
+    public function testChangeUserStatusExceptionWrongStatus()
+    {
+        $existedUser = $this->expectedUser(1);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(User::ERR_CODE_WRONG_STATUS);
+        self::$userService->changeStatus($existedUser['id'], 200);
+    }
+
+    public function testChangeStatusListOfUsers()
+    {
+        $sql = 'SELECT * FROM users WHERE status = '.UserStatus::STATUS_ENABLE;
+        $enabledUsers = $this->getConnection()->createQueryTable('users', $sql)->getRowCount();
+
+        $changeIds = [1, 4];
+        $users = self::$userService->changeStatusUsers($changeIds, UserStatus::STATUS_ENABLE);
+
+        $count = count($changeIds);
+        $this->assertCount($count, $users);
+        $this->assertEquals(
+            $enabledUsers + $count,
+            $this->getConnection()->createQueryTable('users', $sql)->getRowCount()
+        );
+    }
+
+    public function testChangeUserStatus()
+    {
+        $existedUser = $this->expectedUser(1);
+        $this->assertEquals(UserStatus::STATUS_DISABLE, $existedUser['status']);
+
+        $user = self::$userService->changeStatus($existedUser['id'], UserStatus::STATUS_ENABLE);
+        $this->assertEquals(UserStatus::STATUS_ENABLE, $user->getStatus());
     }
 }

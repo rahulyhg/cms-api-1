@@ -14,8 +14,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User
 {
-    const STATUS_DISABLE = 0;
-    const STATUS_ENABLE = 1;
+    const ERR_CODE_ALREADY_EXIST = 1;
+    const ERR_MSG_ALREADY_EXIST = 'This email address has been taken.';
+    const ERR_CODE_NOT_FOUND = 2;
+    const ERR_MSG_NOT_FOUND = 'User does not exist.';
+    const ERR_CODE_INVALID_ID_TYPE = 3;
+    const ERR_MSG_INVALID_ID_TYPE = 'Invalid type for ids.';
+    const ERR_CODE_WRONG_STATUS = 4;
+    const ERR_MSG_WRONG_STATUS = 'Invalid user status.';
 
     /**
      * @ORM\Id
@@ -79,7 +85,7 @@ class User
         $this->setPassword($values['password']);
         $this->setCreatedAt($values['createdAt'] ?? new \DateTime());
         $this->setUpdatedAt($values['updatedAt'] ?? new \DateTime());
-        $this->setStatus($values['status'] ?? self::STATUS_DISABLE);
+        $this->setStatus($values['status'] ?? ORM::STATUS_DISABLE);
         $this->setIsEmailConfirmed($values['isEmailConfirmed'] ?? false);
         $this->setResetToken($values['resetToken'] ?? null);
         $this->setEmailConfirmToken($values['emailConfirmToken'] ?? null);

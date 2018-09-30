@@ -6,6 +6,8 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use DoctrineModule\Validator\ObjectExists;
 use UserApi\Entity\User;
+use UserApi\Type\UserStatus;
+use Zend\Crypt\Password\Bcrypt;
 use Zend\Validator\ValidatorChain;
 
 class UserService implements UserServiceInterface
@@ -36,7 +38,7 @@ class UserService implements UserServiceInterface
         $validator = new ValidatorChain();
         $validator->attach(new ObjectExists([
             'object_repository' => $this->getRepository(),
-            'fields' => $field
+            'fields' => $field,
         ]));
 
         return $validator->isValid($id);
@@ -53,6 +55,7 @@ class UserService implements UserServiceInterface
 
     /**
      * @param int $id
+     *
      * @return null|User
      */
     public function getById(int $id): ?User
@@ -73,7 +76,7 @@ class UserService implements UserServiceInterface
      */
     public function delete(int $id): ?User
     {
-        if (!$this->isExist('id', $id)) {
+        if (!$this->getById($id)) {
             return null;
         }
 
@@ -90,11 +93,11 @@ class UserService implements UserServiceInterface
      *
      * @return User
      */
-    public function getByEmail(string $email): User
+    public function getByEmail(string $email): ?User
     {
         /** @var User $user */
         $user = $this->getRepository()->findOneBy([
-            'email' => $email
+            'email' => $email,
         ]);
 
         return $user;
@@ -109,15 +112,67 @@ class UserService implements UserServiceInterface
     {
         /** @var User[] $users */
         $users = $this->getRepository()->findBy([
-            'status' => $status
+            'status' => $status,
         ]);
 
         return $users;
     }
 
-    public function getByEmailConfirmedToken()
+    /**
+     * @return string
+     */
+    private function generateToke(): string
     {
+        $token = openssl_random_pseudo_bytes(16);
+        return bin2hex($token);
+    }
 
+    /**
+     * @param string $password
+     *
+     * @return string
+     */
+    private function encryptPassword(string $password): string
+    {
+        $bcrypt = new Bcrypt(['cost' => 14]);
+        return $bcrypt->create($password);
+    }
+
+    /**
+     * @param string $email
+     * @param string $password
+     *
+     * @return User
+     */
+    public function addUserByAdmin(string $email, string $password): User
+    {
+        return $this->create($email, $password, UserStatus::STATUS_ENABLE);
+    }
+
+    /**
+     * @param string $email
+     * @param string $password
+     * @param int    $status
+     *
+     * @return User
+     */
+    private function create(string $email, string $password, int $status): User
+    {
+        $user = $this->getByEmail($email);
+
+        if (!empty($user)) {
+            throw new \RuntimeException(User::ERR_MSG_ALREADY_EXIST, User::ERR_CODE_ALREADY_EXIST);
+        }
+
+        $user = new User([
+            'email' => $email,
+            'password' => $this->encryptPassword($password),
+            'status' => $status,
+        ]);
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $user;
     }
 
     public function getByResetToken()
@@ -125,9 +180,23 @@ class UserService implements UserServiceInterface
 
     }
 
-    public function deleteUsers()
+    /**
+     * @param int[] $ids
+     *
+     * @return User[]
+     */
+    public function deleteUsers(array $ids): array
     {
+        $this->isArrayOfNumber($ids);
 
+        $users = [];
+        foreach ($ids as $id) {
+            if ($user = $this->delete($id)) {
+                $users[] = $user;
+            };
+        }
+
+        return $users;
     }
 
     public function edit()
@@ -140,14 +209,59 @@ class UserService implements UserServiceInterface
 
     }
 
-    public function changeStatus()
+    /**
+     * @param int $id
+     * @param int $status
+     *
+     * @return User
+     */
+    public function changeStatus(int $id, int $status): User
     {
+        $user = $this->getById($id);
 
+        if (!$user) {
+            throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
+        }
+
+        if (!in_array($status, UserStatus::toArray())) {
+            throw new \RuntimeException(User::ERR_MSG_WRONG_STATUS, User::ERR_CODE_WRONG_STATUS);
+        }
+        var_dump($user->getId());
+
+        $user->setStatus($status);
+        $this->entityManager->flush();
+
+        return $user;
     }
 
-    public function changeStatusUsers()
+    /**
+     * @param int[] $ids
+     * @param int $status
+     *
+     * @return User[]
+     */
+    public function changeStatusUsers(array $ids, int $status): array
     {
+        $this->isArrayOfNumber($ids);
 
+        $users = [];
+        foreach ($ids as $id) {
+            if ($user = $this->changeStatus($id, $status)) {
+                $users[] = $user;
+            };
+        }
+
+        return $users;
+    }
+
+    /**
+     * @param int[] $items
+     */
+    private function isArrayOfNumber(array $items)
+    {
+        if ($items !== array_filter($items, 'is_numeric')) {
+            throw new \RuntimeException(User::ERR_MSG_INVALID_ID_TYPE, User::ERR_CODE_INVALID_ID_TYPE);
+        }
     }
 
     public function sendResetPassword()
@@ -165,8 +279,8 @@ class UserService implements UserServiceInterface
 
     }
 
-    public function register()
+    public function register(string $email, string $password): User
     {
-
+        return $this->create($email, $password, UserStatus::STATUS_DISABLE);
     }
 }
