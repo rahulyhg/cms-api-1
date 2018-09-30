@@ -10,9 +10,10 @@ use Zend\Stdlib\ArrayUtils;
 
 error_reporting(E_ALL | E_STRICT);
 
-if (!defined('APPLICATION_ENV')) {
-    define('APPLICATION_ENV', 'development');
+if (!defined('TEST_ENV')) {
+    define('TEST_ENV', 'development');
 }
+
 if (!defined('APPLICATION_PATH')) {
     define('APPLICATION_PATH', realpath(__DIR__.'/../'));
 }

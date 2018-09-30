@@ -1,4 +1,4 @@
-version: '3.2'
+version: '2'
 
 services:
   web:
@@ -16,45 +16,43 @@ services:
       - ./source/backend:/var/www/html
     ports:
       - ${APP_PORT}:80
-  zend:
-    image: nari/web:latest
-    container_name: zend_tools
-    depends_on:
-      - web
-    volumes:
-     - ./:/var/www/html
-    working_dir: /var/www/html/zend
-  cache:
-    image: redis:alpine
-    container_name: cache
-    networks:
-      - narinet
-    volumes:
-      - type: bind
-        source: ./local-data/cache
-        target: /var/lib/mysql
-  node:
-    build:
-      context: ./docker/node
-      dockerfile: Dockerfile
-    image: nari/node:latest
-    container_name: node
-    networks:
-     - narinet
-    volumes:
-     - ./source:/opt
-    working_dir: /opt
-    command: npm -v && node -v
-  angular:
-    image: nari/node:latest
-    container_name: angular
-    depends_on:
-      - node
-    volumes:
-     - ./source:/opt
-    working_dir: /opt/frontend
-    ports:
-      - 4200:4200
+#  zend:
+#    image: nari/web:latest
+#    container_name: zend_tools
+#    depends_on:
+#      - web
+#    volumes:
+#     - ./:/var/www/html
+#    working_dir: /var/www/html/zend
+#  cache:
+#    image: redis:alpine
+#    container_name: cache
+#    networks:
+#      - narinet
+#    volumes:
+#      - ./local-data/cache:/var/lib/mysql
+#  node:
+#    build:
+#      context: ./docker/node
+#      dockerfile: Dockerfile
+#    image: nari/node:latest
+#    container_name: node
+#    networks:
+#     - narinet
+#    volumes:
+#     - ./source:/opt
+#    working_dir: /opt
+#    command: npm -v && node -v
+#  angular:
+#    image: nari/node:latest
+#    container_name: angular
+#    depends_on:
+#      - node
+#    volumes:
+#     - ./source:/opt
+#    working_dir: /opt/frontend
+#    ports:
+#      - 4200:4200
   db:
     image: mysql:5.7
     container_name: db
@@ -64,14 +62,17 @@ services:
       MYSQL_DATABASE: web_db
       MYSQL_USER: devuser
       MYSQL_PASSWORD: devpass
+    entrypoint:
+      sh -c "
+        echo 'CREATE DATABASE IF NOT EXISTS test_db; GRANT G ALL PRIVILEGES ON database.* TO devuser@localhost;' > /docker-entrypoint-initdb.d/init.sql;
+        /usr/local/bin/docker-entrypoint.sh --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      "
     ports:
       - ${DB_PORT}:3306
     networks:
       - narinet
     volumes:
-      - type: bind
-        source: ./local-data/database
-        target: /var/lib/mysql
+      - ./local-data/database:/var/lib/mysql
 networks:
   narinet:
     driver: bridge

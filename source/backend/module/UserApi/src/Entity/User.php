@@ -1,4 +1,5 @@
 <?php
+
 namespace UserApi\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -24,19 +25,19 @@ class User
     /**
      * @ORM\Column(type="string", length=64, unique=true, nullable=false)
      * @var string
-    */
+     */
     protected $email;
 
     /**
      * @ORM\Column(type="string", length=256)
      * @var string
-    */
+     */
     protected $password;
 
     /**
      * @ORM\Column(type="datetime")
      * @var \DateTime
-    */
+     */
     protected $createdAt;
 
     /**
@@ -69,16 +70,16 @@ class User
      */
     protected $emailConfirmToken;
 
-    public function __construct(string $email, string $password)
+    public function __construct(array $values)
     {
-        $this->email = $email;
-        $this->password = $password;
-        $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
-        $this->status = 0;
-        $this->isEmailConfirmed = false;
-        $this->resetToken = null;
-        $this->emailConfirmToken = null;
+        $this->setEmail($values['email']);
+        $this->setPassword($values['password']);
+        $this->setCreatedAt($values['createdAt'] ?? new \DateTime());
+        $this->setUpdatedAt($values['updatedAt'] ?? new \DateTime());
+        $this->setStatus($values['status'] ?? 0);
+        $this->setIsEmailConfirmed($values['isEmailConfirmed'] ?? false);
+        $this->setResetToken($values['resetToken'] ?? null);
+        $this->setEmailConfirmToken($values['emailConfirmToken'] ?? null);
     }
 
     /**
@@ -194,9 +195,9 @@ class User
     }
 
     /**
-     * @param string $resetToken
+     * @param null|string $resetToken
      */
-    public function setResetToken(string $resetToken)
+    public function setResetToken(?string $resetToken)
     {
         $this->resetToken = $resetToken;
     }
@@ -210,9 +211,9 @@ class User
     }
 
     /**
-     * @param string $emailConfirmToken
+     * @param null|string $emailConfirmToken
      */
-    public function setEmailConfirmToken($emailConfirmToken)
+    public function setEmailConfirmToken(?string $emailConfirmToken)
     {
         $this->emailConfirmToken = $emailConfirmToken;
     }
