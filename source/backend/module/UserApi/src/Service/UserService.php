@@ -84,4 +84,78 @@ class UserService implements UserServiceInterface
 
         return $user;
     }
+
+    /**
+     * @param string $email
+     *
+     * @return User
+     */
+    public function getByEmail(string $email): User
+    {
+        $user = $this->getRepository()->findOneBy([
+            'email' => $email
+        ]);
+
+        return $user;
+    }
+
+    public function getByStatus()
+    {
+
+    }
+
+    public function getByEmailConfirmedToken()
+    {
+
+    }
+
+    public function getByResetToken()
+    {
+
+    }
+
+    public function deleteUsers()
+    {
+
+    }
+
+    public function edit()
+    {
+
+    }
+
+    public function sendResetPasswordUsers()
+    {
+
+    }
+
+    public function changeStatus()
+    {
+
+    }
+
+    public function changeStatusUsers()
+    {
+
+    }
+
+    public function sendResetPassword()
+    {
+
+    }
+
+    public function resetPassword()
+    {
+
+    }
+
+    public function login()
+    {
+
+    }
+
+    public function register()
+    {
+
+    }
 }

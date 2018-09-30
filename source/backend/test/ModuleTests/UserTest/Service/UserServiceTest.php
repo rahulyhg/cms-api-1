@@ -35,7 +35,7 @@ class UserServiceTest extends TestCase
     protected function clearDb()
     {
         $connection = $this->entityManager()->getConnection();
-        $platform   = $connection->getDatabasePlatform();
+        $platform = $connection->getDatabasePlatform();
 
         $connection->executeUpdate($platform->getTruncateTableSQL('users', true /* whether to cascade */));
     }
@@ -84,7 +84,7 @@ class UserServiceTest extends TestCase
         $status = $unsaved ? 'unsaved' : 'saved';
 
         if ($singleUserIndex !== null) {
-            return $users[$status][$singleUserIndex];
+            return $users[$status][$singleUserIndex - 1];
         }
 
         return $users[$status];
@@ -98,12 +98,13 @@ class UserServiceTest extends TestCase
 
     public function testGetUserById()
     {
-        $fetchUser = $this->getUsers(1);
+        $id = 2;
+        $fetchUser = $this->getUsers($id);
         /** @var User $user */
-        $user = $this->userService->getById(2);
+        $user = $this->userService->getById($id);
 
         $this->assertInstanceOf(User::class, $user);
-        $this->assertEquals(2, $user->getId());
+        $this->assertEquals($id, $user->getId());
         $this->assertEquals($fetchUser['email'], $user->getEmail());
         $this->assertEquals($fetchUser['status'], $user->getStatus());
         $this->assertFalse($user->isEmailConfirmed());
@@ -111,5 +112,15 @@ class UserServiceTest extends TestCase
         $this->assertNull($user->getEmailConfirmToken());
         $this->assertEquals($fetchUser['createdAt'], $user->getCreatedAt());
         $this->assertEquals($fetchUser['updatedAt'], $user->getUpdatedAt());
+    }
+
+    public function testGetUserByEmail()
+    {
+        $fetchUser = $this->getUsers(1);
+        /** @var User $user */
+        $user = $this->userService->getByEmail($fetchUser['email']);
+
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals($fetchUser['email'], $user->getEmail());
     }
 }
