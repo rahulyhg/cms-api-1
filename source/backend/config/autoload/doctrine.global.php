@@ -8,7 +8,7 @@ return [
                 'params' => [
                     'host' => 'db',
                     'port' => '3306',
-                    'dbname' => defined('TEST_ENV') ? 'test_db' : 'web_db',
+                    'dbname' => 'web_db',
                     'charset' => 'utf8',
                     'driverOptions' => [
                         1002 => 'SET NAMES utf8',

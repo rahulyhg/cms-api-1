@@ -10,8 +10,8 @@ use Zend\Stdlib\ArrayUtils;
 
 error_reporting(E_ALL | E_STRICT);
 
-if (!defined('TEST_ENV')) {
-    define('TEST_ENV', 'development');
+if (!defined('APPLICATION_ENV')) {
+    define('APPLICATION_ENV', 'test');
 }
 
 if (!defined('APPLICATION_PATH')) {

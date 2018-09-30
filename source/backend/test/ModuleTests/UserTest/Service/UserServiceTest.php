@@ -34,22 +34,13 @@ class UserServiceTest extends TestCase
 
     protected function clearDb()
     {
-        $orm = $this->getORM();
-        $qb = $orm->createQueryBuilder()->select('u');
-        $qb->from(User::class, 'u')->andWhere(
-            $qb->expr()->like('u.email', ':email')
-        );
-        $qb->setParameter('email', '%unit_test%');
+        $connection = $this->entityManager()->getConnection();
+        $platform   = $connection->getDatabasePlatform();
 
-        $iterateObjRows = $qb->getQuery()->iterate();
-        foreach ($iterateObjRows as $rowObj) {
-            $orm->remove($rowObj[0]);
-        }
-        $orm->flush();
-        $orm->clear();
+        $connection->executeUpdate($platform->getTruncateTableSQL('users', true /* whether to cascade */));
     }
 
-    protected function getORM(): EntityManager
+    protected function entityManager(): EntityManager
     {
         return Bootstrap::getServiceManager()->get(EntityManager::class);
     }
@@ -57,7 +48,7 @@ class UserServiceTest extends TestCase
     protected function haveInDb()
     {
         $users = $this->getUsers();
-        $emUser = $this->getORM();
+        $emUser = $this->entityManager();
 
         foreach ($users as $user) {
             $emUser->persist(new User($user));
@@ -103,5 +94,22 @@ class UserServiceTest extends TestCase
     {
         $users = $this->userService->getAll();
         $this->assertCount(2, $users);
+    }
+
+    public function testGetUserById()
+    {
+        $fetchUser = $this->getUsers(1);
+        /** @var User $user */
+        $user = $this->userService->getById(2);
+
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals(2, $user->getId());
+        $this->assertEquals($fetchUser['email'], $user->getEmail());
+        $this->assertEquals($fetchUser['status'], $user->getStatus());
+        $this->assertFalse($user->isEmailConfirmed());
+        $this->assertNull($user->getResetToken());
+        $this->assertNull($user->getEmailConfirmToken());
+        $this->assertEquals($fetchUser['createdAt'], $user->getCreatedAt());
+        $this->assertEquals($fetchUser['updatedAt'], $user->getUpdatedAt());
     }
 }

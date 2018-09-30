@@ -5,8 +5,7 @@ return [
         'connection' => [
             'orm_default' => [
                 'params' => [
-                    'user' => 'root',
-                    'password' => 'test',
+                    'dbname' => 'test_db',
                 ],
             ],
         ],
