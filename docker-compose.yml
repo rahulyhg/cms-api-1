@@ -14,16 +14,9 @@ services:
       - narinet
     volumes:
       - ./source/backend:/var/www/html
+      - ./:/opt
     ports:
       - ${APP_PORT}:80
-#  zend:
-#    image: nari/web:latest
-#    container_name: zend_tools
-#    depends_on:
-#      - web
-#    volumes:
-#     - ./:/var/www/html
-#    working_dir: /var/www/html/zend
 #  cache:
 #    image: redis:alpine
 #    container_name: cache
@@ -31,28 +24,19 @@ services:
 #      - narinet
 #    volumes:
 #      - ./local-data/cache:/var/lib/mysql
-#  node:
-#    build:
-#      context: ./docker/node
-#      dockerfile: Dockerfile
-#    image: nari/node:latest
-#    container_name: node
-#    networks:
-#     - narinet
-#    volumes:
-#     - ./source:/opt
-#    working_dir: /opt
-#    command: npm -v && node -v
-#  angular:
-#    image: nari/node:latest
-#    container_name: angular
-#    depends_on:
-#      - node
-#    volumes:
-#     - ./source:/opt
-#    working_dir: /opt/frontend
-#    ports:
-#      - 4200:4200
+  node:
+    build:
+      context: ./docker/node
+      dockerfile: Dockerfile
+    image: nari/node:latest
+    container_name: node
+    networks:
+     - narinet
+    volumes:
+     - ./source/backend:/opt
+     - ./source/frontend:/angular
+    working_dir: /opt
+    command: npm -v && node -v
   db:
     image: mysql:5.7
     container_name: db
