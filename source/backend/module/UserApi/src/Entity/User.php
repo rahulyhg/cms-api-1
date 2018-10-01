@@ -3,6 +3,7 @@
 namespace UserApi\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use UserApi\Type\UserStatus;
 
 /**
  * @ORM\Entity
@@ -85,7 +86,7 @@ class User
         $this->setPassword($values['password']);
         $this->setCreatedAt($values['createdAt'] ?? new \DateTime());
         $this->setUpdatedAt($values['updatedAt'] ?? new \DateTime());
-        $this->setStatus($values['status'] ?? ORM::STATUS_DISABLE);
+        $this->setStatus($values['status'] ?? UserStatus::STATUS_DISABLE);
         $this->setIsEmailConfirmed($values['isEmailConfirmed'] ?? false);
         $this->setResetToken($values['resetToken'] ?? null);
         $this->setEmailConfirmToken($values['emailConfirmToken'] ?? null);

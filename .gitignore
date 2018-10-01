@@ -3,4 +3,5 @@ local-data/**
 **/node_modules
 **/vendor
 
-source/backend/data/cache
+source/backend/data/cache/*
+source/backend/data/mail/*

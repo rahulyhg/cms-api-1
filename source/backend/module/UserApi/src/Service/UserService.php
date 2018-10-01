@@ -17,9 +17,17 @@ class UserService implements UserServiceInterface
      */
     private $entityManager;
 
-    public function __construct(EntityManager $entityManager)
-    {
+    /**
+     * @var EmailService
+     */
+    private $email;
+
+    public function __construct(
+        EntityManager $entityManager,
+        EmailService $email
+    ) {
         $this->entityManager = $entityManager;
+        $this->email = $email;
     }
 
     private function getRepository(): EntityRepository
@@ -121,7 +129,7 @@ class UserService implements UserServiceInterface
     /**
      * @return string
      */
-    private function generateToke(): string
+    private function generateToken(): string
     {
         $token = openssl_random_pseudo_bytes(16);
         return bin2hex($token);
@@ -175,11 +183,6 @@ class UserService implements UserServiceInterface
         return $user;
     }
 
-    public function getByResetToken()
-    {
-
-    }
-
     /**
      * @param int[] $ids
      *
@@ -197,16 +200,6 @@ class UserService implements UserServiceInterface
         }
 
         return $users;
-    }
-
-    public function edit()
-    {
-
-    }
-
-    public function sendResetPasswordUsers()
-    {
-
     }
 
     /**
@@ -236,7 +229,7 @@ class UserService implements UserServiceInterface
 
     /**
      * @param int[] $ids
-     * @param int $status
+     * @param int   $status
      *
      * @return User[]
      */
@@ -264,9 +257,23 @@ class UserService implements UserServiceInterface
         }
     }
 
-    public function sendResetPassword()
+    /**
+     * @param string $email
+     */
+    public function sendResetPassword(string $email)
     {
+        $user = $this->getByEmail($email);
 
+        if (empty($user)) {
+            throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
+        }
+
+        $user->setResetToken($this->generateToken());
+        $user->setUpdatedAt(new \DateTime());
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        $this->email->sendResetPasswordToken($user);
     }
 
     public function resetPassword()
@@ -274,7 +281,43 @@ class UserService implements UserServiceInterface
 
     }
 
+    /**
+     * @param string $email
+     */
+    public function sendConfirmEmail(string $email)
+    {
+        $user = $this->getByEmail($email);
+
+        if (empty($user)) {
+            throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
+        }
+
+        $user->setEmailConfirmToken($this->generateToken());
+        $user->setUpdatedAt(new \DateTime());
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        $this->email->sendConfirmEmailToken($user);
+    }
+
+    public function confirmEmail()
+    {
+        // getUserByConfirmEmailToken();
+        // update user confirm email token
+        // update user isConfirmedEmail
+    }
+
+    public function getByResetToken()
+    {
+
+    }
+
     public function login()
+    {
+
+    }
+
+    public function edit()
     {
 
     }

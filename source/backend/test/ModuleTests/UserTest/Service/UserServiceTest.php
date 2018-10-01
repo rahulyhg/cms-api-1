@@ -5,6 +5,7 @@ namespace ModuleTests\UsersTest;
 use ModuleTests\Bootstrap;
 use PDO;
 use PHPUnit\DbUnit\Database\Connection;
+use PHPUnit\DbUnit\Database\DefaultConnection;
 use PHPUnit\DbUnit\DataSet\IDataSet;
 use PHPUnit\DbUnit\TestCaseTrait;
 use PHPUnit\Framework\TestCase;
@@ -22,8 +23,10 @@ class UserServiceTest extends TestCase
      */
     static private $userService;
 
+    /** @var PDO */
     static private $pdo = null;
 
+    /** @var  DefaultConnection */
     private $conn;
 
     /**
@@ -68,6 +71,8 @@ class UserServiceTest extends TestCase
             'email' => $user->getValue($id - 1, 'email'),
             'password' => $user->getValue($id - 1, 'password'),
             'status' => $user->getValue($id - 1, 'status'),
+            'emailConfirmToken' => $user->getValue($id - 1, 'emailConfirmToken') ?: null,
+            'resetToken' => $user->getValue($id - 1, 'resetToken') ?: null,
             'createdAt' => new \DateTime($user->getValue($id - 1, 'createdAt')),
             'updatedAt' => new \DateTime($user->getValue($id - 1, 'updatedAt')),
         ];
@@ -239,5 +244,27 @@ class UserServiceTest extends TestCase
 
         $user = self::$userService->changeStatus($existedUser['id'], UserStatus::STATUS_ENABLE);
         $this->assertEquals(UserStatus::STATUS_ENABLE, $user->getStatus());
+    }
+
+    public function testSendConfirmEmail()
+    {
+        $existedUser = $this->expectedUser(1);
+        $this->assertNull($existedUser['emailConfirmToken']);
+
+        self::$userService->sendConfirmEmail($existedUser['email']);
+
+        $user = self::$pdo->query('SELECT * FROM users WHERE id = '.$existedUser['id'])->fetch();
+        $this->assertNotNull($user['emailConfirmToken']);
+    }
+
+    public function testSendResetPassword()
+    {
+        $existedUser = $this->expectedUser(1);
+        $this->assertNull($existedUser['resetToken']);
+
+        self::$userService->sendResetPassword($existedUser['email']);
+
+        $user = self::$pdo->query('SELECT * FROM users WHERE id = '.$existedUser['id'])->fetch();
+        $this->assertNotNull($user['resetToken']);
     }
 }

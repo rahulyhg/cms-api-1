@@ -1,13 +1,16 @@
 <?php
 
 use UserApi\Factory\UserServiceFactory;
+use UserApi\Service\EmailService;
 use UserApi\Service\UserService;
+use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
     'service_manager' => [
         'factories' => [
             \UserApi\V1\Rest\Users\UsersResource::class => \UserApi\V1\Rest\Users\UsersResourceFactory::class,
-            UserService::class => UserServiceFactory::class
+            UserService::class => UserServiceFactory::class,
+            EmailService::class => InvokableFactory::class,
         ],
     ],
     'router' => [

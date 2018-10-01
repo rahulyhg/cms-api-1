@@ -1,12 +1,13 @@
 <?xml version="1.0" ?>
 <dataset>
     <users id="1" email="user1@email.com" password="$2y$14$/P2TRXwoP8LRG4wx2fF/P.50imkv2VmGwUoNFEFlgetXZ0Jlutlca"
-           status="0" isEmailConfirmed="0" createdAt="2010-04-24 17:15:23" updatedAt="2010-04-24 17:15:23"/>
+           status="0" isEmailConfirmed="0" createdAt="2010-04-24 17:15:23" updatedAt="2010-04-24 17:15:23"
+    />
     <users id="2" email="user2@email.com" password="joe" status="1" isEmailConfirmed="0" createdAt="2010-04-24 17:15:23" updatedAt="2010-04-24 17:15:23"/>
     <users id="3" email="user3@email.com" password="joe" status="1" isEmailConfirmed="0" createdAt="2010-04-24 17:15:23" updatedAt="2010-04-24 17:15:23"/>
     <users id="4" email="user4@email.com" password="joe" status="0" isEmailConfirmed="0" createdAt="2010-04-24 17:15:23" updatedAt="2010-04-24 17:15:23"/>
     <users id="5" email="user5@email.com" password="joe" status="1" isEmailConfirmed="0" createdAt="2010-04-24 17:15:23" updatedAt="2010-04-24 17:15:23"/>
     <users id="6" email="user6@email.com" password="$2y$14$/P2TRXwoP8LRG4wx2fF/P.50imkv2VmGwUoNFEFlgetXZ0Jlutlca"
-           status="0" isEmailConfirmed="0" emailConfirmToken="UserConfirmTokenEmail"
+           status="0" isEmailConfirmed="0" emailConfirmToken="UserConfirmTokenEmail" resetToken="resetToken"
            createdAt="2010-04-24 17:15:23" updatedAt="2010-04-24 17:15:23"/>
 </dataset>
