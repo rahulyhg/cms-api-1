@@ -72,6 +72,7 @@ class UserServiceTest extends TestCase
             'password' => $user->getValue($id - 1, 'password'),
             'status' => $user->getValue($id - 1, 'status'),
             'emailConfirmToken' => $user->getValue($id - 1, 'emailConfirmToken') ?: null,
+            'isEmailConfirmed' => $user->getValue($id - 1, 'isEmailConfirmed') ?: false,
             'resetToken' => $user->getValue($id - 1, 'resetToken') ?: null,
             'createdAt' => new \DateTime($user->getValue($id - 1, 'createdAt')),
             'updatedAt' => new \DateTime($user->getValue($id - 1, 'updatedAt')),
@@ -140,8 +141,7 @@ class UserServiceTest extends TestCase
         $this->assertEquals($newUser['email'], $user->getEmail());
         $this->assertEquals(UserStatus::STATUS_ENABLE, $user->getStatus());
 
-        $bcrypt = new Bcrypt(['cost' => 14]);
-        $this->assertTrue($bcrypt->verify($newUser['password'], $user->getPassword()));
+        $this->assertTrue(self::$userService->isPasswordCorrect($newUser['password'], $user->getPassword()));
     }
 
     public function testRegisterUser()
@@ -201,7 +201,7 @@ class UserServiceTest extends TestCase
     public function testDeleteListExceptionInvalidIds()
     {
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionCode(User::ERR_CODE_INVALID_ID_TYPE);
+        $this->expectExceptionCode(User::ERR_CODE_INVALID_PARAMETER);
         self::$userService->deleteUsers([true, '', [2, 1]]);
     }
 
@@ -266,5 +266,32 @@ class UserServiceTest extends TestCase
 
         $user = self::$pdo->query('SELECT * FROM users WHERE id = '.$existedUser['id'])->fetch();
         $this->assertNotNull($user['resetToken']);
+    }
+
+    public function testResetPassword()
+    {
+        $existedUser = $this->expectedUser(6);
+        $this->assertNotEmpty($existedUser['resetToken']);
+        $this->assertTrue(self::$userService->isPasswordCorrect('test1234', $existedUser['password']));
+
+        $newPassword = 'test5678';
+        self::$userService->resetPassword($existedUser['email'], $existedUser['resetToken'], $newPassword);
+
+        $user = self::$pdo->query('SELECT * FROM users WHERE id = '.$existedUser['id'])->fetch();
+        $this->assertTrue(self::$userService->isPasswordCorrect($newPassword, $user['password']));
+        $this->assertNull($user['resetToken']);
+    }
+
+    public function testConfirmEmail()
+    {
+        $existedUser = $this->expectedUser(6);
+        $this->assertNotEmpty($existedUser['emailConfirmToken']);
+        $this->assertFalse($existedUser['isEmailConfirmed']);
+
+        self::$userService->confirmEmail($existedUser['email'], $existedUser['emailConfirmToken']);
+
+        $user = self::$pdo->query('SELECT * FROM users WHERE id = '.$existedUser['id'])->fetch();
+        $this->assertTrue((bool)$user['isEmailConfirmed']);
+        $this->assertNull($user['emailConfirmToken']);
     }
 }

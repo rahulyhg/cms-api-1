@@ -19,8 +19,8 @@ class User
     const ERR_MSG_ALREADY_EXIST = 'This email address has been taken.';
     const ERR_CODE_NOT_FOUND = 2;
     const ERR_MSG_NOT_FOUND = 'User does not exist.';
-    const ERR_CODE_INVALID_ID_TYPE = 3;
-    const ERR_MSG_INVALID_ID_TYPE = 'Invalid type for ids.';
+    const ERR_CODE_INVALID_PARAMETER = 3;
+    const ERR_MSG_INVALID_PARAMETER = 'Invalid parameter.';
     const ERR_CODE_WRONG_STATUS = 4;
     const ERR_MSG_WRONG_STATUS = 'Invalid user status.';
 

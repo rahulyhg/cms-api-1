@@ -4,11 +4,9 @@ namespace UserApi\Service;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use DoctrineModule\Validator\ObjectExists;
 use UserApi\Entity\User;
 use UserApi\Type\UserStatus;
 use Zend\Crypt\Password\Bcrypt;
-use Zend\Validator\ValidatorChain;
 
 class UserService implements UserServiceInterface
 {
@@ -36,23 +34,6 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * @param string $field
-     * @param int    $id
-     *
-     * @return bool
-     */
-    private function isExist(string $field, int $id): bool
-    {
-        $validator = new ValidatorChain();
-        $validator->attach(new ObjectExists([
-            'object_repository' => $this->getRepository(),
-            'fields' => $field,
-        ]));
-
-        return $validator->isValid($id);
-    }
-
-    /**
      * @return array
      */
     public function getAll(): array
@@ -62,19 +43,86 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * @param int $id
+     * @param int  $id
+     * @param bool $exception
      *
      * @return null|User
      */
-    public function getById(int $id): ?User
+    public function getById(int $id, bool $exception = false): ?User
     {
-        if (!$this->isExist('id', $id)) {
-            return null;
+        /** @var User $user */
+        $user = $this->getRepository()->find($id);
+        $this->userNotFoundException($exception && empty($user));
+        return $user;
+    }
+
+    /**
+     * @param string $email
+     * @param bool   $exception
+     *
+     * @return null|User
+     */
+    public function getByEmail(string $email, bool $exception = false): ?User
+    {
+        /** @var User $user */
+        $user = $this->getRepository()->findOneBy([
+            'email' => $email,
+        ]);
+        $this->userNotFoundException($exception && empty($user));
+        return $user;
+    }
+
+    /**
+     * @param string $email
+     * @param string $token
+     * @param string $type
+     *
+     * @return User
+     */
+    public function getByToken(string $email, string $token, string $type): User
+    {
+        $field = [
+            'emailConfirm' => 'emailConfirmToken',
+            'resetPassword' => 'resetToken',
+        ];
+
+        if (empty($field[$type])) {
+            throw new \RuntimeException(User::ERR_MSG_INVALID_PARAMETER, User::ERR_CODE_INVALID_PARAMETER);
         }
 
         /** @var User $user */
-        $user = $this->getRepository()->find($id);
+        $user = $this->getRepository()->findOneBy([
+            'email' => $email,
+            $field[$type] => $token,
+        ]);
+
+        $this->userNotFoundException(empty($user));
         return $user;
+    }
+
+    /**
+     * @param bool $condition
+     */
+    private function userNotFoundException(bool $condition)
+    {
+        if ($condition) {
+            throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
+        }
+    }
+
+    /**
+     * @param int $status
+     *
+     * @return User[]
+     */
+    public function getByStatus(int $status): array
+    {
+        /** @var User[] $users */
+        $users = $this->getRepository()->findBy([
+            'status' => $status,
+        ]);
+
+        return $users;
     }
 
     /**
@@ -94,36 +142,6 @@ class UserService implements UserServiceInterface
         $this->entityManager->flush();
 
         return $user;
-    }
-
-    /**
-     * @param string $email
-     *
-     * @return User
-     */
-    public function getByEmail(string $email): ?User
-    {
-        /** @var User $user */
-        $user = $this->getRepository()->findOneBy([
-            'email' => $email,
-        ]);
-
-        return $user;
-    }
-
-    /**
-     * @param int $status
-     *
-     * @return User[]
-     */
-    public function getByStatus(int $status): array
-    {
-        /** @var User[] $users */
-        $users = $this->getRepository()->findBy([
-            'status' => $status,
-        ]);
-
-        return $users;
     }
 
     /**
@@ -210,16 +228,11 @@ class UserService implements UserServiceInterface
      */
     public function changeStatus(int $id, int $status): User
     {
-        $user = $this->getById($id);
-
-        if (!$user) {
-            throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
-        }
+        $user = $this->getById($id, true);
 
         if (!in_array($status, UserStatus::toArray())) {
             throw new \RuntimeException(User::ERR_MSG_WRONG_STATUS, User::ERR_CODE_WRONG_STATUS);
         }
-        var_dump($user->getId());
 
         $user->setStatus($status);
         $this->entityManager->flush();
@@ -253,7 +266,7 @@ class UserService implements UserServiceInterface
     private function isArrayOfNumber(array $items)
     {
         if ($items !== array_filter($items, 'is_numeric')) {
-            throw new \RuntimeException(User::ERR_MSG_INVALID_ID_TYPE, User::ERR_CODE_INVALID_ID_TYPE);
+            throw new \RuntimeException(User::ERR_MSG_INVALID_PARAMETER, User::ERR_CODE_INVALID_PARAMETER);
         }
     }
 
@@ -262,11 +275,7 @@ class UserService implements UserServiceInterface
      */
     public function sendResetPassword(string $email)
     {
-        $user = $this->getByEmail($email);
-
-        if (empty($user)) {
-            throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
-        }
+        $user = $this->getByEmail($email, true);
 
         $user->setResetToken($this->generateToken());
         $user->setUpdatedAt(new \DateTime());
@@ -276,9 +285,20 @@ class UserService implements UserServiceInterface
         $this->email->sendResetPasswordToken($user);
     }
 
-    public function resetPassword()
+    /**
+     * @param string $email
+     * @param string $token
+     * @param string $password
+     */
+    public function resetPassword(string $email, string $token, string $password)
     {
+        $user = $this->getByToken($email, $token, 'resetPassword');
+        $user->setUpdatedAt(new \DateTime());
+        $user->setPassword($this->encryptPassword($password));
+        $user->setResetToken(null);
 
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
     }
 
     /**
@@ -286,11 +306,7 @@ class UserService implements UserServiceInterface
      */
     public function sendConfirmEmail(string $email)
     {
-        $user = $this->getByEmail($email);
-
-        if (empty($user)) {
-            throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
-        }
+        $user = $this->getByEmail($email, true);
 
         $user->setEmailConfirmToken($this->generateToken());
         $user->setUpdatedAt(new \DateTime());
@@ -300,16 +316,27 @@ class UserService implements UserServiceInterface
         $this->email->sendConfirmEmailToken($user);
     }
 
-    public function confirmEmail()
+    public function confirmEmail(string $email, string $token)
     {
-        // getUserByConfirmEmailToken();
-        // update user confirm email token
-        // update user isConfirmedEmail
+        $user = $this->getByToken($email, $token, 'emailConfirm');
+        $user->setUpdatedAt(new \DateTime());
+        $user->setIsEmailConfirmed(true);
+        $user->setEmailConfirmToken(null);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
     }
 
-    public function getByResetToken()
+    /**
+     * @param string $password
+     * @param string $hashedPassword
+     *
+     * @return bool
+     */
+    public function isPasswordCorrect(string $password, string $hashedPassword): bool
     {
-
+        $bcrypt = new Bcrypt(['cost' => 14]);
+        return $bcrypt->verify($password, $hashedPassword);
     }
 
     public function login()
