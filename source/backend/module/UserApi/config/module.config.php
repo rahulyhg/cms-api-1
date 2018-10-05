@@ -1,16 +1,10 @@
 <?php
-
-use UserApi\Factory\UserServiceFactory;
-use UserApi\Service\EmailService;
-use UserApi\Service\UserService;
-use Zend\ServiceManager\Factory\InvokableFactory;
-
 return [
     'service_manager' => [
         'factories' => [
             \UserApi\V1\Rest\Users\UsersResource::class => \UserApi\V1\Rest\Users\UsersResourceFactory::class,
-            UserService::class => UserServiceFactory::class,
-            EmailService::class => InvokableFactory::class,
+            \UserApi\Service\UserService::class => \UserApi\Factory\UserServiceFactory::class,
+            \UserApi\Service\EmailService::class => \Zend\ServiceManager\Factory\InvokableFactory::class,
         ],
     ],
     'router' => [
@@ -20,7 +14,7 @@ return [
                 'options' => [
                     'route' => '/users[/:users_id]',
                     'constraints' => [
-                        'users_id' => '[1-9]+[0-9]*'
+                        'users_id' => '[1-9]+[0-9]*',
                     ],
                     'defaults' => [
                         'controller' => 'UserApi\\V1\\Rest\\Users\\Controller',
@@ -40,7 +34,7 @@ return [
         ],
     ],
     'session_containers' => [
-        'ApplicationSessionContainer'
+        0 => 'ApplicationSessionContainer',
     ],
     'input_filter_specs' => [
         'UserApi\\V1\\Rpc\\UserExist\\Validator' => [],
@@ -82,14 +76,11 @@ return [
                 0 => 'GET',
                 1 => 'PUT',
                 2 => 'DELETE',
-                3 => 'PATCH',
+                3 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
-                1 => 'POST',
-                2 => 'DELETE',
-                3 => 'PUT',
-                4 => 'PATCH',
+                1 => 'DELETE',
             ],
             'collection_query_whitelist' => [],
             'page_size' => 25,

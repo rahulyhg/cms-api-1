@@ -5,9 +5,9 @@
  * The previous config file has been stored in ./config/modules.config.old
  */
 return [
-    'Zend\Session',
-    'Zend\Cache',
-    'Zend\Form',
+    'Zend\\Session',
+    'Zend\\Cache',
+    'Zend\\Form',
     'Zend\\Db',
     'Zend\\Filter',
     'Zend\\Hydrator',
@@ -15,7 +15,6 @@ return [
     'Zend\\Paginator',
     'Zend\\Router',
     'Zend\\Validator',
-
     'ZF\\Apigility',
     'ZF\\Apigility\\Documentation',
     'ZF\\ApiProblem',
@@ -28,11 +27,8 @@ return [
     'ZF\\Rest',
     'ZF\\Rpc',
     'ZF\\Versioning',
-
     'DoctrineModule',
     'DoctrineORMModule',
-
     'Application',
     'UserApi',
-    'CmsApi',
 ];

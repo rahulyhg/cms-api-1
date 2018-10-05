@@ -369,9 +369,22 @@ class UserService implements UserServiceInterface
         return $user;
     }
 
-    public function edit()
+    public function edit(int $id, array $info): User
     {
+        $user = $this->getById($id);
 
+        if (!empty($info['email'])) {
+            $user->setEmail($info['email']);
+        }
+
+        if (!empty($info['password'])) {
+            $user->setPassword($this->encryptPassword($info['password']));
+        }
+        $user->setUpdatedAt(new \DateTime());
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+        return $user;
     }
 
     public function register(string $email, string $password): User

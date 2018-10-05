@@ -294,6 +294,13 @@ class UserServiceTest extends TestCase
         $this->assertNull($user['emailConfirmToken']);
     }
 
+    public function testGetByTokenExceptionInvalidTypeParams()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(User::ERR_CODE_INVALID_PARAMETER);
+        self::$userService->getByToken('test@email.com', 'someToken', 'wrongType');
+    }
+
     public function testLoginExceptionUserNotActive()
     {
         $existedUser = $this->expectedUser(6);
@@ -327,5 +334,24 @@ class UserServiceTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionCode(User::ERR_CODE_PASSWORD_IS_NOT_CORRECT);
         self::$userService->login($existedUser['email'], 'test');
+    }
+
+    public function testEditUser()
+    {
+        $id = 5;
+        $existedUser = $this->expectedUser($id);
+        $editInfo = [
+            'email' => 'user5-edited@email.com',
+            'password' => 'test789'
+        ];
+
+        $this->assertNotEquals($editInfo['email'], $existedUser['email']);
+        $this->assertFalse(self::$userService->isPasswordCorrect($editInfo['password'], $existedUser['password']));
+
+        $user = self::$userService->edit($id, $editInfo);
+
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals($editInfo['email'], $user->getEmail());
+        $this->assertTrue(self::$userService->isPasswordCorrect($editInfo['password'], $user->getPassword()));
     }
 }
