@@ -7,6 +7,10 @@ use Interop\Container\ContainerInterface;
 use UserApi\Service\EmailService;
 use UserApi\Service\UserService;
 use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Session\Config\SessionConfig;
+use Zend\Session\Container;
+use Zend\Session\SessionManager;
 
 class UserServiceFactory implements FactoryInterface
 {

@@ -39,6 +39,33 @@ return [
             ],
         ],
     ],
+    'session_containers' => [
+        'ApplicationSessionContainer'
+    ],
+    'input_filter_specs' => [
+        'UserApi\\V1\\Rpc\\UserExist\\Validator' => [],
+    ],
+    'doctrine' => [
+        'driver' => [
+            'UserApi_driver' => [
+                'class' => \Doctrine\ORM\Mapping\Driver\AnnotationDriver::class,
+                'cache' => 'array',
+                'paths' => [
+                    0 => __DIR__ . '/../src/Entity',
+                ],
+            ],
+            'orm_default' => [
+                'drivers' => [
+                    'UserApi\\Entity' => 'UserApi_driver',
+                ],
+            ],
+        ],
+    ],
+    'controllers' => [
+        'factories' => [
+            'UserApi\\V1\\Rpc\\UserExist\\Controller' => \UserApi\V1\Rpc\UserExist\UserExistControllerFactory::class,
+        ],
+    ],
     'zf-versioning' => [
         'uri' => [
             0 => 'user-api.rest.users',
@@ -122,11 +149,6 @@ return [
             ],
         ],
     ],
-    'controllers' => [
-        'factories' => [
-            'UserApi\\V1\\Rpc\\UserExist\\Controller' => \UserApi\V1\Rpc\UserExist\UserExistControllerFactory::class,
-        ],
-    ],
     'zf-rpc' => [
         'UserApi\\V1\\Rpc\\UserExist\\Controller' => [
             'service_name' => 'userExist',
@@ -139,25 +161,6 @@ return [
     'zf-content-validation' => [
         'UserApi\\V1\\Rpc\\UserExist\\Controller' => [
             'input_filter' => 'UserApi\\V1\\Rpc\\UserExist\\Validator',
-        ],
-    ],
-    'input_filter_specs' => [
-        'UserApi\\V1\\Rpc\\UserExist\\Validator' => [],
-    ],
-    'doctrine' => [
-        'driver' => [
-            'UserApi_driver' => [
-                'class' => \Doctrine\ORM\Mapping\Driver\AnnotationDriver::class,
-                'cache' => 'array',
-                'paths' => [
-                    0 => __DIR__ . '/../src/Entity',
-                ],
-            ],
-            'orm_default' => [
-                'drivers' => [
-                    'UserApi\\Entity' => 'UserApi_driver',
-                ],
-            ],
         ],
     ],
 ];

@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityRepository;
 use UserApi\Entity\User;
 use UserApi\Type\UserStatus;
 use Zend\Crypt\Password\Bcrypt;
+use Zend\Session\Container;
 
 class UserService implements UserServiceInterface
 {
@@ -316,6 +317,10 @@ class UserService implements UserServiceInterface
         $this->email->sendConfirmEmailToken($user);
     }
 
+    /**
+     * @param string $email
+     * @param string $token
+     */
     public function confirmEmail(string $email, string $token)
     {
         $user = $this->getByToken($email, $token, 'emailConfirm');
@@ -339,9 +344,29 @@ class UserService implements UserServiceInterface
         return $bcrypt->verify($password, $hashedPassword);
     }
 
-    public function login()
+    /**
+     * @param string $email
+     * @param string $password
+     *
+     * @return User
+     */
+    public function login(string $email, string $password): User
     {
+        $user = $this->getByEmail($email, true);
 
+        if ($user->getStatus() !== UserStatus::STATUS_ENABLE) {
+            throw new \RuntimeException(User::ERR_MSG_IS_NO_ACTIVE, User::ERR_CODE_IS_NO_ACTIVE);
+        }
+
+        if (!$user->isEmailConfirmed()) {
+            throw new \RuntimeException(User::ERR_MSG_EMAIL_IS_NOT_CONFIRMED, User::ERR_CODE_EMAIL_IS_NOT_CONFIRMED);
+        }
+
+        if (!$this->isPasswordCorrect($password, $user->getPassword())) {
+            throw new \RuntimeException(User::ERR_MSG_PASSWORD_IS_NOT_CORRECT, User::ERR_CODE_PASSWORD_IS_NOT_CORRECT);
+        }
+
+        return $user;
     }
 
     public function edit()

@@ -5,13 +5,13 @@
             <directory>./ModuleTests</directory>
         </testsuite>
     </testsuites>
-    <!--<logging>-->
-        <!--<log type="coverage-html"-->
-             <!--target="./_report/codeCoverage"-->
-             <!--lowUpperBound="50"-->
-             <!--highLowerBound="80"-->
-             <!--showUncoveredFiles="false" />-->
-    <!--</logging>-->
+    <logging>
+        <log type="coverage-html"
+             target="./_report/codeCoverage"
+             lowUpperBound="50"
+             highLowerBound="80"
+             showUncoveredFiles="false" />
+    </logging>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./../module/*/src</directory>

@@ -16,13 +16,19 @@ use UserApi\Type\UserStatus;
 class User
 {
     const ERR_CODE_ALREADY_EXIST = 1;
-    const ERR_MSG_ALREADY_EXIST = 'This email address has been taken.';
+    const ERR_MSG_ALREADY_EXIST = 'The email address has been taken.';
     const ERR_CODE_NOT_FOUND = 2;
     const ERR_MSG_NOT_FOUND = 'User does not exist.';
     const ERR_CODE_INVALID_PARAMETER = 3;
     const ERR_MSG_INVALID_PARAMETER = 'Invalid parameter.';
     const ERR_CODE_WRONG_STATUS = 4;
     const ERR_MSG_WRONG_STATUS = 'Invalid user status.';
+    const ERR_CODE_IS_NO_ACTIVE = 5;
+    const ERR_MSG_IS_NO_ACTIVE = 'User account is not active.';
+    const ERR_CODE_EMAIL_IS_NOT_CONFIRMED = 6;
+    const ERR_MSG_EMAIL_IS_NOT_CONFIRMED = 'User email is not confirmed.';
+    const ERR_CODE_PASSWORD_IS_NOT_CORRECT = 7;
+    const ERR_MSG_PASSWORD_IS_NOT_CORRECT = 'Password is not correct.';
 
     /**
      * @ORM\Id

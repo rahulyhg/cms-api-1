@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 use UserApi\Entity\User;
 use UserApi\Service\UserService;
 use UserApi\Type\UserStatus;
-use Zend\Crypt\Password\Bcrypt;
 
 class UserServiceTest extends TestCase
 {
@@ -293,5 +292,40 @@ class UserServiceTest extends TestCase
         $user = self::$pdo->query('SELECT * FROM users WHERE id = '.$existedUser['id'])->fetch();
         $this->assertTrue((bool)$user['isEmailConfirmed']);
         $this->assertNull($user['emailConfirmToken']);
+    }
+
+    public function testLoginExceptionUserNotActive()
+    {
+        $existedUser = $this->expectedUser(6);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(User::ERR_CODE_IS_NO_ACTIVE);
+        self::$userService->login($existedUser['email'], 'test1234');
+    }
+
+    public function testLogin()
+    {
+        $existedUser = $this->expectedUser(5);
+
+        $user = self::$userService->login($existedUser['email'], 'test1234');
+        $this->assertInstanceOf(User::class, $user);
+    }
+
+    public function testLoginExceptionEmailNotConfirm()
+    {
+        $existedUser = $this->expectedUser(3);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(User::ERR_CODE_EMAIL_IS_NOT_CONFIRMED);
+        self::$userService->login($existedUser['email'], 'test1234');
+    }
+
+    public function testLoginExceptionWrongPassword()
+    {
+        $existedUser = $this->expectedUser(5);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(User::ERR_CODE_PASSWORD_IS_NOT_CORRECT);
+        self::$userService->login($existedUser['email'], 'test');
     }
 }
