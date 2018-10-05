@@ -37,7 +37,8 @@ if [ $# -gt 0 ]; then
 
     elif [ "$1" == "npm" ]; then
         shift 1
-        docker-compose run --rm node npm "$@"
+        cmd="npm $@"
+        docker-compose run --rm node sh -c "cd /angular && $cmd"
 
     elif [ "$1" == "yarn" ]; then
         shift 1
@@ -56,8 +57,12 @@ if [ $# -gt 0 ]; then
             "serve")
                 docker-compose run --rm -p 4200:4200 node sh -c "cd /angular && ng serve --host 0.0.0.0"
                 ;;
+            "dev-build")
+                docker-compose run --rm node sh -c "cd /angular && ng build --watch && rm /opt/public/angular/index.html"
+                ;;
             *)
-                docker-compose run --rm node sh -c "cd /angular && ng $command ""$@"
+                cmd="ng $command $@"
+                docker-compose run --rm node sh -c "cd /angular && $cmd"
                 ;;
         esac
         # ./dev ng new cmsAdmin --directory ./ --skip-install

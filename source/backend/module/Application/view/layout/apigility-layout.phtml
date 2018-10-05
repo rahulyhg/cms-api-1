@@ -1,20 +1,23 @@
 <?= $this->doctype() ?>
 <html lang="en">
 <head>
-    <base href="/">
     <meta charset="utf-8">
     <?php
 
-    echo $this->headTitle('Angular');
+    echo $this->headTitle('Apigility');
 
     echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
 
     echo $this->headLink(['rel' => 'icon', 'type' => 'image/png', 'href' => $this->basePath('/img/favicon.png')])
-        ->prependStylesheet($this->basePath('/zf-apigility/css/main.min.css'));
+        ->prependStylesheet($this->basePath('/zf-apigility/css/main.min.css'))
+        ->prependStylesheet($this->basePath('/zf-apigility/css/bootstrap.min.css'));
+
+    echo $this->headScript()
+        ->prependFile($this->basePath('/zf-apigility/js/bootstrap.min.js'))
+        ->prependFile($this->basePath('/zf-apigility/js/jquery.min.js'));
     ?>
 </head>
 <body>
-<app-root></app-root>
 <div class="container">
     <?= $this->content ?>
 </div>
@@ -29,13 +32,6 @@
         </div>
     </div>
 </footer>
-<?= $this->headScript()
-    ->prependFile($this->basePath('/angular/main.js'))
-    ->prependFile($this->basePath('/angular/polyfills.js'))
-    ->prependFile($this->basePath('/angular/runtime.js'))
-    ->prependFile($this->basePath('/angular/styles.js'))
-    ->prependFile($this->basePath('/angular/vendor.js'));
-?>
 <?= $this->inlineScript() ?>
 </body>
 </html>
