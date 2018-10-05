@@ -44,7 +44,7 @@ function createTemplate(string $path, string $module): void
  */
 function updateNamespace(string $module): void
 {
-    $composer = _BASE_.'/../composer.json';
+    $composer = _BASE_.'/composer.json';
 
     $oldJson = json_decode(file_get_contents($composer), true);
 
@@ -56,7 +56,7 @@ function updateNamespace(string $module): void
     file_put_contents(
         $composer,
         json_encode(array_merge_recursive(
-            ['autoload' => ['psr-4' => [$module.'\\' => 'backend/module/'.$module.'/src/']]],
+            ['autoload' => ['psr-4' => [$module.'\\' => 'module/'.$module.'/src/']]],
             $oldJson
         ), JSON_PRETTY_PRINT)
     );

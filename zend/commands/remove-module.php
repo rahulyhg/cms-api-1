@@ -7,7 +7,7 @@
  */
 function updateNamespace(string $module): void
 {
-    $composer = _BASE_.'/../composer.json';
+    $composer = _BASE_.'/composer.json';
 
     $oldJson = json_decode(file_get_contents($composer), true);
     unset($oldJson['autoload']['psr-4'][$module.'\\']);

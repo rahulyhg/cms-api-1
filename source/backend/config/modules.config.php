@@ -31,4 +31,5 @@ return [
     'DoctrineORMModule',
     'Application',
     'UserApi',
+	'AdminPanel',
 ];
