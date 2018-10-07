@@ -1,0 +1,55 @@
+.login {
+    height: 100%;
+    padding: 20px;
+    text-align: center;
+    color: #58666e;
+
+    .panel {
+        width: 350px;
+
+        h1 {
+            font-size: 1.4em;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            margin-bottom: 10px;
+            font-weight: normal;
+            font-size: 1.1em;
+        }
+
+        p {
+            margin: 30px 0 6px;
+            display: block;
+        }
+
+        .forgot-password {
+            margin: 10px 0 5px;
+        }
+
+        .field-holder {
+            margin-bottom: 15px;
+
+            input.field {
+                padding: 20px 15px;
+
+                &.email {
+                    border-radius: 4px 4px 0 0;
+                }
+
+                &.password {
+                    border-radius: 0 0 4px 4px;
+                    border-top: 0;
+                }
+            }
+        }
+
+        .footer {
+            margin-top: 30px;
+        }
+
+        @include mobile {
+            width: 100%
+        }
+    }
+}

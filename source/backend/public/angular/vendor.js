@@ -1,5 +1,342 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([["vendor"],{
 
+/***/ "./node_modules/@angular/cdk/esm5/bidi.es5.js":
+/*!****************************************************!*\
+  !*** ./node_modules/@angular/cdk/esm5/bidi.es5.js ***!
+  \****************************************************/
+/*! exports provided: Directionality, DIR_DOCUMENT, Dir, BidiModule, ɵa */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Directionality", function() { return Directionality; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DIR_DOCUMENT", function() { return DIR_DOCUMENT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Dir", function() { return Dir; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BidiModule", function() { return BidiModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵa", function() { return DIR_DOCUMENT_FACTORY; });
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+/**
+ * Injection token used to inject the document into Directionality.
+ * This is used so that the value can be faked in tests.
+ *
+ * We can't use the real document in tests because changing the real `dir` causes geometry-based
+ * tests in Safari to fail.
+ *
+ * We also can't re-provide the DOCUMENT token from platform-brower because the unit tests
+ * themselves use things like `querySelector` in test code.
+ *
+ * This token is defined in a separate file from Directionality as a workaround for
+ * https://github.com/angular/angular/issues/22559
+ *
+ * \@docs-private
+ */
+var /** @type {?} */ DIR_DOCUMENT = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["InjectionToken"]('cdk-dir-doc', {
+    providedIn: 'root',
+    factory: DIR_DOCUMENT_FACTORY,
+});
+/**
+ * \@docs-private
+ * @return {?}
+ */
+function DIR_DOCUMENT_FACTORY() {
+    return Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["inject"])(_angular_common__WEBPACK_IMPORTED_MODULE_0__["DOCUMENT"]);
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+/**
+ * The directionality (LTR / RTL) context for the application (or a subtree of it).
+ * Exposes the current direction and a stream of direction changes.
+ */
+var Directionality = /** @class */ (function () {
+    function Directionality(_document) {
+        /**
+         * The current 'ltr' or 'rtl' value.
+         */
+        this.value = 'ltr';
+        /**
+         * Stream that emits whenever the 'ltr' / 'rtl' state changes.
+         */
+        this.change = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+        if (_document) {
+            // TODO: handle 'auto' value -
+            // We still need to account for dir="auto".
+            // It looks like HTMLElemenet.dir is also "auto" when that's set to the attribute,
+            // but getComputedStyle return either "ltr" or "rtl". avoiding getComputedStyle for now
+            var /** @type {?} */ bodyDir = _document.body ? _document.body.dir : null;
+            var /** @type {?} */ htmlDir = _document.documentElement ? _document.documentElement.dir : null;
+            var /** @type {?} */ value = bodyDir || htmlDir;
+            this.value = (value === 'ltr' || value === 'rtl') ? value : 'ltr';
+        }
+    }
+    /**
+     * @return {?}
+     */
+    Directionality.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
+        this.change.complete();
+    };
+    Directionality.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"], args: [{ providedIn: 'root' },] },
+    ];
+    /** @nocollapse */
+    Directionality.ctorParameters = function () { return [
+        { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"], args: [DIR_DOCUMENT,] },] },
+    ]; };
+    /** @nocollapse */ Directionality.ngInjectableDef = Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["defineInjectable"])({ factory: function Directionality_Factory() { return new Directionality(Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["inject"])(DIR_DOCUMENT, 8)); }, token: Directionality, providedIn: "root" });
+    return Directionality;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+/**
+ * Directive to listen for changes of direction of part of the DOM.
+ *
+ * Provides itself as Directionality such that descendant directives only need to ever inject
+ * Directionality to get the closest direction.
+ */
+var Dir = /** @class */ (function () {
+    function Dir() {
+        this._dir = 'ltr';
+        /**
+         * Whether the `value` has been set to its initial value.
+         */
+        this._isInitialized = false;
+        /**
+         * Event emitted when the direction changes.
+         */
+        this.change = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+    }
+    Object.defineProperty(Dir.prototype, "dir", {
+        get: /**
+         * \@docs-private
+         * @return {?}
+         */
+        function () { return this._dir; },
+        set: /**
+         * @param {?} value
+         * @return {?}
+         */
+        function (value) {
+            var /** @type {?} */ old = this._dir;
+            this._dir = (value === 'ltr' || value === 'rtl') ? value : 'ltr';
+            if (old !== this._dir && this._isInitialized) {
+                this.change.emit(this._dir);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Dir.prototype, "value", {
+        /** Current layout direction of the element. */
+        get: /**
+         * Current layout direction of the element.
+         * @return {?}
+         */
+        function () { return this.dir; },
+        enumerable: true,
+        configurable: true
+    });
+    /** Initialize once default value has been set. */
+    /**
+     * Initialize once default value has been set.
+     * @return {?}
+     */
+    Dir.prototype.ngAfterContentInit = /**
+     * Initialize once default value has been set.
+     * @return {?}
+     */
+    function () {
+        this._isInitialized = true;
+    };
+    /**
+     * @return {?}
+     */
+    Dir.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
+        this.change.complete();
+    };
+    Dir.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{
+                    selector: '[dir]',
+                    providers: [{ provide: Directionality, useExisting: Dir }],
+                    host: { '[dir]': 'dir' },
+                    exportAs: 'dir',
+                },] },
+    ];
+    /** @nocollapse */
+    Dir.propDecorators = {
+        "change": [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Output"], args: ['dirChange',] },],
+        "dir": [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"] },],
+    };
+    return Dir;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+var BidiModule = /** @class */ (function () {
+    function BidiModule() {
+    }
+    BidiModule.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"], args: [{
+                    exports: [Dir],
+                    declarations: [Dir],
+                },] },
+    ];
+    return BidiModule;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+
+
+//# sourceMappingURL=bidi.es5.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/@angular/cdk/esm5/coercion.es5.js":
+/*!********************************************************!*\
+  !*** ./node_modules/@angular/cdk/esm5/coercion.es5.js ***!
+  \********************************************************/
+/*! exports provided: coerceBooleanProperty, coerceNumberProperty, _isNumberValue, coerceArray, coerceCssPixelValue */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coerceBooleanProperty", function() { return coerceBooleanProperty; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coerceNumberProperty", function() { return coerceNumberProperty; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "_isNumberValue", function() { return _isNumberValue; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coerceArray", function() { return coerceArray; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "coerceCssPixelValue", function() { return coerceCssPixelValue; });
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+
+/**
+ * Coerces a data-bound value (typically a string) to a boolean.
+ * @param {?} value
+ * @return {?}
+ */
+function coerceBooleanProperty(value) {
+    return value != null && "" + value !== 'false';
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+
+/**
+ * @param {?} value
+ * @param {?=} fallbackValue
+ * @return {?}
+ */
+function coerceNumberProperty(value, fallbackValue) {
+    if (fallbackValue === void 0) { fallbackValue = 0; }
+    return _isNumberValue(value) ? Number(value) : fallbackValue;
+}
+/**
+ * Whether the provided value is considered a number.
+ * \@docs-private
+ * @param {?} value
+ * @return {?}
+ */
+function _isNumberValue(value) {
+    // parseFloat(value) handles most of the cases we're interested in (it treats null, empty string,
+    // and other non-number values as NaN, where Number just uses 0) but it considers the string
+    // '123hello' to be a valid number. Therefore we also check if Number(value) is NaN.
+    return !isNaN(parseFloat(/** @type {?} */ (value))) && !isNaN(Number(value));
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+
+/**
+ * Wraps the provided value in an array, unless the provided value is an array.
+ * @template T
+ * @param {?} value
+ * @return {?}
+ */
+function coerceArray(value) {
+    return Array.isArray(value) ? value : [value];
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+
+/**
+ * Coerces a value to a CSS pixel value.
+ * @param {?} value
+ * @return {?}
+ */
+function coerceCssPixelValue(value) {
+    if (value == null) {
+        return '';
+    }
+    return typeof value === 'string' ? value : value + "px";
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes} checked by tsc
+ */
+
+
+//# sourceMappingURL=coercion.es5.js.map
+
+
+/***/ }),
+
 /***/ "./node_modules/@angular/common/fesm5/common.js":
 /*!******************************************************!*\
   !*** ./node_modules/@angular/common/fesm5/common.js ***!
@@ -49858,6 +50195,11838 @@ function sanitizeResourceUrl(unsafeResourceUrl) {
 
 /***/ }),
 
+/***/ "./node_modules/@angular/flex-layout/esm5/core.es5.js":
+/*!************************************************************!*\
+  !*** ./node_modules/@angular/flex-layout/esm5/core.es5.js ***!
+  \************************************************************/
+/*! exports provided: removeStyles, BROWSER_PROVIDER, CLASS_NAME, CoreModule, MediaChange, StylesheetMap, STYLESHEET_MAP_PROVIDER_FACTORY, STYLESHEET_MAP_PROVIDER, DEFAULT_CONFIG, LAYOUT_CONFIG, SERVER_TOKEN, BREAKPOINT, BaseDirective, BaseDirectiveAdapter, BaseFxDirective, RESPONSIVE_ALIASES, DEFAULT_BREAKPOINTS, ScreenTypes, ORIENTATION_BREAKPOINTS, BreakPointRegistry, BREAKPOINTS, MatchMedia, MockMatchMedia, MockMediaQueryList, MockMatchMediaProvider, ServerMediaQueryList, ServerMatchMedia, MediaMonitor, MEDIA_MONITOR_PROVIDER_FACTORY, MEDIA_MONITOR_PROVIDER, ObservableMedia, MediaService, ObservableMediaProvider, OBSERVABLE_MEDIA_PROVIDER_FACTORY, OBSERVABLE_MEDIA_PROVIDER, KeyOptions, ResponsiveActivation, StyleUtils, validateBasis */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeStyles", function() { return removeStyles; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BROWSER_PROVIDER", function() { return BROWSER_PROVIDER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CLASS_NAME", function() { return CLASS_NAME; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CoreModule", function() { return CoreModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MediaChange", function() { return MediaChange; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StylesheetMap", function() { return StylesheetMap; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "STYLESHEET_MAP_PROVIDER_FACTORY", function() { return STYLESHEET_MAP_PROVIDER_FACTORY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "STYLESHEET_MAP_PROVIDER", function() { return STYLESHEET_MAP_PROVIDER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_CONFIG", function() { return DEFAULT_CONFIG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LAYOUT_CONFIG", function() { return LAYOUT_CONFIG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SERVER_TOKEN", function() { return SERVER_TOKEN; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BREAKPOINT", function() { return BREAKPOINT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BaseDirective", function() { return BaseDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BaseDirectiveAdapter", function() { return BaseDirectiveAdapter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BaseFxDirective", function() { return BaseFxDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RESPONSIVE_ALIASES", function() { return RESPONSIVE_ALIASES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_BREAKPOINTS", function() { return DEFAULT_BREAKPOINTS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ScreenTypes", function() { return ScreenTypes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ORIENTATION_BREAKPOINTS", function() { return ORIENTATION_BREAKPOINTS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BreakPointRegistry", function() { return BreakPointRegistry; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BREAKPOINTS", function() { return BREAKPOINTS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MatchMedia", function() { return MatchMedia; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MockMatchMedia", function() { return MockMatchMedia; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MockMediaQueryList", function() { return MockMediaQueryList; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MockMatchMediaProvider", function() { return MockMatchMediaProvider; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ServerMediaQueryList", function() { return ServerMediaQueryList; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ServerMatchMedia", function() { return ServerMatchMedia; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MediaMonitor", function() { return MediaMonitor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MEDIA_MONITOR_PROVIDER_FACTORY", function() { return MEDIA_MONITOR_PROVIDER_FACTORY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MEDIA_MONITOR_PROVIDER", function() { return MEDIA_MONITOR_PROVIDER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ObservableMedia", function() { return ObservableMedia; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MediaService", function() { return MediaService; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ObservableMediaProvider", function() { return ObservableMediaProvider; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OBSERVABLE_MEDIA_PROVIDER_FACTORY", function() { return OBSERVABLE_MEDIA_PROVIDER_FACTORY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OBSERVABLE_MEDIA_PROVIDER", function() { return OBSERVABLE_MEDIA_PROVIDER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "KeyOptions", function() { return KeyOptions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ResponsiveActivation", function() { return ResponsiveActivation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StyleUtils", function() { return StyleUtils; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validateBasis", function() { return validateBasis; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+
+
+
+
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Find all of the server-generated stylings, if any, and remove them
+ * This will be in the form of inline classes and the style block in the
+ * head of the DOM
+ * @param {?} _document
+ * @param {?} platformId
+ * @return {?}
+ */
+function removeStyles(_document, platformId) {
+    return function () {
+        if (Object(_angular_common__WEBPACK_IMPORTED_MODULE_1__["isPlatformBrowser"])(platformId)) {
+            /** @type {?} */
+            var elements = Array.from(_document.querySelectorAll("[class*=" + CLASS_NAME + "]"));
+            /** @type {?} */
+            var classRegex_1 = /\bflex-layout-.+?\b/g;
+            elements.forEach(function (el) {
+                el.classList.contains(CLASS_NAME + "ssr") && el.parentNode ?
+                    el.parentNode.removeChild(el) : el.className.replace(classRegex_1, '');
+            });
+        }
+    };
+}
+/** *
+ *  Provider to remove SSR styles on the browser
+  @type {?} */
+var BROWSER_PROVIDER = {
+    provide: /** @type {?} */ (_angular_core__WEBPACK_IMPORTED_MODULE_0__["APP_BOOTSTRAP_LISTENER"]),
+    useFactory: removeStyles,
+    deps: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["DOCUMENT"], _angular_core__WEBPACK_IMPORTED_MODULE_0__["PLATFORM_ID"]],
+    multi: true
+};
+/** @type {?} */
+var CLASS_NAME = 'flex-layout-';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var BREAKPOINT = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["InjectionToken"]('Flex Layout token, collect all breakpoints into one provider', {
+    providedIn: 'root',
+    factory: function () { return null; }
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var RESPONSIVE_ALIASES = [
+    'xs', 'gt-xs', 'sm', 'gt-sm', 'md', 'gt-md', 'lg', 'gt-lg', 'xl'
+];
+/** @type {?} */
+var DEFAULT_BREAKPOINTS = [
+    {
+        alias: 'xs',
+        mediaQuery: '(min-width: 0px) and (max-width: 599px)'
+    },
+    {
+        alias: 'gt-xs',
+        overlapping: true,
+        mediaQuery: '(min-width: 600px)'
+    },
+    {
+        alias: 'lt-sm',
+        overlapping: true,
+        mediaQuery: '(max-width: 599px)'
+    },
+    {
+        alias: 'sm',
+        mediaQuery: '(min-width: 600px) and (max-width: 959px)'
+    },
+    {
+        alias: 'gt-sm',
+        overlapping: true,
+        mediaQuery: '(min-width: 960px)'
+    },
+    {
+        alias: 'lt-md',
+        overlapping: true,
+        mediaQuery: '(max-width: 959px)'
+    },
+    {
+        alias: 'md',
+        mediaQuery: '(min-width: 960px) and (max-width: 1279px)'
+    },
+    {
+        alias: 'gt-md',
+        overlapping: true,
+        mediaQuery: '(min-width: 1280px)'
+    },
+    {
+        alias: 'lt-lg',
+        overlapping: true,
+        mediaQuery: '(max-width: 1279px)'
+    },
+    {
+        alias: 'lg',
+        mediaQuery: '(min-width: 1280px) and (max-width: 1919px)'
+    },
+    {
+        alias: 'gt-lg',
+        overlapping: true,
+        mediaQuery: '(min-width: 1920px)'
+    },
+    {
+        alias: 'lt-xl',
+        overlapping: true,
+        mediaQuery: '(max-width: 1919px)'
+    },
+    {
+        alias: 'xl',
+        mediaQuery: '(min-width: 1920px) and (max-width: 5000px)'
+    }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/** @type {?} */
+var HANDSET_PORTRAIT = '(orientation: portrait) and (max-width: 599px)';
+/** @type {?} */
+var HANDSET_LANDSCAPE = '(orientation: landscape) and (max-width: 959px)';
+/** @type {?} */
+var TABLET_LANDSCAPE = '(orientation: landscape) and (min-width: 960px) and (max-width: 1279px)';
+/** @type {?} */
+var TABLET_PORTRAIT = '(orientation: portrait) and (min-width: 600px) and (max-width: 839px)';
+/** @type {?} */
+var WEB_PORTRAIT = '(orientation: portrait) and (min-width: 840px)';
+/** @type {?} */
+var WEB_LANDSCAPE = '(orientation: landscape) and (min-width: 1280px)';
+/** @type {?} */
+var ScreenTypes = {
+    'HANDSET': HANDSET_PORTRAIT + ", " + HANDSET_LANDSCAPE,
+    'TABLET': TABLET_PORTRAIT + " , " + TABLET_LANDSCAPE,
+    'WEB': WEB_PORTRAIT + ", " + WEB_LANDSCAPE + " ",
+    'HANDSET_PORTRAIT': "" + HANDSET_PORTRAIT,
+    'TABLET_PORTRAIT': TABLET_PORTRAIT + " ",
+    'WEB_PORTRAIT': "" + WEB_PORTRAIT,
+    'HANDSET_LANDSCAPE': HANDSET_LANDSCAPE + "]",
+    'TABLET_LANDSCAPE': "" + TABLET_LANDSCAPE,
+    'WEB_LANDSCAPE': "" + WEB_LANDSCAPE
+};
+/** *
+ * Extended Breakpoints for handset/tablets with landscape or portrait orientations
+  @type {?} */
+var ORIENTATION_BREAKPOINTS = [
+    { 'alias': 'handset', 'mediaQuery': ScreenTypes.HANDSET },
+    { 'alias': 'handset.landscape', 'mediaQuery': ScreenTypes.HANDSET_LANDSCAPE },
+    { 'alias': 'handset.portrait', 'mediaQuery': ScreenTypes.HANDSET_PORTRAIT },
+    { 'alias': 'tablet', 'mediaQuery': ScreenTypes.TABLET },
+    { 'alias': 'tablet.landscape', 'mediaQuery': ScreenTypes.TABLET },
+    { 'alias': 'tablet.portrait', 'mediaQuery': ScreenTypes.TABLET_PORTRAIT },
+    { 'alias': 'web', 'mediaQuery': ScreenTypes.WEB, overlapping: true },
+    { 'alias': 'web.landscape', 'mediaQuery': ScreenTypes.WEB_LANDSCAPE, overlapping: true },
+    { 'alias': 'web.portrait', 'mediaQuery': ScreenTypes.WEB_PORTRAIT, overlapping: true }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Extends an object with the *enumerable* and *own* properties of one or more source objects,
+ * similar to Object.assign.
+ *
+ * @param {?} dest The object which will have properties copied to it.
+ * @param {...?} sources The source objects from which properties will be copied.
+ * @return {?}
+ */
+function extendObject(dest) {
+    var sources = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        sources[_i - 1] = arguments[_i];
+    }
+    if (dest == null) {
+        throw TypeError('Cannot convert undefined or null to object');
+    }
+    for (var _a = 0, sources_1 = sources; _a < sources_1.length; _a++) {
+        var source = sources_1[_a];
+        if (source != null) {
+            for (var key in source) {
+                if (source.hasOwnProperty(key)) {
+                    dest[key] = source[key];
+                }
+            }
+        }
+    }
+    return dest;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var ALIAS_DELIMITERS = /(\.|-|_)/g;
+/**
+ * @param {?} part
+ * @return {?}
+ */
+function firstUpperCase(part) {
+    /** @type {?} */
+    var first = part.length > 0 ? part.charAt(0) : '';
+    /** @type {?} */
+    var remainder = (part.length > 1) ? part.slice(1) : '';
+    return first.toUpperCase() + remainder;
+}
+/**
+ * Converts snake-case to SnakeCase.
+ * @param {?} name Text to UpperCamelCase
+ * @return {?}
+ */
+function camelCase(name) {
+    return name
+        .replace(ALIAS_DELIMITERS, '|')
+        .split('|')
+        .map(firstUpperCase)
+        .join('');
+}
+/**
+ * For each breakpoint, ensure that a Suffix is defined;
+ * fallback to UpperCamelCase the unique Alias value
+ * @param {?} list
+ * @return {?}
+ */
+function validateSuffixes(list) {
+    list.forEach(function (bp) {
+        if (!bp.suffix) {
+            bp.suffix = camelCase(bp.alias); // create Suffix value based on alias
+            bp.overlapping = !!bp.overlapping; // ensure default value
+        }
+    });
+    return list;
+}
+/**
+ * Merge a custom breakpoint list with the default list based on unique alias values
+ *  - Items are added if the alias is not in the default list
+ *  - Items are merged with the custom override if the alias exists in the default list
+ * @param {?} defaults
+ * @param {?=} custom
+ * @return {?}
+ */
+function mergeByAlias(defaults, custom) {
+    if (custom === void 0) { custom = []; }
+    /** @type {?} */
+    var dict = {};
+    defaults.forEach(function (bp) {
+        dict[bp.alias] = bp;
+    });
+    // Merge custom breakpoints
+    custom.forEach(function (bp) {
+        if (dict[bp.alias]) {
+            extendObject(dict[bp.alias], bp);
+        }
+        else {
+            dict[bp.alias] = bp;
+        }
+    });
+    return validateSuffixes(Object.keys(dict).map(function (k) { return dict[k]; }));
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var DEFAULT_CONFIG = {
+    addFlexToParent: true,
+    addOrientationBps: false,
+    disableDefaultBps: false,
+    disableVendorPrefixes: false,
+    serverLoaded: false,
+    useColumnBasisZero: true,
+};
+/** @type {?} */
+var LAYOUT_CONFIG = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["InjectionToken"]('Flex Layout token, config options for the library', {
+    providedIn: 'root',
+    factory: function () { return DEFAULT_CONFIG; }
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** *
+ *  Injection token unique to the flex-layout library.
+ *  Use this token when build a custom provider (see below).
+  @type {?} */
+var BREAKPOINTS = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["InjectionToken"]('Token (@angular/flex-layout) Breakpoints', {
+    providedIn: 'root',
+    factory: function () {
+        /** @type {?} */
+        var breakpoints = Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(BREAKPOINT);
+        /** @type {?} */
+        var layoutConfig = Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(LAYOUT_CONFIG);
+        /** @type {?} */
+        var bpFlattenArray = [].concat.apply([], (breakpoints || [])
+            .map(function (v) { return Array.isArray(v) ? v : [v]; }));
+        /** @type {?} */
+        var builtIns = (layoutConfig.disableDefaultBps ? [] : DEFAULT_BREAKPOINTS)
+            .concat(layoutConfig.addOrientationBps ? ORIENTATION_BREAKPOINTS : []);
+        return mergeByAlias(builtIns, bpFlattenArray);
+    }
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Registry of 1..n MediaQuery breakpoint ranges
+ * This is published as a provider and may be overridden from custom, application-specific ranges
+ *
+ */
+var BreakPointRegistry = /** @class */ (function () {
+    function BreakPointRegistry(_registry) {
+        this._registry = _registry;
+    }
+    Object.defineProperty(BreakPointRegistry.prototype, "items", {
+        /**
+         * Accessor to raw list
+         */
+        get: /**
+         * Accessor to raw list
+         * @return {?}
+         */
+        function () {
+            return this._registry.slice();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BreakPointRegistry.prototype, "sortedItems", {
+        /**
+         * Accessor to sorted list used for registration with matchMedia API
+         *
+         * NOTE: During breakpoint registration, we want to register the overlaps FIRST
+         *       so the non-overlaps will trigger the MatchMedia:BehaviorSubject last!
+         *       And the largest, non-overlap, matching breakpoint should be the lastReplay value
+         */
+        get: /**
+         * Accessor to sorted list used for registration with matchMedia API
+         *
+         * NOTE: During breakpoint registration, we want to register the overlaps FIRST
+         *       so the non-overlaps will trigger the MatchMedia:BehaviorSubject last!
+         *       And the largest, non-overlap, matching breakpoint should be the lastReplay value
+         * @return {?}
+         */
+        function () {
+            /** @type {?} */
+            var overlaps = this._registry.filter(function (it) { return it.overlapping === true; });
+            /** @type {?} */
+            var nonOverlaps = this._registry.filter(function (it) { return it.overlapping !== true; });
+            return overlaps.concat(nonOverlaps);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Search breakpoints by alias (e.g. gt-xs)
+     */
+    /**
+     * Search breakpoints by alias (e.g. gt-xs)
+     * @param {?} alias
+     * @return {?}
+     */
+    BreakPointRegistry.prototype.findByAlias = /**
+     * Search breakpoints by alias (e.g. gt-xs)
+     * @param {?} alias
+     * @return {?}
+     */
+    function (alias) {
+        return this._registry.find(function (bp) { return bp.alias == alias; }) || null;
+    };
+    /**
+     * @param {?} query
+     * @return {?}
+     */
+    BreakPointRegistry.prototype.findByQuery = /**
+     * @param {?} query
+     * @return {?}
+     */
+    function (query) {
+        return this._registry.find(function (bp) { return bp.mediaQuery == query; }) || null;
+    };
+    Object.defineProperty(BreakPointRegistry.prototype, "overlappings", {
+        /**
+         * Get all the breakpoints whose ranges could overlapping `normal` ranges;
+         * e.g. gt-sm overlaps md, lg, and xl
+         */
+        get: /**
+         * Get all the breakpoints whose ranges could overlapping `normal` ranges;
+         * e.g. gt-sm overlaps md, lg, and xl
+         * @return {?}
+         */
+        function () {
+            return this._registry.filter(function (it) { return it.overlapping == true; });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BreakPointRegistry.prototype, "aliases", {
+        /**
+         * Get list of all registered (non-empty) breakpoint aliases
+         */
+        get: /**
+         * Get list of all registered (non-empty) breakpoint aliases
+         * @return {?}
+         */
+        function () {
+            return this._registry.map(function (it) { return it.alias; });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BreakPointRegistry.prototype, "suffixes", {
+        /**
+         * Aliases are mapped to properties using suffixes
+         * e.g.  'gt-sm' for property 'layout'  uses suffix 'GtSm'
+         * for property layoutGtSM.
+         */
+        get: /**
+         * Aliases are mapped to properties using suffixes
+         * e.g.  'gt-sm' for property 'layout'  uses suffix 'GtSm'
+         * for property layoutGtSM.
+         * @return {?}
+         */
+        function () {
+            return this._registry.map(function (it) { return !!it.suffix ? it.suffix : ''; });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    BreakPointRegistry.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"], args: [{ providedIn: 'root' },] },
+    ];
+    /** @nocollapse */
+    BreakPointRegistry.ctorParameters = function () { return [
+        { type: Array, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [BREAKPOINTS,] }] }
+    ]; };
+    /** @nocollapse */ BreakPointRegistry.ngInjectableDef = Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["defineInjectable"])({ factory: function BreakPointRegistry_Factory() { return new BreakPointRegistry(Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(BREAKPOINTS)); }, token: BreakPointRegistry, providedIn: "root" });
+    return BreakPointRegistry;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Class instances emitted [to observers] for each mql notification
+ */
+var  /**
+ * Class instances emitted [to observers] for each mql notification
+ */
+MediaChange = /** @class */ (function () {
+    function MediaChange(matches, mediaQuery, mqAlias, suffix // e.g.   GtSM, Md, GtLg
+    ) {
+        if (matches === void 0) { matches = false; }
+        if (mediaQuery === void 0) { mediaQuery = 'all'; }
+        if (mqAlias === void 0) { mqAlias = ''; }
+        if (suffix === void 0) { suffix = ''; }
+        this.matches = matches;
+        this.mediaQuery = mediaQuery;
+        this.mqAlias = mqAlias;
+        this.suffix = suffix;
+    }
+    /**
+     * @return {?}
+     */
+    MediaChange.prototype.clone = /**
+     * @return {?}
+     */
+    function () {
+        return new MediaChange(this.matches, this.mediaQuery, this.mqAlias, this.suffix);
+    };
+    return MediaChange;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * MediaMonitor configures listeners to mediaQuery changes and publishes an Observable facade to
+ * convert mediaQuery change callbacks to subscriber notifications. These notifications will be
+ * performed within the ng Zone to trigger change detections and component updates.
+ *
+ * NOTE: both mediaQuery activations and de-activations are announced in notifications
+ */
+var MatchMedia = /** @class */ (function () {
+    function MatchMedia(_zone, _platformId, _document) {
+        this._zone = _zone;
+        this._platformId = _platformId;
+        this._document = _document;
+        this._registry = new Map();
+        this._source = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](new MediaChange(true));
+        this._observable$ = this._source.asObservable();
+    }
+    /**
+     * For the specified mediaQuery?
+     */
+    /**
+     * For the specified mediaQuery?
+     * @param {?} mediaQuery
+     * @return {?}
+     */
+    MatchMedia.prototype.isActive = /**
+     * For the specified mediaQuery?
+     * @param {?} mediaQuery
+     * @return {?}
+     */
+    function (mediaQuery) {
+        /** @type {?} */
+        var mql = this._registry.get(mediaQuery);
+        return !!mql ? mql.matches : false;
+    };
+    /**
+     * External observers can watch for all (or a specific) mql changes.
+     * Typically used by the MediaQueryAdaptor; optionally available to components
+     * who wish to use the MediaMonitor as mediaMonitor$ observable service.
+     *
+     * NOTE: if a mediaQuery is not specified, then ALL mediaQuery activations will
+     *       be announced.
+     */
+    /**
+     * External observers can watch for all (or a specific) mql changes.
+     * Typically used by the MediaQueryAdaptor; optionally available to components
+     * who wish to use the MediaMonitor as mediaMonitor$ observable service.
+     *
+     * NOTE: if a mediaQuery is not specified, then ALL mediaQuery activations will
+     *       be announced.
+     * @param {?=} mediaQuery
+     * @return {?}
+     */
+    MatchMedia.prototype.observe = /**
+     * External observers can watch for all (or a specific) mql changes.
+     * Typically used by the MediaQueryAdaptor; optionally available to components
+     * who wish to use the MediaMonitor as mediaMonitor$ observable service.
+     *
+     * NOTE: if a mediaQuery is not specified, then ALL mediaQuery activations will
+     *       be announced.
+     * @param {?=} mediaQuery
+     * @return {?}
+     */
+    function (mediaQuery) {
+        if (mediaQuery) {
+            this.registerQuery(mediaQuery);
+        }
+        return this._observable$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["filter"])(function (change) {
+            return mediaQuery ? (change.mediaQuery === mediaQuery) : true;
+        }));
+    };
+    /**
+     * Based on the BreakPointRegistry provider, register internal listeners for each unique
+     * mediaQuery. Each listener emits specific MediaChange data to observers
+     */
+    /**
+     * Based on the BreakPointRegistry provider, register internal listeners for each unique
+     * mediaQuery. Each listener emits specific MediaChange data to observers
+     * @param {?} mediaQuery
+     * @return {?}
+     */
+    MatchMedia.prototype.registerQuery = /**
+     * Based on the BreakPointRegistry provider, register internal listeners for each unique
+     * mediaQuery. Each listener emits specific MediaChange data to observers
+     * @param {?} mediaQuery
+     * @return {?}
+     */
+    function (mediaQuery) {
+        var _this = this;
+        /** @type {?} */
+        var list = normalizeQuery(mediaQuery);
+        if (list.length > 0) {
+            this._prepareQueryCSS(list, this._document);
+            list.forEach(function (query) {
+                /** @type {?} */
+                var mql = _this._registry.get(query);
+                /** @type {?} */
+                var onMQLEvent = function (e) {
+                    _this._zone.run(function () {
+                        /** @type {?} */
+                        var change = new MediaChange(e.matches, query);
+                        _this._source.next(change);
+                    });
+                };
+                if (!mql) {
+                    mql = _this._buildMQL(query);
+                    mql.addListener(onMQLEvent);
+                    _this._registry.set(query, mql);
+                }
+                if (mql.matches) {
+                    onMQLEvent(mql); // Announce activate range for initial subscribers
+                }
+            });
+        }
+    };
+    /**
+     * Call window.matchMedia() to build a MediaQueryList; which
+     * supports 0..n listeners for activation/deactivation
+     */
+    /**
+     * Call window.matchMedia() to build a MediaQueryList; which
+     * supports 0..n listeners for activation/deactivation
+     * @param {?} query
+     * @return {?}
+     */
+    MatchMedia.prototype._buildMQL = /**
+     * Call window.matchMedia() to build a MediaQueryList; which
+     * supports 0..n listeners for activation/deactivation
+     * @param {?} query
+     * @return {?}
+     */
+    function (query) {
+        /** @type {?} */
+        var canListen = Object(_angular_common__WEBPACK_IMPORTED_MODULE_1__["isPlatformBrowser"])(this._platformId) &&
+            !!(/** @type {?} */ (window)).matchMedia('all').addListener;
+        return canListen ? (/** @type {?} */ (window)).matchMedia(query) : /** @type {?} */ ({
+            matches: query === 'all' || query === '',
+            media: query,
+            addListener: function () {
+            },
+            removeListener: function () {
+            }
+        });
+    };
+    /**
+     * For Webkit engines that only trigger the MediaQueryList Listener
+     * when there is at least one CSS selector for the respective media query.
+     *
+     * @param query string The mediaQuery used to create a faux CSS selector
+     *
+     */
+    /**
+     * For Webkit engines that only trigger the MediaQueryList Listener
+     * when there is at least one CSS selector for the respective media query.
+     *
+     * @param {?} mediaQueries
+     * @param {?} _document
+     * @return {?}
+     */
+    MatchMedia.prototype._prepareQueryCSS = /**
+     * For Webkit engines that only trigger the MediaQueryList Listener
+     * when there is at least one CSS selector for the respective media query.
+     *
+     * @param {?} mediaQueries
+     * @param {?} _document
+     * @return {?}
+     */
+    function (mediaQueries, _document) {
+        /** @type {?} */
+        var list = mediaQueries.filter(function (it) { return !ALL_STYLES[it]; });
+        if (list.length > 0) {
+            /** @type {?} */
+            var query = list.join(', ');
+            try {
+                /** @type {?} */
+                var styleEl_1 = _document.createElement('style');
+                styleEl_1.setAttribute('type', 'text/css');
+                if (!styleEl_1['styleSheet']) {
+                    /** @type {?} */
+                    var cssText = "\n/*\n  @angular/flex-layout - workaround for possible browser quirk with mediaQuery listeners\n  see http://bit.ly/2sd4HMP\n*/\n@media " + query + " {.fx-query-test{ }}\n";
+                    styleEl_1.appendChild(_document.createTextNode(cssText));
+                }
+                _document.head.appendChild(styleEl_1);
+                // Store in private global registry
+                list.forEach(function (mq) { return ALL_STYLES[mq] = styleEl_1; });
+            }
+            catch (e) {
+                console.error(e);
+            }
+        }
+    };
+    MatchMedia.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"], args: [{ providedIn: 'root' },] },
+    ];
+    /** @nocollapse */
+    MatchMedia.ctorParameters = function () { return [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"] },
+        { type: Object, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["PLATFORM_ID"],] }] },
+        { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["DOCUMENT"],] }] }
+    ]; };
+    /** @nocollapse */ MatchMedia.ngInjectableDef = Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["defineInjectable"])({ factory: function MatchMedia_Factory() { return new MatchMedia(Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(_angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"]), Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(_angular_core__WEBPACK_IMPORTED_MODULE_0__["PLATFORM_ID"]), Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(_angular_common__WEBPACK_IMPORTED_MODULE_1__["DOCUMENT"])); }, token: MatchMedia, providedIn: "root" });
+    return MatchMedia;
+}());
+/** *
+ * Private global registry for all dynamically-created, injected style tags
+ * @see prepare(query)
+  @type {?} */
+var ALL_STYLES = {};
+/**
+ * Always convert to unique list of queries; for iteration in ::registerQuery()
+ * @param {?} mediaQuery
+ * @return {?}
+ */
+function normalizeQuery(mediaQuery) {
+    return (typeof mediaQuery === 'undefined') ? [] :
+        (typeof mediaQuery === 'string') ? [mediaQuery] : unique(/** @type {?} */ (mediaQuery));
+}
+/**
+ * Filter duplicate mediaQueries in the list
+ * @param {?} list
+ * @return {?}
+ */
+function unique(list) {
+    /** @type {?} */
+    var seen = {};
+    return list.filter(function (item) {
+        return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+    });
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * For the specified MediaChange, make sure it contains the breakpoint alias
+ * and suffix (if available).
+ * @param {?} dest
+ * @param {?} source
+ * @return {?}
+ */
+function mergeAlias(dest, source) {
+    return extendObject(dest, source ? {
+        mqAlias: source.alias,
+        suffix: source.suffix
+    } : {});
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Base class for MediaService and pseudo-token for
+ * @abstract
+ */
+var  /**
+ * Base class for MediaService and pseudo-token for
+ * @abstract
+ */
+ObservableMedia = /** @class */ (function () {
+    function ObservableMedia() {
+    }
+    return ObservableMedia;
+}());
+/**
+ * Class internalizes a MatchMedia service and exposes an Subscribable and Observable interface.
+ * This an Observable with that exposes a feature to subscribe to mediaQuery
+ * changes and a validator method (`isActive(<alias>)`) to test if a mediaQuery (or alias) is
+ * currently active.
+ *
+ * !! Only mediaChange activations (not de-activations) are announced by the ObservableMedia
+ *
+ * This class uses the BreakPoint Registry to inject alias information into the raw MediaChange
+ * notification. For custom mediaQuery notifications, alias information will not be injected and
+ * those fields will be ''.
+ *
+ * !! This is not an actual Observable. It is a wrapper of an Observable used to publish additional
+ * methods like `isActive(<alias>). To access the Observable and use RxJS operators, use
+ * `.asObservable()` with syntax like media.asObservable().map(....).
+ *
+ * \@usage
+ *
+ *  // RxJS
+ *  import {filter} from 'rxjs/operators/filter';
+ *  import { ObservableMedia } from '\@angular/flex-layout';
+ *
+ * \@Component({ ... })
+ *  export class AppComponent {
+ *    status : string = '';
+ *
+ *    constructor(  media:ObservableMedia ) {
+ *      let onChange = (change:MediaChange) => {
+ *        this.status = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : '';
+ *      };
+ *
+ *      // Subscribe directly or access observable to use filter/map operators
+ *      // e.g.
+ *      //      media.subscribe(onChange);
+ *
+ *      media.asObservable()
+ *        .pipe(
+ *          filter((change:MediaChange) => true)   // silly noop filter
+ *        ).subscribe(onChange);
+ *    }
+ *  }
+ */
+var MediaService = /** @class */ (function () {
+    function MediaService(breakpoints, mediaWatcher) {
+        this.breakpoints = breakpoints;
+        this.mediaWatcher = mediaWatcher;
+        /**
+         * Should we announce gt-<xxx> breakpoint activations ?
+         */
+        this.filterOverlaps = true;
+        this._registerBreakPoints();
+        this.observable$ = this._buildObservable();
+    }
+    /**
+     * Test if specified query/alias is active.
+     */
+    /**
+     * Test if specified query/alias is active.
+     * @param {?} alias
+     * @return {?}
+     */
+    MediaService.prototype.isActive = /**
+     * Test if specified query/alias is active.
+     * @param {?} alias
+     * @return {?}
+     */
+    function (alias) {
+        /** @type {?} */
+        var query = this._toMediaQuery(alias);
+        return this.mediaWatcher.isActive(query);
+    };
+    /**
+     * Proxy to the Observable subscribe method
+     */
+    /**
+     * Proxy to the Observable subscribe method
+     * @param {?=} observerOrNext
+     * @param {?=} error
+     * @param {?=} complete
+     * @return {?}
+     */
+    MediaService.prototype.subscribe = /**
+     * Proxy to the Observable subscribe method
+     * @param {?=} observerOrNext
+     * @param {?=} error
+     * @param {?=} complete
+     * @return {?}
+     */
+    function (observerOrNext, error, complete) {
+        if (observerOrNext) {
+            if (typeof observerOrNext === 'object') {
+                return this.observable$.subscribe(observerOrNext.next, observerOrNext.error, observerOrNext.complete);
+            }
+        }
+        return this.observable$.subscribe(observerOrNext, error, complete);
+    };
+    /**
+     * Access to observable for use with operators like
+     * .filter(), .map(), etc.
+     */
+    /**
+     * Access to observable for use with operators like
+     * .filter(), .map(), etc.
+     * @return {?}
+     */
+    MediaService.prototype.asObservable = /**
+     * Access to observable for use with operators like
+     * .filter(), .map(), etc.
+     * @return {?}
+     */
+    function () {
+        return this.observable$;
+    };
+    /**
+     * Register all the mediaQueries registered in the BreakPointRegistry
+     * This is needed so subscribers can be auto-notified of all standard, registered
+     * mediaQuery activations
+     * @return {?}
+     */
+    MediaService.prototype._registerBreakPoints = /**
+     * Register all the mediaQueries registered in the BreakPointRegistry
+     * This is needed so subscribers can be auto-notified of all standard, registered
+     * mediaQuery activations
+     * @return {?}
+     */
+    function () {
+        /** @type {?} */
+        var queries = this.breakpoints.sortedItems.map(function (bp) { return bp.mediaQuery; });
+        this.mediaWatcher.registerQuery(queries);
+    };
+    /**
+     * Prepare internal observable
+     *
+     * NOTE: the raw MediaChange events [from MatchMedia] do not
+     *       contain important alias information; as such this info
+     *       must be injected into the MediaChange
+     * @return {?}
+     */
+    MediaService.prototype._buildObservable = /**
+     * Prepare internal observable
+     *
+     * NOTE: the raw MediaChange events [from MatchMedia] do not
+     *       contain important alias information; as such this info
+     *       must be injected into the MediaChange
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        /** @type {?} */
+        var self = this;
+        /** @type {?} */
+        var media$ = this.mediaWatcher.observe();
+        /** @type {?} */
+        var activationsOnly = function (change) {
+            return change.matches === true;
+        };
+        /** @type {?} */
+        var addAliasInformation = function (change) {
+            return mergeAlias(change, _this._findByQuery(change.mediaQuery));
+        };
+        /** @type {?} */
+        var excludeOverlaps = function (change) {
+            /** @type {?} */
+            var bp = _this.breakpoints.findByQuery(change.mediaQuery);
+            return !bp ? true : !(self.filterOverlaps && bp.overlapping);
+        };
+        /**
+             * Only pass/announce activations (not de-activations)
+             * Inject associated (if any) alias information into the MediaChange event
+             * Exclude mediaQuery activations for overlapping mQs. List bounded mQ ranges only
+             */
+        return media$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["filter"])(activationsOnly), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["filter"])(excludeOverlaps), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(addAliasInformation));
+    };
+    /**
+     * Breakpoint locator by alias
+     * @param {?} alias
+     * @return {?}
+     */
+    MediaService.prototype._findByAlias = /**
+     * Breakpoint locator by alias
+     * @param {?} alias
+     * @return {?}
+     */
+    function (alias) {
+        return this.breakpoints.findByAlias(alias);
+    };
+    /**
+     * Breakpoint locator by mediaQuery
+     * @param {?} query
+     * @return {?}
+     */
+    MediaService.prototype._findByQuery = /**
+     * Breakpoint locator by mediaQuery
+     * @param {?} query
+     * @return {?}
+     */
+    function (query) {
+        return this.breakpoints.findByQuery(query);
+    };
+    /**
+     * Find associated breakpoint (if any)
+     * @param {?} query
+     * @return {?}
+     */
+    MediaService.prototype._toMediaQuery = /**
+     * Find associated breakpoint (if any)
+     * @param {?} query
+     * @return {?}
+     */
+    function (query) {
+        /** @type {?} */
+        var bp = this._findByAlias(query) || this._findByQuery(query);
+        return bp ? bp.mediaQuery : query;
+    };
+    MediaService.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"], args: [{ providedIn: 'root' },] },
+    ];
+    /** @nocollapse */
+    MediaService.ctorParameters = function () { return [
+        { type: BreakPointRegistry },
+        { type: MatchMedia }
+    ]; };
+    /** @nocollapse */ MediaService.ngInjectableDef = Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["defineInjectable"])({ factory: function MediaService_Factory() { return new MediaService(Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(BreakPointRegistry), Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(MatchMedia)); }, token: MediaService, providedIn: "root" });
+    return MediaService;
+}());
+/** @type {?} */
+var ObservableMediaProvider = {
+    // tslint:disable-line:variable-name
+    provide: ObservableMedia,
+    useClass: MediaService
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * *****************************************************************
+ * Define module for the MediaQuery API
+ * *****************************************************************
+ */
+var CoreModule = /** @class */ (function () {
+    function CoreModule() {
+    }
+    CoreModule.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"], args: [{
+                    providers: [ObservableMediaProvider, BROWSER_PROVIDER]
+                },] },
+    ];
+    return CoreModule;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Utility to emulate a CSS stylesheet
+ *
+ * This utility class stores all of the styles for a given HTML element
+ * as a readonly `stylesheet` map.
+ */
+var StylesheetMap = /** @class */ (function () {
+    function StylesheetMap() {
+        this.stylesheet = new Map();
+    }
+    /**
+     * Add an individual style to an HTML element
+     */
+    /**
+     * Add an individual style to an HTML element
+     * @param {?} element
+     * @param {?} style
+     * @param {?} value
+     * @return {?}
+     */
+    StylesheetMap.prototype.addStyleToElement = /**
+     * Add an individual style to an HTML element
+     * @param {?} element
+     * @param {?} style
+     * @param {?} value
+     * @return {?}
+     */
+    function (element, style, value) {
+        /** @type {?} */
+        var stylesheet = this.stylesheet.get(element);
+        if (stylesheet) {
+            stylesheet.set(style, value);
+        }
+        else {
+            this.stylesheet.set(element, new Map([[style, value]]));
+        }
+    };
+    /**
+     * Clear the virtual stylesheet
+     */
+    /**
+     * Clear the virtual stylesheet
+     * @return {?}
+     */
+    StylesheetMap.prototype.clearStyles = /**
+     * Clear the virtual stylesheet
+     * @return {?}
+     */
+    function () {
+        this.stylesheet.clear();
+    };
+    /**
+     * Retrieve a given style for an HTML element
+     */
+    /**
+     * Retrieve a given style for an HTML element
+     * @param {?} el
+     * @param {?} styleName
+     * @return {?}
+     */
+    StylesheetMap.prototype.getStyleForElement = /**
+     * Retrieve a given style for an HTML element
+     * @param {?} el
+     * @param {?} styleName
+     * @return {?}
+     */
+    function (el, styleName) {
+        /** @type {?} */
+        var styles = this.stylesheet.get(el);
+        /** @type {?} */
+        var value = '';
+        if (styles) {
+            /** @type {?} */
+            var style = styles.get(styleName);
+            if (typeof style === 'number' || typeof style === 'string') {
+                value = style + '';
+            }
+        }
+        return value;
+    };
+    StylesheetMap.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"], args: [{ providedIn: 'root' },] },
+    ];
+    /** @nocollapse */ StylesheetMap.ngInjectableDef = Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["defineInjectable"])({ factory: function StylesheetMap_Factory() { return new StylesheetMap(); }, token: StylesheetMap, providedIn: "root" });
+    return StylesheetMap;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Ensure a single global service provider
+ * @deprecated
+ * \@deletion-target v6.0.0-beta.16
+ * @param {?} parentSheet
+ * @return {?}
+ */
+function STYLESHEET_MAP_PROVIDER_FACTORY(parentSheet) {
+    return parentSheet || new StylesheetMap();
+}
+/** *
+ * Export provider that uses a global service factory (above)
+ * @deprecated
+ * \@deletion-target v6.0.0-beta.16
+  @type {?} */
+var STYLESHEET_MAP_PROVIDER = {
+    provide: StylesheetMap,
+    deps: [
+        [new _angular_core__WEBPACK_IMPORTED_MODULE_0__["Optional"](), new _angular_core__WEBPACK_IMPORTED_MODULE_0__["SkipSelf"](), StylesheetMap],
+    ],
+    useFactory: STYLESHEET_MAP_PROVIDER_FACTORY
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** *
+ * Token that is provided to tell whether the FlexLayoutServerModule
+ * has been included in the bundle
+ *
+ * NOTE: This can be manually provided to disable styles when using SSR
+  @type {?} */
+var SERVER_TOKEN = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["InjectionToken"]('FlexLayoutServerLoaded', {
+    providedIn: 'root',
+    factory: function () { return false; }
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** *
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+  @type {?} */
+var INLINE = 'inline';
+/** @type {?} */
+var LAYOUT_VALUES = ['row', 'column', 'row-reverse', 'column-reverse'];
+/**
+ * Validate the direction|'direction wrap' value and then update the host's inline flexbox styles
+ * @param {?} value
+ * @return {?}
+ */
+function buildLayoutCSS(value) {
+    var _a = validateValue(value), direction = _a[0], wrap = _a[1], isInline = _a[2];
+    return buildCSS(direction, wrap, isInline);
+}
+/**
+ * Validate the value to be one of the acceptable value options
+ * Use default fallback of 'row'
+ * @param {?} value
+ * @return {?}
+ */
+function validateValue(value) {
+    value = value ? value.toLowerCase() : '';
+    var _a = value.split(' '), direction = _a[0], wrap = _a[1], inline = _a[2];
+    // First value must be the `flex-direction`
+    if (!LAYOUT_VALUES.find(function (x) { return x === direction; })) {
+        direction = LAYOUT_VALUES[0];
+    }
+    if (wrap === INLINE) {
+        wrap = (inline !== INLINE) ? inline : '';
+        inline = INLINE;
+    }
+    return [direction, validateWrapValue(wrap), !!inline];
+}
+/**
+ * Convert layout-wrap='<value>' to expected flex-wrap style
+ * @param {?} value
+ * @return {?}
+ */
+function validateWrapValue(value) {
+    if (!!value) {
+        switch (value.toLowerCase()) {
+            case 'reverse':
+            case 'wrap-reverse':
+            case 'reverse-wrap':
+                value = 'wrap-reverse';
+                break;
+            case 'no':
+            case 'none':
+            case 'nowrap':
+                value = 'nowrap';
+                break;
+            // All other values fallback to 'wrap'
+            default:
+                value = 'wrap';
+                break;
+        }
+    }
+    return value;
+}
+/**
+ * Build the CSS that should be assigned to the element instance
+ * BUG:
+ *   1) min-height on a column flex container won’t apply to its flex item children in IE 10-11.
+ *      Use height instead if possible; height : <xxx>vh;
+ *
+ *  This way any padding or border specified on the child elements are
+ *  laid out and drawn inside that element's specified width and height.
+ * @param {?} direction
+ * @param {?=} wrap
+ * @param {?=} inline
+ * @return {?}
+ */
+function buildCSS(direction, wrap, inline) {
+    if (wrap === void 0) { wrap = null; }
+    if (inline === void 0) { inline = false; }
+    return {
+        'display': inline ? 'inline-flex' : 'flex',
+        'box-sizing': 'border-box',
+        'flex-direction': direction,
+        'flex-wrap': !!wrap ? wrap : null
+    };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+var KeyOptions = /** @class */ (function () {
+    function KeyOptions(baseKey, defaultValue, inputKeys) {
+        this.baseKey = baseKey;
+        this.defaultValue = defaultValue;
+        this.inputKeys = inputKeys;
+    }
+    return KeyOptions;
+}());
+/**
+ * ResponsiveActivation acts as a proxy between the MonitorMedia service (which emits mediaQuery
+ * changes) and the fx API directives. The MQA proxies mediaQuery change events and notifies the
+ * directive via the specified callback.
+ *
+ * - The MQA also determines which directive property should be used to determine the
+ *   current change 'value'... BEFORE the original `onMediaQueryChanges()` method is called.
+ * - The `ngOnDestroy()` method is also head-hooked to enable auto-unsubscribe from the
+ *   MediaQueryServices.
+ *
+ * NOTE: these interceptions enables the logic in the fx API directives to remain terse and clean.
+ */
+var  /**
+ * ResponsiveActivation acts as a proxy between the MonitorMedia service (which emits mediaQuery
+ * changes) and the fx API directives. The MQA proxies mediaQuery change events and notifies the
+ * directive via the specified callback.
+ *
+ * - The MQA also determines which directive property should be used to determine the
+ *   current change 'value'... BEFORE the original `onMediaQueryChanges()` method is called.
+ * - The `ngOnDestroy()` method is also head-hooked to enable auto-unsubscribe from the
+ *   MediaQueryServices.
+ *
+ * NOTE: these interceptions enables the logic in the fx API directives to remain terse and clean.
+ */
+ResponsiveActivation = /** @class */ (function () {
+    /**
+     * Constructor
+     */
+    function ResponsiveActivation(_options, _mediaMonitor, _onMediaChanges) {
+        this._options = _options;
+        this._mediaMonitor = _mediaMonitor;
+        this._onMediaChanges = _onMediaChanges;
+        this._subscribers = [];
+        this._registryMap = this._buildRegistryMap();
+        this._subscribers = this._configureChangeObservers();
+    }
+    Object.defineProperty(ResponsiveActivation.prototype, "registryFromLargest", {
+        /**
+         * Get a readonly sorted list of the breakpoints corresponding to the directive properties
+         * defined in the HTML markup: the sorting is done from largest to smallest. The order is
+         * important when several media queries are 'registered' and from which, the browser uses the
+         * first matching media query.
+         */
+        get: /**
+         * Get a readonly sorted list of the breakpoints corresponding to the directive properties
+         * defined in the HTML markup: the sorting is done from largest to smallest. The order is
+         * important when several media queries are 'registered' and from which, the browser uses the
+         * first matching media query.
+         * @return {?}
+         */
+        function () {
+            return this._registryMap.slice().reverse();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ResponsiveActivation.prototype, "mediaMonitor", {
+        /**
+         * Accessor to the DI'ed directive property
+         * Each directive instance has a reference to the MediaMonitor which is
+         * used HERE to subscribe to mediaQuery change notifications.
+         */
+        get: /**
+         * Accessor to the DI'ed directive property
+         * Each directive instance has a reference to the MediaMonitor which is
+         * used HERE to subscribe to mediaQuery change notifications.
+         * @return {?}
+         */
+        function () {
+            return this._mediaMonitor;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ResponsiveActivation.prototype, "activatedInputKey", {
+        /**
+         * Determine which directive @Input() property is currently active (for the viewport size):
+         * The key must be defined (in use) or fallback to the 'closest' overlapping property key
+         * that is defined; otherwise the default property key will be used.
+         * e.g.
+         *      if `<div fxHide fxHide.gt-sm="false">` is used but the current activated mediaQuery alias
+         *      key is `.md` then `.gt-sm` should be used instead
+         */
+        get: /**
+         * Determine which directive \@Input() property is currently active (for the viewport size):
+         * The key must be defined (in use) or fallback to the 'closest' overlapping property key
+         * that is defined; otherwise the default property key will be used.
+         * e.g.
+         *      if `<div fxHide fxHide.gt-sm="false">` is used but the current activated mediaQuery alias
+         *      key is `.md` then `.gt-sm` should be used instead
+         * @return {?}
+         */
+        function () {
+            return this._activatedInputKey || this._options.baseKey;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ResponsiveActivation.prototype, "activatedInput", {
+        /**
+         * Get the currently activated @Input value or the fallback default @Input value
+         */
+        get: /**
+         * Get the currently activated \@Input value or the fallback default \@Input value
+         * @return {?}
+         */
+        function () {
+            /** @type {?} */
+            var key = this.activatedInputKey;
+            return this.hasKeyValue(key) ? this._lookupKeyValue(key) : this._options.defaultValue;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Fast validator for presence of attribute on the host element
+     */
+    /**
+     * Fast validator for presence of attribute on the host element
+     * @param {?} key
+     * @return {?}
+     */
+    ResponsiveActivation.prototype.hasKeyValue = /**
+     * Fast validator for presence of attribute on the host element
+     * @param {?} key
+     * @return {?}
+     */
+    function (key) {
+        /** @type {?} */
+        var value = this._options.inputKeys[key];
+        return typeof value !== 'undefined';
+    };
+    /**
+     * Remove interceptors, restore original functions, and forward the onDestroy() call
+     */
+    /**
+     * Remove interceptors, restore original functions, and forward the onDestroy() call
+     * @return {?}
+     */
+    ResponsiveActivation.prototype.destroy = /**
+     * Remove interceptors, restore original functions, and forward the onDestroy() call
+     * @return {?}
+     */
+    function () {
+        this._subscribers.forEach(function (link) {
+            link.unsubscribe();
+        });
+        this._subscribers = [];
+    };
+    /**
+     * For each *defined* API property, register a callback to `_onMonitorEvents( )`
+     * Cache 1..n subscriptions for internal auto-unsubscribes when the the directive destructs
+     * @return {?}
+     */
+    ResponsiveActivation.prototype._configureChangeObservers = /**
+     * For each *defined* API property, register a callback to `_onMonitorEvents( )`
+     * Cache 1..n subscriptions for internal auto-unsubscribes when the the directive destructs
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        /** @type {?} */
+        var subscriptions = [];
+        this._registryMap.forEach(function (bp) {
+            if (_this._keyInUse(bp.key)) {
+                /** @type {?} */
+                var buildChanges = function (change) {
+                    change = change.clone();
+                    change.property = _this._options.baseKey;
+                    return change;
+                };
+                subscriptions.push(_this.mediaMonitor
+                    .observe(bp.alias)
+                    .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(buildChanges))
+                    .subscribe(function (change) {
+                    _this._onMonitorEvents(change);
+                }));
+            }
+        });
+        return subscriptions;
+    };
+    /**
+     * Build mediaQuery key-hashmap; only for the directive properties that are actually defined/used
+     * in the HTML markup
+     * @return {?}
+     */
+    ResponsiveActivation.prototype._buildRegistryMap = /**
+     * Build mediaQuery key-hashmap; only for the directive properties that are actually defined/used
+     * in the HTML markup
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        return this.mediaMonitor.breakpoints
+            .map(function (bp) {
+            return /** @type {?} */ (extendObject({}, bp, {
+                baseKey: _this._options.baseKey,
+                // e.g. layout, hide, self-align, flex-wrap
+                key: _this._options.baseKey + bp.suffix // e.g.  layoutGtSm, layoutMd, layoutGtLg
+            }));
+        })
+            .filter(function (bp) { return _this._keyInUse(bp.key); });
+    };
+    /**
+     * Synchronizes change notifications with the current mq-activated @Input and calculates the
+     * mq-activated input value or the default value
+     */
+    /**
+     * Synchronizes change notifications with the current mq-activated \@Input and calculates the
+     * mq-activated input value or the default value
+     * @param {?} change
+     * @return {?}
+     */
+    ResponsiveActivation.prototype._onMonitorEvents = /**
+     * Synchronizes change notifications with the current mq-activated \@Input and calculates the
+     * mq-activated input value or the default value
+     * @param {?} change
+     * @return {?}
+     */
+    function (change) {
+        if (change.property == this._options.baseKey) {
+            change.value = this._calculateActivatedValue(change);
+            this._onMediaChanges(change);
+        }
+    };
+    /**
+     * Has the key been specified in the HTML markup and thus is intended
+     * to participate in activation processes.
+     * @param {?} key
+     * @return {?}
+     */
+    ResponsiveActivation.prototype._keyInUse = /**
+     * Has the key been specified in the HTML markup and thus is intended
+     * to participate in activation processes.
+     * @param {?} key
+     * @return {?}
+     */
+    function (key) {
+        return this._lookupKeyValue(key) !== undefined;
+    };
+    /**
+     *  Map input key associated with mediaQuery activation to closest defined input key
+     *  then return the values associated with the targeted input property
+     *
+     *  !! change events may arrive out-of-order (activate before deactivate)
+     *     so make sure the deactivate is used ONLY when the keys match
+     *     (since a different activate may be in use)
+     * @param {?} current
+     * @return {?}
+     */
+    ResponsiveActivation.prototype._calculateActivatedValue = /**
+     *  Map input key associated with mediaQuery activation to closest defined input key
+     *  then return the values associated with the targeted input property
+     *
+     *  !! change events may arrive out-of-order (activate before deactivate)
+     *     so make sure the deactivate is used ONLY when the keys match
+     *     (since a different activate may be in use)
+     * @param {?} current
+     * @return {?}
+     */
+    function (current) {
+        /** @type {?} */
+        var currentKey = this._options.baseKey + current.suffix;
+        /** @type {?} */
+        var newKey = this._activatedInputKey; // e.g. newKey == hideGtSm
+        newKey = current.matches ? currentKey : ((newKey == currentKey) ? '' : newKey);
+        this._activatedInputKey = this._validateInputKey(newKey);
+        return this.activatedInput;
+    };
+    /**
+     * For the specified input property key, validate it is defined (used in the markup)
+     * If not see if a overlapping mediaQuery-related input key fallback has been defined
+     *
+     * NOTE: scans in the order defined by activeOverLaps (largest viewport ranges -> smallest ranges)
+     * @param {?} inputKey
+     * @return {?}
+     */
+    ResponsiveActivation.prototype._validateInputKey = /**
+     * For the specified input property key, validate it is defined (used in the markup)
+     * If not see if a overlapping mediaQuery-related input key fallback has been defined
+     *
+     * NOTE: scans in the order defined by activeOverLaps (largest viewport ranges -> smallest ranges)
+     * @param {?} inputKey
+     * @return {?}
+     */
+    function (inputKey) {
+        var _this = this;
+        /** @type {?} */
+        var isMissingKey = function (key) { return !_this._keyInUse(key); };
+        if (isMissingKey(inputKey)) {
+            this.mediaMonitor.activeOverlaps.some(function (bp) {
+                /** @type {?} */
+                var key = _this._options.baseKey + bp.suffix;
+                if (!isMissingKey(key)) {
+                    inputKey = key;
+                    return true; // exit .some()
+                }
+                return false;
+            });
+        }
+        return inputKey;
+    };
+    /**
+     * Get the value (if any) for the directive instances \@Input property (aka key)
+     * @param {?} key
+     * @return {?}
+     */
+    ResponsiveActivation.prototype._lookupKeyValue = /**
+     * Get the value (if any) for the directive instances \@Input property (aka key)
+     * @param {?} key
+     * @return {?}
+     */
+    function (key) {
+        return this._options.inputKeys[key];
+    };
+    return ResponsiveActivation;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Abstract base class for the Layout API styling directives.
+ * @abstract
+ */
+var  /**
+ * Abstract base class for the Layout API styling directives.
+ * @abstract
+ */
+BaseDirective = /** @class */ (function () {
+    function BaseDirective(_mediaMonitor, _elementRef, _styler) {
+        this._mediaMonitor = _mediaMonitor;
+        this._elementRef = _elementRef;
+        this._styler = _styler;
+        /**
+         * Dictionary of input keys with associated values
+         */
+        this._inputMap = {};
+        /**
+         * Has the `ngOnInit()` method fired
+         *
+         * Used to allow *ngFor tasks to finish and support queries like
+         * getComputedStyle() during ngOnInit().
+         */
+        this._hasInitialized = false;
+    }
+    Object.defineProperty(BaseDirective.prototype, "hasMediaQueryListener", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return !!this._mqActivation;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BaseDirective.prototype, "activatedValue", {
+        /**
+         * Imperatively determine the current activated [input] value;
+         * if called before ngOnInit() this will return `undefined`
+         */
+        get: /**
+         * Imperatively determine the current activated [input] value;
+         * if called before ngOnInit() this will return `undefined`
+         * @return {?}
+         */
+        function () {
+            return this._mqActivation ? this._mqActivation.activatedInput : undefined;
+        },
+        /**
+         * Change the currently activated input value and force-update
+         * the injected CSS (by-passing change detection).
+         *
+         * NOTE: Only the currently activated input value will be modified;
+         *       other input values will NOT be affected.
+         */
+        set: /**
+         * Change the currently activated input value and force-update
+         * the injected CSS (by-passing change detection).
+         *
+         * NOTE: Only the currently activated input value will be modified;
+         *       other input values will NOT be affected.
+         * @param {?} value
+         * @return {?}
+         */
+        function (value) {
+            var _a;
+            /** @type {?} */
+            var key = 'baseKey';
+            /** @type {?} */
+            var previousVal;
+            if (this._mqActivation) {
+                key = this._mqActivation.activatedInputKey;
+                previousVal = this._inputMap[key];
+                this._inputMap[key] = value;
+            }
+            /** @type {?} */
+            var change = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["SimpleChange"](previousVal, value, false);
+            this.ngOnChanges(/** @type {?} */ (_a = {}, _a[key] = change, _a));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Does this directive have 1 or more responsive keys defined
+     * Note: we exclude the 'baseKey' key (which is NOT considered responsive)
+     */
+    /**
+     * Does this directive have 1 or more responsive keys defined
+     * Note: we exclude the 'baseKey' key (which is NOT considered responsive)
+     * @param {?} baseKey
+     * @return {?}
+     */
+    BaseDirective.prototype.hasResponsiveAPI = /**
+     * Does this directive have 1 or more responsive keys defined
+     * Note: we exclude the 'baseKey' key (which is NOT considered responsive)
+     * @param {?} baseKey
+     * @return {?}
+     */
+    function (baseKey) {
+        /** @type {?} */
+        var totalKeys = Object.keys(this._inputMap).length;
+        /** @type {?} */
+        var baseValue = this._inputMap[baseKey];
+        return (totalKeys - (!!baseValue ? 1 : 0)) > 0;
+    };
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * Use post-component-initialization event to perform extra
+     * querying such as computed Display style
+     */
+    /**
+     * Use post-component-initialization event to perform extra
+     * querying such as computed Display style
+     * @return {?}
+     */
+    BaseDirective.prototype.ngOnInit = /**
+     * Use post-component-initialization event to perform extra
+     * querying such as computed Display style
+     * @return {?}
+     */
+    function () {
+        this._hasInitialized = true;
+    };
+    /**
+     * @param {?} change
+     * @return {?}
+     */
+    BaseDirective.prototype.ngOnChanges = /**
+     * @param {?} change
+     * @return {?}
+     */
+    function (change) {
+        throw new Error("BaseDirective::ngOnChanges should be overridden in subclass: " + change);
+    };
+    /**
+     * @return {?}
+     */
+    BaseDirective.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
+        if (this._mqActivation) {
+            this._mqActivation.destroy();
+        }
+        delete this._mediaMonitor;
+    };
+    Object.defineProperty(BaseDirective.prototype, "parentElement", {
+        // *********************************************
+        // Protected Methods
+        // *********************************************
+        /** Access to host element's parent DOM node */
+        get: /**
+         * Access to host element's parent DOM node
+         * @return {?}
+         */
+        function () {
+            return this._elementRef.nativeElement.parentNode;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BaseDirective.prototype, "nativeElement", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return this._elementRef.nativeElement;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /** Access the current value (if any) of the @Input property */
+    /**
+     * Access the current value (if any) of the \@Input property
+     * @param {?} key
+     * @return {?}
+     */
+    BaseDirective.prototype._queryInput = /**
+     * Access the current value (if any) of the \@Input property
+     * @param {?} key
+     * @return {?}
+     */
+    function (key) {
+        return this._inputMap[key];
+    };
+    /**
+     * Was the directive's default selector used ?
+     * If not, use the fallback value!
+     */
+    /**
+     * Was the directive's default selector used ?
+     * If not, use the fallback value!
+     * @param {?} key
+     * @param {?} fallbackVal
+     * @return {?}
+     */
+    BaseDirective.prototype._getDefaultVal = /**
+     * Was the directive's default selector used ?
+     * If not, use the fallback value!
+     * @param {?} key
+     * @param {?} fallbackVal
+     * @return {?}
+     */
+    function (key, fallbackVal) {
+        /** @type {?} */
+        var val = this._queryInput(key);
+        /** @type {?} */
+        var hasDefaultVal = (val !== undefined && val !== null);
+        return (hasDefaultVal && val !== '') ? val : fallbackVal;
+    };
+    /**
+     * Quick accessor to the current HTMLElement's `display` style
+     * Note: this allows us to preserve the original style
+     * and optional restore it when the mediaQueries deactivate
+     */
+    /**
+     * Quick accessor to the current HTMLElement's `display` style
+     * Note: this allows us to preserve the original style
+     * and optional restore it when the mediaQueries deactivate
+     * @param {?=} source
+     * @return {?}
+     */
+    BaseDirective.prototype._getDisplayStyle = /**
+     * Quick accessor to the current HTMLElement's `display` style
+     * Note: this allows us to preserve the original style
+     * and optional restore it when the mediaQueries deactivate
+     * @param {?=} source
+     * @return {?}
+     */
+    function (source) {
+        if (source === void 0) { source = this.nativeElement; }
+        /** @type {?} */
+        var query = 'display';
+        return this._styler.lookupStyle(source, query);
+    };
+    /** Quick accessor to raw attribute value on the target DOM element */
+    /**
+     * Quick accessor to raw attribute value on the target DOM element
+     * @param {?} attribute
+     * @param {?=} source
+     * @return {?}
+     */
+    BaseDirective.prototype._getAttributeValue = /**
+     * Quick accessor to raw attribute value on the target DOM element
+     * @param {?} attribute
+     * @param {?=} source
+     * @return {?}
+     */
+    function (attribute, source) {
+        if (source === void 0) { source = this.nativeElement; }
+        return this._styler.lookupAttributeValue(source, attribute);
+    };
+    /**
+     * Determine the DOM element's Flexbox flow (flex-direction).
+     *
+     * Check inline style first then check computed (stylesheet) style.
+     * And optionally add the flow value to element's inline style.
+     */
+    /**
+     * Determine the DOM element's Flexbox flow (flex-direction).
+     *
+     * Check inline style first then check computed (stylesheet) style.
+     * And optionally add the flow value to element's inline style.
+     * @param {?} target
+     * @param {?=} addIfMissing
+     * @return {?}
+     */
+    BaseDirective.prototype._getFlexFlowDirection = /**
+     * Determine the DOM element's Flexbox flow (flex-direction).
+     *
+     * Check inline style first then check computed (stylesheet) style.
+     * And optionally add the flow value to element's inline style.
+     * @param {?} target
+     * @param {?=} addIfMissing
+     * @return {?}
+     */
+    function (target, addIfMissing) {
+        if (addIfMissing === void 0) { addIfMissing = false; }
+        var _a;
+        /** @type {?} */
+        var value = 'row';
+        /** @type {?} */
+        var hasInlineValue = '';
+        if (target) {
+            _a = this._styler.getFlowDirection(target), value = _a[0], hasInlineValue = _a[1];
+            if (!hasInlineValue && addIfMissing) {
+                /** @type {?} */
+                var style = buildLayoutCSS(value);
+                /** @type {?} */
+                var elements = [target];
+                this._styler.applyStyleToElements(style, elements);
+            }
+        }
+        return value.trim() || 'row';
+    };
+    /** Applies styles given via string pair or object map to the directive element */
+    /**
+     * Applies styles given via string pair or object map to the directive element
+     * @param {?} style
+     * @param {?=} value
+     * @param {?=} element
+     * @return {?}
+     */
+    BaseDirective.prototype._applyStyleToElement = /**
+     * Applies styles given via string pair or object map to the directive element
+     * @param {?} style
+     * @param {?=} value
+     * @param {?=} element
+     * @return {?}
+     */
+    function (style, value, element) {
+        if (element === void 0) { element = this.nativeElement; }
+        this._styler.applyStyleToElement(element, style, value);
+    };
+    /** Applies styles given via string pair or object map to the directive's element */
+    /**
+     * Applies styles given via string pair or object map to the directive's element
+     * @param {?} style
+     * @param {?} elements
+     * @return {?}
+     */
+    BaseDirective.prototype._applyStyleToElements = /**
+     * Applies styles given via string pair or object map to the directive's element
+     * @param {?} style
+     * @param {?} elements
+     * @return {?}
+     */
+    function (style, elements) {
+        this._styler.applyStyleToElements(style, elements);
+    };
+    /**
+     *  Save the property value; which may be a complex object.
+     *  Complex objects support property chains
+     */
+    /**
+     *  Save the property value; which may be a complex object.
+     *  Complex objects support property chains
+     * @param {?=} key
+     * @param {?=} source
+     * @return {?}
+     */
+    BaseDirective.prototype._cacheInput = /**
+     *  Save the property value; which may be a complex object.
+     *  Complex objects support property chains
+     * @param {?=} key
+     * @param {?=} source
+     * @return {?}
+     */
+    function (key, source) {
+        if (typeof source === 'object') {
+            for (var prop in source) {
+                this._inputMap[prop] = source[prop];
+            }
+        }
+        else {
+            if (!!key) {
+                this._inputMap[key] = source;
+            }
+        }
+    };
+    /**
+     *  Build a ResponsiveActivation object used to manage subscriptions to mediaChange notifications
+     *  and intelligent lookup of the directive's property value that corresponds to that mediaQuery
+     *  (or closest match).
+     */
+    /**
+     *  Build a ResponsiveActivation object used to manage subscriptions to mediaChange notifications
+     *  and intelligent lookup of the directive's property value that corresponds to that mediaQuery
+     *  (or closest match).
+     * @param {?} key
+     * @param {?} defaultValue
+     * @param {?} onMediaQueryChange
+     * @return {?}
+     */
+    BaseDirective.prototype._listenForMediaQueryChanges = /**
+     *  Build a ResponsiveActivation object used to manage subscriptions to mediaChange notifications
+     *  and intelligent lookup of the directive's property value that corresponds to that mediaQuery
+     *  (or closest match).
+     * @param {?} key
+     * @param {?} defaultValue
+     * @param {?} onMediaQueryChange
+     * @return {?}
+     */
+    function (key, defaultValue, onMediaQueryChange) {
+        // tslint:disable-line:max-line-length
+        if (!this._mqActivation) {
+            /** @type {?} */
+            var keyOptions = new KeyOptions(key, defaultValue, this._inputMap);
+            this._mqActivation = new ResponsiveActivation(keyOptions, this._mediaMonitor, function (change) { return onMediaQueryChange(change); });
+        }
+        return this._mqActivation;
+    };
+    Object.defineProperty(BaseDirective.prototype, "childrenNodes", {
+        /** Special accessor to query for all child 'element' nodes regardless of type, class, etc */
+        get: /**
+         * Special accessor to query for all child 'element' nodes regardless of type, class, etc
+         * @return {?}
+         */
+        function () {
+            /** @type {?} */
+            var obj = this.nativeElement.children;
+            /** @type {?} */
+            var buffer = [];
+            // iterate backwards ensuring that length is an UInt32
+            for (var i = obj.length; i--;) {
+                buffer[i] = obj[i];
+            }
+            return buffer;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /** Fast validator for presence of attribute on the host element */
+    /**
+     * Fast validator for presence of attribute on the host element
+     * @param {?} key
+     * @return {?}
+     */
+    BaseDirective.prototype.hasKeyValue = /**
+     * Fast validator for presence of attribute on the host element
+     * @param {?} key
+     * @return {?}
+     */
+    function (key) {
+        return this._mqActivation.hasKeyValue(key);
+    };
+    Object.defineProperty(BaseDirective.prototype, "hasInitialized", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return this._hasInitialized;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return BaseDirective;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Adapter to the BaseDirective abstract class so it can be used via composition.
+ * @see BaseDirective
+ */
+var  /**
+ * Adapter to the BaseDirective abstract class so it can be used via composition.
+ * @see BaseDirective
+ */
+BaseDirectiveAdapter = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_4__["__extends"])(BaseDirectiveAdapter, _super);
+    /**
+     * BaseDirectiveAdapter constructor
+     */
+    function BaseDirectiveAdapter(_baseKey, // non-responsive @Input property name
+    // non-responsive @Input property name
+    _mediaMonitor, _elementRef, _styler) {
+        var _this = _super.call(this, _mediaMonitor, _elementRef, _styler) || this;
+        _this._baseKey = _baseKey;
+        _this._mediaMonitor = _mediaMonitor;
+        _this._elementRef = _elementRef;
+        _this._styler = _styler;
+        return _this;
+    }
+    Object.defineProperty(BaseDirectiveAdapter.prototype, "activeKey", {
+        /**
+         * Accessor to determine which @Input property is "active"
+         * e.g. which property value will be used.
+         */
+        get: /**
+         * Accessor to determine which \@Input property is "active"
+         * e.g. which property value will be used.
+         * @return {?}
+         */
+        function () {
+            /** @type {?} */
+            var mqa = this._mqActivation;
+            /** @type {?} */
+            var key = mqa ? mqa.activatedInputKey : this._baseKey;
+            // Note: ClassDirective::SimpleChanges uses 'klazz' instead of 'class' as a key
+            return (key === 'class') ? 'klazz' : key;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BaseDirectiveAdapter.prototype, "inputMap", {
+        /** Hash map of all @Input keys/values defined/used */
+        get: /**
+         * Hash map of all \@Input keys/values defined/used
+         * @return {?}
+         */
+        function () {
+            return this._inputMap;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BaseDirectiveAdapter.prototype, "mqActivation", {
+        /**
+         * @see BaseDirective._mqActivation
+         */
+        get: /**
+         * @see BaseDirective._mqActivation
+         * @return {?}
+         */
+        function () {
+            return this._mqActivation;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+      * Does this directive have 1 or more responsive keys defined
+      * Note: we exclude the 'baseKey' key (which is NOT considered responsive)
+      */
+    /**
+     * Does this directive have 1 or more responsive keys defined
+     * Note: we exclude the 'baseKey' key (which is NOT considered responsive)
+     * @return {?}
+     */
+    BaseDirectiveAdapter.prototype.hasResponsiveAPI = /**
+     * Does this directive have 1 or more responsive keys defined
+     * Note: we exclude the 'baseKey' key (which is NOT considered responsive)
+     * @return {?}
+     */
+    function () {
+        return _super.prototype.hasResponsiveAPI.call(this, this._baseKey);
+    };
+    /**
+     * @see BaseDirective._queryInput
+     */
+    /**
+     * @see BaseDirective._queryInput
+     * @param {?} key
+     * @return {?}
+     */
+    BaseDirectiveAdapter.prototype.queryInput = /**
+     * @see BaseDirective._queryInput
+     * @param {?} key
+     * @return {?}
+     */
+    function (key) {
+        return key ? this._queryInput(key) : undefined;
+    };
+    /**
+     *  Save the property value.
+     */
+    /**
+     *  Save the property value.
+     * @param {?=} key
+     * @param {?=} source
+     * @param {?=} cacheRaw
+     * @return {?}
+     */
+    BaseDirectiveAdapter.prototype.cacheInput = /**
+     *  Save the property value.
+     * @param {?=} key
+     * @param {?=} source
+     * @param {?=} cacheRaw
+     * @return {?}
+     */
+    function (key, source, cacheRaw) {
+        if (cacheRaw === void 0) { cacheRaw = false; }
+        if (cacheRaw) {
+            this._cacheInputRaw(key, source);
+        }
+        else if (Array.isArray(source)) {
+            this._cacheInputArray(key, source);
+        }
+        else if (typeof source === 'object') {
+            this._cacheInputObject(key, source);
+        }
+        else if (typeof source === 'string') {
+            this._cacheInputString(key, source);
+        }
+        else {
+            throw new Error("Invalid class value '" + key + "' provided. Did you want to cache the raw value?");
+        }
+    };
+    /**
+     * @see BaseDirective._listenForMediaQueryChanges
+     */
+    /**
+     * @see BaseDirective._listenForMediaQueryChanges
+     * @param {?} key
+     * @param {?} defaultValue
+     * @param {?} onMediaQueryChange
+     * @return {?}
+     */
+    BaseDirectiveAdapter.prototype.listenForMediaQueryChanges = /**
+     * @see BaseDirective._listenForMediaQueryChanges
+     * @param {?} key
+     * @param {?} defaultValue
+     * @param {?} onMediaQueryChange
+     * @return {?}
+     */
+    function (key, defaultValue, onMediaQueryChange) {
+        return this._listenForMediaQueryChanges(key, defaultValue, onMediaQueryChange);
+    };
+    // ************************************************************
+    // Protected Methods
+    // ************************************************************
+    /**
+     * No implicit transforms of the source.
+     * Required when caching values expected later for KeyValueDiffers
+     */
+    /**
+     * No implicit transforms of the source.
+     * Required when caching values expected later for KeyValueDiffers
+     * @param {?=} key
+     * @param {?=} source
+     * @return {?}
+     */
+    BaseDirectiveAdapter.prototype._cacheInputRaw = /**
+     * No implicit transforms of the source.
+     * Required when caching values expected later for KeyValueDiffers
+     * @param {?=} key
+     * @param {?=} source
+     * @return {?}
+     */
+    function (key, source) {
+        if (key) {
+            this._inputMap[key] = source;
+        }
+    };
+    /**
+     *  Save the property value for Array values.
+     */
+    /**
+     *  Save the property value for Array values.
+     * @param {?=} key
+     * @param {?=} source
+     * @return {?}
+     */
+    BaseDirectiveAdapter.prototype._cacheInputArray = /**
+     *  Save the property value for Array values.
+     * @param {?=} key
+     * @param {?=} source
+     * @return {?}
+     */
+    function (key, source) {
+        if (key === void 0) { key = ''; }
+        this._inputMap[key] = source ? source.join(' ') : '';
+    };
+    /**
+     *  Save the property value for key/value pair values.
+     */
+    /**
+     *  Save the property value for key/value pair values.
+     * @param {?=} key
+     * @param {?=} source
+     * @return {?}
+     */
+    BaseDirectiveAdapter.prototype._cacheInputObject = /**
+     *  Save the property value for key/value pair values.
+     * @param {?=} key
+     * @param {?=} source
+     * @return {?}
+     */
+    function (key, source) {
+        if (key === void 0) { key = ''; }
+        /** @type {?} */
+        var classes = [];
+        if (source) {
+            for (var prop in source) {
+                if (!!source[prop]) {
+                    classes.push(prop);
+                }
+            }
+        }
+        this._inputMap[key] = classes.join(' ');
+    };
+    /**
+     *  Save the property value for string values.
+     */
+    /**
+     *  Save the property value for string values.
+     * @param {?=} key
+     * @param {?=} source
+     * @return {?}
+     */
+    BaseDirectiveAdapter.prototype._cacheInputString = /**
+     *  Save the property value for string values.
+     * @param {?=} key
+     * @param {?=} source
+     * @return {?}
+     */
+    function (key, source) {
+        if (key === void 0) { key = ''; }
+        this._inputMap[key] = source;
+    };
+    return BaseDirectiveAdapter;
+}(BaseDirective));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * @deprecated
+ * \@deletion-target v6.0.0-beta.17
+ * Abstract base class for the Layout API styling directives.
+ * @abstract
+ */
+var  /**
+ * @deprecated
+ * \@deletion-target v6.0.0-beta.17
+ * Abstract base class for the Layout API styling directives.
+ * @abstract
+ */
+BaseFxDirective = /** @class */ (function () {
+    /**
+     * Constructor
+     */
+    function BaseFxDirective(_mediaMonitor, _elementRef, _styler) {
+        this._mediaMonitor = _mediaMonitor;
+        this._elementRef = _elementRef;
+        this._styler = _styler;
+        /**
+         *  Dictionary of input keys with associated values
+         */
+        this._inputMap = {};
+        /**
+         * Has the `ngOnInit()` method fired
+         *
+         * Used to allow *ngFor tasks to finish and support queries like
+         * getComputedStyle() during ngOnInit().
+         */
+        this._hasInitialized = false;
+    }
+    Object.defineProperty(BaseFxDirective.prototype, "hasMediaQueryListener", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return !!this._mqActivation;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BaseFxDirective.prototype, "activatedValue", {
+        /**
+         * Imperatively determine the current activated [input] value;
+         * if called before ngOnInit() this will return `undefined`
+         */
+        get: /**
+         * Imperatively determine the current activated [input] value;
+         * if called before ngOnInit() this will return `undefined`
+         * @return {?}
+         */
+        function () {
+            return this._mqActivation ? this._mqActivation.activatedInput : undefined;
+        },
+        /**
+         * Change the currently activated input value and force-update
+         * the injected CSS (by-passing change detection).
+         *
+         * NOTE: Only the currently activated input value will be modified;
+         *       other input values will NOT be affected.
+         */
+        set: /**
+         * Change the currently activated input value and force-update
+         * the injected CSS (by-passing change detection).
+         *
+         * NOTE: Only the currently activated input value will be modified;
+         *       other input values will NOT be affected.
+         * @param {?} value
+         * @return {?}
+         */
+        function (value) {
+            var _a;
+            /** @type {?} */
+            var key = 'baseKey';
+            /** @type {?} */
+            var previousVal;
+            if (this._mqActivation) {
+                key = this._mqActivation.activatedInputKey;
+                previousVal = this._inputMap[key];
+                this._inputMap[key] = value;
+            }
+            /** @type {?} */
+            var change = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["SimpleChange"](previousVal, value, false);
+            this.ngOnChanges(/** @type {?} */ (_a = {}, _a[key] = change, _a));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BaseFxDirective.prototype, "parentElement", {
+        // *********************************************
+        // Accessor Methods
+        // *********************************************
+        /**
+         * Access to host element's parent DOM node
+         */
+        get: /**
+         * Access to host element's parent DOM node
+         * @return {?}
+         */
+        function () {
+            return this._elementRef.nativeElement.parentNode;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BaseFxDirective.prototype, "nativeElement", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return this._elementRef.nativeElement;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Access the current value (if any) of the @Input property.
+     */
+    /**
+     * Access the current value (if any) of the \@Input property.
+     * @param {?} key
+     * @return {?}
+     */
+    BaseFxDirective.prototype._queryInput = /**
+     * Access the current value (if any) of the \@Input property.
+     * @param {?} key
+     * @return {?}
+     */
+    function (key) {
+        return this._inputMap[key];
+    };
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * Use post-component-initialization event to perform extra
+     * querying such as computed Display style
+     */
+    /**
+     * Use post-component-initialization event to perform extra
+     * querying such as computed Display style
+     * @return {?}
+     */
+    BaseFxDirective.prototype.ngOnInit = /**
+     * Use post-component-initialization event to perform extra
+     * querying such as computed Display style
+     * @return {?}
+     */
+    function () {
+        this._display = this._getDisplayStyle();
+        this._hasInitialized = true;
+    };
+    /**
+     * @param {?} change
+     * @return {?}
+     */
+    BaseFxDirective.prototype.ngOnChanges = /**
+     * @param {?} change
+     * @return {?}
+     */
+    function (change) {
+        throw new Error("BaseFxDirective::ngOnChanges should be overridden in subclass: " + change);
+    };
+    /**
+     * @return {?}
+     */
+    BaseFxDirective.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
+        if (this._mqActivation) {
+            this._mqActivation.destroy();
+        }
+        delete this._mediaMonitor;
+    };
+    // *********************************************
+    // Protected Methods
+    // *********************************************
+    /**
+     * Was the directive's default selector used ?
+     * If not, use the fallback value!
+     */
+    /**
+     * Was the directive's default selector used ?
+     * If not, use the fallback value!
+     * @param {?} key
+     * @param {?} fallbackVal
+     * @return {?}
+     */
+    BaseFxDirective.prototype._getDefaultVal = /**
+     * Was the directive's default selector used ?
+     * If not, use the fallback value!
+     * @param {?} key
+     * @param {?} fallbackVal
+     * @return {?}
+     */
+    function (key, fallbackVal) {
+        /** @type {?} */
+        var val = this._queryInput(key);
+        /** @type {?} */
+        var hasDefaultVal = (val !== undefined && val !== null);
+        return (hasDefaultVal && val !== '') ? val : fallbackVal;
+    };
+    /**
+     * Quick accessor to the current HTMLElement's `display` style
+     * Note: this allows us to preserve the original style
+     * and optional restore it when the mediaQueries deactivate
+     */
+    /**
+     * Quick accessor to the current HTMLElement's `display` style
+     * Note: this allows us to preserve the original style
+     * and optional restore it when the mediaQueries deactivate
+     * @param {?=} source
+     * @return {?}
+     */
+    BaseFxDirective.prototype._getDisplayStyle = /**
+     * Quick accessor to the current HTMLElement's `display` style
+     * Note: this allows us to preserve the original style
+     * and optional restore it when the mediaQueries deactivate
+     * @param {?=} source
+     * @return {?}
+     */
+    function (source) {
+        if (source === void 0) { source = this.nativeElement; }
+        /** @type {?} */
+        var query = 'display';
+        return this._styler.lookupStyle(source, query);
+    };
+    /**
+     * Quick accessor to raw attribute value on the target DOM element
+     */
+    /**
+     * Quick accessor to raw attribute value on the target DOM element
+     * @param {?} attribute
+     * @param {?=} source
+     * @return {?}
+     */
+    BaseFxDirective.prototype._getAttributeValue = /**
+     * Quick accessor to raw attribute value on the target DOM element
+     * @param {?} attribute
+     * @param {?=} source
+     * @return {?}
+     */
+    function (attribute, source) {
+        if (source === void 0) { source = this.nativeElement; }
+        return this._styler.lookupAttributeValue(source, attribute);
+    };
+    /**
+     * Determine the DOM element's Flexbox flow (flex-direction).
+     *
+     * Check inline style first then check computed (stylesheet) style.
+     * And optionally add the flow value to element's inline style.
+     */
+    /**
+     * Determine the DOM element's Flexbox flow (flex-direction).
+     *
+     * Check inline style first then check computed (stylesheet) style.
+     * And optionally add the flow value to element's inline style.
+     * @param {?} target
+     * @param {?=} addIfMissing
+     * @return {?}
+     */
+    BaseFxDirective.prototype._getFlowDirection = /**
+     * Determine the DOM element's Flexbox flow (flex-direction).
+     *
+     * Check inline style first then check computed (stylesheet) style.
+     * And optionally add the flow value to element's inline style.
+     * @param {?} target
+     * @param {?=} addIfMissing
+     * @return {?}
+     */
+    function (target, addIfMissing) {
+        if (addIfMissing === void 0) { addIfMissing = false; }
+        var _a;
+        /** @type {?} */
+        var value = 'row';
+        /** @type {?} */
+        var hasInlineValue = '';
+        if (target) {
+            _a = this._styler.getFlowDirection(target), value = _a[0], hasInlineValue = _a[1];
+            if (!hasInlineValue && addIfMissing) {
+                /** @type {?} */
+                var style = buildLayoutCSS(value);
+                /** @type {?} */
+                var elements = [target];
+                this._styler.applyStyleToElements(style, elements);
+            }
+        }
+        return value.trim() || 'row';
+    };
+    /**
+     * Applies styles given via string pair or object map to the directive element.
+     */
+    /**
+     * Applies styles given via string pair or object map to the directive element.
+     * @param {?} style
+     * @param {?=} value
+     * @param {?=} element
+     * @return {?}
+     */
+    BaseFxDirective.prototype._applyStyleToElement = /**
+     * Applies styles given via string pair or object map to the directive element.
+     * @param {?} style
+     * @param {?=} value
+     * @param {?=} element
+     * @return {?}
+     */
+    function (style, value, element) {
+        if (element === void 0) { element = this.nativeElement; }
+        this._styler.applyStyleToElement(element, style, value);
+    };
+    /**
+     * Applies styles given via string pair or object map to the directive's element.
+     */
+    /**
+     * Applies styles given via string pair or object map to the directive's element.
+     * @param {?} style
+     * @param {?} elements
+     * @return {?}
+     */
+    BaseFxDirective.prototype._applyStyleToElements = /**
+     * Applies styles given via string pair or object map to the directive's element.
+     * @param {?} style
+     * @param {?} elements
+     * @return {?}
+     */
+    function (style, elements) {
+        this._styler.applyStyleToElements(style, elements);
+    };
+    /**
+     *  Save the property value; which may be a complex object.
+     *  Complex objects support property chains
+     */
+    /**
+     *  Save the property value; which may be a complex object.
+     *  Complex objects support property chains
+     * @param {?=} key
+     * @param {?=} source
+     * @return {?}
+     */
+    BaseFxDirective.prototype._cacheInput = /**
+     *  Save the property value; which may be a complex object.
+     *  Complex objects support property chains
+     * @param {?=} key
+     * @param {?=} source
+     * @return {?}
+     */
+    function (key, source) {
+        if (typeof source === 'object') {
+            for (var prop in source) {
+                this._inputMap[prop] = source[prop];
+            }
+        }
+        else {
+            if (!!key) {
+                this._inputMap[key] = source;
+            }
+        }
+    };
+    /**
+     *  Build a ResponsiveActivation object used to manage subscriptions to mediaChange notifications
+     *  and intelligent lookup of the directive's property value that corresponds to that mediaQuery
+     *  (or closest match).
+     */
+    /**
+     *  Build a ResponsiveActivation object used to manage subscriptions to mediaChange notifications
+     *  and intelligent lookup of the directive's property value that corresponds to that mediaQuery
+     *  (or closest match).
+     * @param {?} key
+     * @param {?} defaultValue
+     * @param {?} onMediaQueryChange
+     * @return {?}
+     */
+    BaseFxDirective.prototype._listenForMediaQueryChanges = /**
+     *  Build a ResponsiveActivation object used to manage subscriptions to mediaChange notifications
+     *  and intelligent lookup of the directive's property value that corresponds to that mediaQuery
+     *  (or closest match).
+     * @param {?} key
+     * @param {?} defaultValue
+     * @param {?} onMediaQueryChange
+     * @return {?}
+     */
+    function (key, defaultValue, onMediaQueryChange) {
+        // tslint:disable-line:max-line-length
+        if (!this._mqActivation) {
+            /** @type {?} */
+            var keyOptions = new KeyOptions(key, defaultValue, this._inputMap);
+            this._mqActivation = new ResponsiveActivation(keyOptions, this._mediaMonitor, function (change) { return onMediaQueryChange(change); });
+        }
+        return this._mqActivation;
+    };
+    Object.defineProperty(BaseFxDirective.prototype, "childrenNodes", {
+        /**
+         * Special accessor to query for all child 'element' nodes regardless of type, class, etc.
+         */
+        get: /**
+         * Special accessor to query for all child 'element' nodes regardless of type, class, etc.
+         * @return {?}
+         */
+        function () {
+            /** @type {?} */
+            var obj = this.nativeElement.children;
+            /** @type {?} */
+            var buffer = [];
+            // iterate backwards ensuring that length is an UInt32
+            for (var i = obj.length; i--;) {
+                buffer[i] = obj[i];
+            }
+            return buffer;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Does this directive have 1 or more responsive keys defined
+     * Note: we exclude the 'baseKey' key (which is NOT considered responsive)
+     */
+    /**
+     * Does this directive have 1 or more responsive keys defined
+     * Note: we exclude the 'baseKey' key (which is NOT considered responsive)
+     * @param {?} baseKey
+     * @return {?}
+     */
+    BaseFxDirective.prototype.hasResponsiveAPI = /**
+     * Does this directive have 1 or more responsive keys defined
+     * Note: we exclude the 'baseKey' key (which is NOT considered responsive)
+     * @param {?} baseKey
+     * @return {?}
+     */
+    function (baseKey) {
+        /** @type {?} */
+        var totalKeys = Object.keys(this._inputMap).length;
+        /** @type {?} */
+        var baseValue = this._inputMap[baseKey];
+        return (totalKeys - (!!baseValue ? 1 : 0)) > 0;
+    };
+    /**
+     * Fast validator for presence of attribute on the host element
+     */
+    /**
+     * Fast validator for presence of attribute on the host element
+     * @param {?} key
+     * @return {?}
+     */
+    BaseFxDirective.prototype.hasKeyValue = /**
+     * Fast validator for presence of attribute on the host element
+     * @param {?} key
+     * @return {?}
+     */
+    function (key) {
+        return this._mqActivation.hasKeyValue(key);
+    };
+    Object.defineProperty(BaseFxDirective.prototype, "hasInitialized", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return this._hasInitialized;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return BaseFxDirective;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * MockMatchMedia mocks calls to the Window API matchMedia with a build of a simulated
+ * MockMediaQueryListener. Methods are available to simulate an activation of a mediaQuery
+ * range and to clearAll mediaQuery listeners.
+ */
+var MockMatchMedia = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_4__["__extends"])(MockMatchMedia, _super);
+    function MockMatchMedia(_zone, _platformId, _document, _breakpoints) {
+        var _this = _super.call(this, _zone, _platformId, _document) || this;
+        _this._breakpoints = _breakpoints;
+        /**
+         * Special flag used to test BreakPoint registrations with MatchMedia
+         */
+        _this.autoRegisterQueries = true;
+        /**
+         * Allow fallback to overlapping mediaQueries to determine
+         * activatedInput(s).
+         */
+        _this.useOverlaps = false;
+        _this._actives = [];
+        _this._actives = [];
+        return _this;
+    }
+    /** Easy method to clear all listeners for all mediaQueries */
+    /**
+     * Easy method to clear all listeners for all mediaQueries
+     * @return {?}
+     */
+    MockMatchMedia.prototype.clearAll = /**
+     * Easy method to clear all listeners for all mediaQueries
+     * @return {?}
+     */
+    function () {
+        this._registry.forEach(function (mql) {
+            mql.destroy();
+        });
+        this._registry.clear();
+        this.useOverlaps = false;
+    };
+    /** Feature to support manual, simulated activation of a mediaQuery. */
+    /**
+     * Feature to support manual, simulated activation of a mediaQuery.
+     * @param {?} mediaQuery
+     * @param {?=} useOverlaps
+     * @return {?}
+     */
+    MockMatchMedia.prototype.activate = /**
+     * Feature to support manual, simulated activation of a mediaQuery.
+     * @param {?} mediaQuery
+     * @param {?=} useOverlaps
+     * @return {?}
+     */
+    function (mediaQuery, useOverlaps) {
+        if (useOverlaps === void 0) { useOverlaps = false; }
+        useOverlaps = useOverlaps || this.useOverlaps;
+        mediaQuery = this._validateQuery(mediaQuery);
+        if (useOverlaps || !this.isActive(mediaQuery)) {
+            this._deactivateAll();
+            this._registerMediaQuery(mediaQuery);
+            this._activateWithOverlaps(mediaQuery, useOverlaps);
+        }
+        return this.hasActivated;
+    };
+    /** Converts an optional mediaQuery alias to a specific, valid mediaQuery */
+    /**
+     * Converts an optional mediaQuery alias to a specific, valid mediaQuery
+     * @param {?} queryOrAlias
+     * @return {?}
+     */
+    MockMatchMedia.prototype._validateQuery = /**
+     * Converts an optional mediaQuery alias to a specific, valid mediaQuery
+     * @param {?} queryOrAlias
+     * @return {?}
+     */
+    function (queryOrAlias) {
+        /** @type {?} */
+        var bp = this._breakpoints.findByAlias(queryOrAlias);
+        if (bp) {
+            queryOrAlias = bp.mediaQuery;
+        }
+        return queryOrAlias;
+    };
+    /**
+     * Manually activate any overlapping mediaQueries to simulate
+     * similar functionality in the window.matchMedia()
+     * @param {?} mediaQuery
+     * @param {?} useOverlaps
+     * @return {?}
+     */
+    MockMatchMedia.prototype._activateWithOverlaps = /**
+     * Manually activate any overlapping mediaQueries to simulate
+     * similar functionality in the window.matchMedia()
+     * @param {?} mediaQuery
+     * @param {?} useOverlaps
+     * @return {?}
+     */
+    function (mediaQuery, useOverlaps) {
+        if (useOverlaps) {
+            /** @type {?} */
+            var bp = this._breakpoints.findByQuery(mediaQuery);
+            /** @type {?} */
+            var alias = bp ? bp.alias : 'unknown';
+            // Simulate activation of overlapping lt-<XXX> ranges
+            switch (alias) {
+                case 'lg':
+                    this._activateByAlias('lt-xl');
+                    break;
+                case 'md':
+                    this._activateByAlias('lt-xl, lt-lg');
+                    break;
+                case 'sm':
+                    this._activateByAlias('lt-xl, lt-lg, lt-md');
+                    break;
+                case 'xs':
+                    this._activateByAlias('lt-xl, lt-lg, lt-md, lt-sm');
+                    break;
+            }
+            // Simulate activate of overlapping gt-<xxxx> mediaQuery ranges
+            switch (alias) {
+                case 'xl':
+                    this._activateByAlias('gt-lg, gt-md, gt-sm, gt-xs');
+                    break;
+                case 'lg':
+                    this._activateByAlias('gt-md, gt-sm, gt-xs');
+                    break;
+                case 'md':
+                    this._activateByAlias('gt-sm, gt-xs');
+                    break;
+                case 'sm':
+                    this._activateByAlias('gt-xs');
+                    break;
+            }
+        }
+        // Activate last since the responsiveActivation is watching *this* mediaQuery
+        return this._activateByQuery(mediaQuery);
+    };
+    /**
+     *
+     * @param {?} aliases
+     * @return {?}
+     */
+    MockMatchMedia.prototype._activateByAlias = /**
+     *
+     * @param {?} aliases
+     * @return {?}
+     */
+    function (aliases) {
+        var _this = this;
+        /** @type {?} */
+        var activate = function (alias) {
+            /** @type {?} */
+            var bp = _this._breakpoints.findByAlias(alias);
+            _this._activateByQuery(bp ? bp.mediaQuery : alias);
+        };
+        aliases.split(',').forEach(function (alias) { return activate(alias.trim()); });
+    };
+    /**
+     *
+     * @param {?} mediaQuery
+     * @return {?}
+     */
+    MockMatchMedia.prototype._activateByQuery = /**
+     *
+     * @param {?} mediaQuery
+     * @return {?}
+     */
+    function (mediaQuery) {
+        /** @type {?} */
+        var mql = /** @type {?} */ (this._registry.get(mediaQuery));
+        /** @type {?} */
+        var alreadyAdded = this._actives.reduce(function (found, it) {
+            return found || (mql && (it.media === mql.media));
+        }, false);
+        if (mql && !alreadyAdded) {
+            this._actives.push(mql.activate());
+        }
+        return this.hasActivated;
+    };
+    /**
+     * Deactivate all current Mock MQLs
+     * @return {?}
+     */
+    MockMatchMedia.prototype._deactivateAll = /**
+     * Deactivate all current Mock MQLs
+     * @return {?}
+     */
+    function () {
+        if (this._actives.length) {
+            // Deactivate all current MQLs and reset the buffer
+            for (var _i = 0, _a = this._actives; _i < _a.length; _i++) {
+                var it = _a[_i];
+                it.deactivate();
+            }
+            this._actives = [];
+        }
+        return this;
+    };
+    /**
+     * Insure the mediaQuery is registered with MatchMedia
+     * @param {?} mediaQuery
+     * @return {?}
+     */
+    MockMatchMedia.prototype._registerMediaQuery = /**
+     * Insure the mediaQuery is registered with MatchMedia
+     * @param {?} mediaQuery
+     * @return {?}
+     */
+    function (mediaQuery) {
+        if (!this._registry.has(mediaQuery) && this.autoRegisterQueries) {
+            this.registerQuery(mediaQuery);
+        }
+    };
+    /**
+     * Call window.matchMedia() to build a MediaQueryList; which
+     * supports 0..n listeners for activation/deactivation
+     */
+    /**
+     * Call window.matchMedia() to build a MediaQueryList; which
+     * supports 0..n listeners for activation/deactivation
+     * @param {?} query
+     * @return {?}
+     */
+    MockMatchMedia.prototype._buildMQL = /**
+     * Call window.matchMedia() to build a MediaQueryList; which
+     * supports 0..n listeners for activation/deactivation
+     * @param {?} query
+     * @return {?}
+     */
+    function (query) {
+        return new MockMediaQueryList(query);
+    };
+    Object.defineProperty(MockMatchMedia.prototype, "hasActivated", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return (this._actives.length > 0);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MockMatchMedia.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"] },
+    ];
+    /** @nocollapse */
+    MockMatchMedia.ctorParameters = function () { return [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"] },
+        { type: Object, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["PLATFORM_ID"],] }] },
+        { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["DOCUMENT"],] }] },
+        { type: BreakPointRegistry }
+    ]; };
+    return MockMatchMedia;
+}(MatchMedia));
+/**
+ * Special internal class to simulate a MediaQueryList and
+ * - supports manual activation to simulate mediaQuery matching
+ * - manages listeners
+ */
+var  /**
+ * Special internal class to simulate a MediaQueryList and
+ * - supports manual activation to simulate mediaQuery matching
+ * - manages listeners
+ */
+MockMediaQueryList = /** @class */ (function () {
+    function MockMediaQueryList(_mediaQuery) {
+        this._mediaQuery = _mediaQuery;
+        this._isActive = false;
+        this._listeners = [];
+    }
+    Object.defineProperty(MockMediaQueryList.prototype, "matches", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return this._isActive;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MockMediaQueryList.prototype, "media", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return this._mediaQuery;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Destroy the current list by deactivating the
+     * listeners and clearing the internal list
+     */
+    /**
+     * Destroy the current list by deactivating the
+     * listeners and clearing the internal list
+     * @return {?}
+     */
+    MockMediaQueryList.prototype.destroy = /**
+     * Destroy the current list by deactivating the
+     * listeners and clearing the internal list
+     * @return {?}
+     */
+    function () {
+        this.deactivate();
+        this._listeners = [];
+    };
+    /** Notify all listeners that 'matches === TRUE' */
+    /**
+     * Notify all listeners that 'matches === TRUE'
+     * @return {?}
+     */
+    MockMediaQueryList.prototype.activate = /**
+     * Notify all listeners that 'matches === TRUE'
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        if (!this._isActive) {
+            this._isActive = true;
+            this._listeners.forEach(function (callback) {
+                callback(_this);
+            });
+        }
+        return this;
+    };
+    /** Notify all listeners that 'matches === false' */
+    /**
+     * Notify all listeners that 'matches === false'
+     * @return {?}
+     */
+    MockMediaQueryList.prototype.deactivate = /**
+     * Notify all listeners that 'matches === false'
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        if (this._isActive) {
+            this._isActive = false;
+            this._listeners.forEach(function (callback) {
+                callback(_this);
+            });
+        }
+        return this;
+    };
+    /** Add a listener to our internal list to activate later */
+    /**
+     * Add a listener to our internal list to activate later
+     * @param {?} listener
+     * @return {?}
+     */
+    MockMediaQueryList.prototype.addListener = /**
+     * Add a listener to our internal list to activate later
+     * @param {?} listener
+     * @return {?}
+     */
+    function (listener) {
+        if (this._listeners.indexOf(listener) === -1) {
+            this._listeners.push(listener);
+        }
+        if (this._isActive) {
+            listener(this);
+        }
+    };
+    /** Don't need to remove listeners in the testing environment */
+    /**
+     * Don't need to remove listeners in the testing environment
+     * @param {?} _
+     * @return {?}
+     */
+    MockMediaQueryList.prototype.removeListener = /**
+     * Don't need to remove listeners in the testing environment
+     * @param {?} _
+     * @return {?}
+     */
+    function (_) {
+    };
+    return MockMediaQueryList;
+}());
+/** *
+ * Pre-configured provider for MockMatchMedia
+  @type {?} */
+var MockMatchMediaProvider = {
+    // tslint:disable-line:variable-name
+    provide: MatchMedia,
+    useClass: MockMatchMedia
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Special server-only class to simulate a MediaQueryList and
+ * - supports manual activation to simulate mediaQuery matching
+ * - manages listeners
+ */
+var  /**
+ * Special server-only class to simulate a MediaQueryList and
+ * - supports manual activation to simulate mediaQuery matching
+ * - manages listeners
+ */
+ServerMediaQueryList = /** @class */ (function () {
+    function ServerMediaQueryList(_mediaQuery) {
+        this._mediaQuery = _mediaQuery;
+        this._isActive = false;
+        this._listeners = [];
+    }
+    Object.defineProperty(ServerMediaQueryList.prototype, "matches", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return this._isActive;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ServerMediaQueryList.prototype, "media", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return this._mediaQuery;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Destroy the current list by deactivating the
+     * listeners and clearing the internal list
+     */
+    /**
+     * Destroy the current list by deactivating the
+     * listeners and clearing the internal list
+     * @return {?}
+     */
+    ServerMediaQueryList.prototype.destroy = /**
+     * Destroy the current list by deactivating the
+     * listeners and clearing the internal list
+     * @return {?}
+     */
+    function () {
+        this.deactivate();
+        this._listeners = [];
+    };
+    /** Notify all listeners that 'matches === TRUE' */
+    /**
+     * Notify all listeners that 'matches === TRUE'
+     * @return {?}
+     */
+    ServerMediaQueryList.prototype.activate = /**
+     * Notify all listeners that 'matches === TRUE'
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        if (!this._isActive) {
+            this._isActive = true;
+            this._listeners.forEach(function (callback) {
+                callback(_this);
+            });
+        }
+        return this;
+    };
+    /** Notify all listeners that 'matches === false' */
+    /**
+     * Notify all listeners that 'matches === false'
+     * @return {?}
+     */
+    ServerMediaQueryList.prototype.deactivate = /**
+     * Notify all listeners that 'matches === false'
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        if (this._isActive) {
+            this._isActive = false;
+            this._listeners.forEach(function (callback) {
+                callback(_this);
+            });
+        }
+        return this;
+    };
+    /** Add a listener to our internal list to activate later */
+    /**
+     * Add a listener to our internal list to activate later
+     * @param {?} listener
+     * @return {?}
+     */
+    ServerMediaQueryList.prototype.addListener = /**
+     * Add a listener to our internal list to activate later
+     * @param {?} listener
+     * @return {?}
+     */
+    function (listener) {
+        if (this._listeners.indexOf(listener) === -1) {
+            this._listeners.push(listener);
+        }
+        if (this._isActive) {
+            listener(this);
+        }
+    };
+    /** Don't need to remove listeners in the server environment */
+    /**
+     * Don't need to remove listeners in the server environment
+     * @param {?} _
+     * @return {?}
+     */
+    ServerMediaQueryList.prototype.removeListener = /**
+     * Don't need to remove listeners in the server environment
+     * @param {?} _
+     * @return {?}
+     */
+    function (_) {
+    };
+    return ServerMediaQueryList;
+}());
+/**
+ * Special server-only implementation of MatchMedia that uses the above
+ * ServerMediaQueryList as its internal representation
+ *
+ * Also contains methods to activate and deactivate breakpoints
+ */
+var ServerMatchMedia = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_4__["__extends"])(ServerMatchMedia, _super);
+    function ServerMatchMedia(_zone, _platformId, _document) {
+        var _this = _super.call(this, _zone, _platformId, _document) || this;
+        _this._zone = _zone;
+        _this._platformId = _platformId;
+        _this._document = _document;
+        _this._registry = new Map();
+        _this._source = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](new MediaChange(true));
+        _this._observable$ = _this._source.asObservable();
+        return _this;
+    }
+    /** Activate the specified breakpoint if we're on the server, no-op otherwise */
+    /**
+     * Activate the specified breakpoint if we're on the server, no-op otherwise
+     * @param {?} bp
+     * @return {?}
+     */
+    ServerMatchMedia.prototype.activateBreakpoint = /**
+     * Activate the specified breakpoint if we're on the server, no-op otherwise
+     * @param {?} bp
+     * @return {?}
+     */
+    function (bp) {
+        /** @type {?} */
+        var lookupBreakpoint = this._registry.get(bp.mediaQuery);
+        if (lookupBreakpoint) {
+            lookupBreakpoint.activate();
+        }
+    };
+    /** Deactivate the specified breakpoint if we're on the server, no-op otherwise */
+    /**
+     * Deactivate the specified breakpoint if we're on the server, no-op otherwise
+     * @param {?} bp
+     * @return {?}
+     */
+    ServerMatchMedia.prototype.deactivateBreakpoint = /**
+     * Deactivate the specified breakpoint if we're on the server, no-op otherwise
+     * @param {?} bp
+     * @return {?}
+     */
+    function (bp) {
+        /** @type {?} */
+        var lookupBreakpoint = this._registry.get(bp.mediaQuery);
+        if (lookupBreakpoint) {
+            lookupBreakpoint.deactivate();
+        }
+    };
+    /**
+     * Call window.matchMedia() to build a MediaQueryList; which
+     * supports 0..n listeners for activation/deactivation
+     */
+    /**
+     * Call window.matchMedia() to build a MediaQueryList; which
+     * supports 0..n listeners for activation/deactivation
+     * @param {?} query
+     * @return {?}
+     */
+    ServerMatchMedia.prototype._buildMQL = /**
+     * Call window.matchMedia() to build a MediaQueryList; which
+     * supports 0..n listeners for activation/deactivation
+     * @param {?} query
+     * @return {?}
+     */
+    function (query) {
+        return new ServerMediaQueryList(query);
+    };
+    ServerMatchMedia.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"] },
+    ];
+    /** @nocollapse */
+    ServerMatchMedia.ctorParameters = function () { return [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"] },
+        { type: Object, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["PLATFORM_ID"],] }] },
+        { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["DOCUMENT"],] }] }
+    ]; };
+    return ServerMatchMedia;
+}(MatchMedia));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * MediaMonitor uses the MatchMedia service to observe mediaQuery changes (both activations and
+ * deactivations). These changes are are published as MediaChange notifications.
+ *
+ * Note: all notifications will be performed within the
+ * ng Zone to trigger change detections and component updates.
+ *
+ * It is the MediaMonitor that:
+ *  - auto registers all known breakpoints
+ *  - injects alias information into each raw MediaChange event
+ *  - provides accessor to the currently active BreakPoint
+ *  - publish list of overlapping BreakPoint(s); used by ResponsiveActivation
+ */
+var MediaMonitor = /** @class */ (function () {
+    function MediaMonitor(_breakpoints, _matchMedia) {
+        this._breakpoints = _breakpoints;
+        this._matchMedia = _matchMedia;
+        this._registerBreakpoints();
+    }
+    Object.defineProperty(MediaMonitor.prototype, "breakpoints", {
+        /**
+         * Read-only accessor to the list of breakpoints configured in the BreakPointRegistry provider
+         */
+        get: /**
+         * Read-only accessor to the list of breakpoints configured in the BreakPointRegistry provider
+         * @return {?}
+         */
+        function () {
+            return this._breakpoints.items.slice();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MediaMonitor.prototype, "activeOverlaps", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            /** @type {?} */
+            var items = this._breakpoints.overlappings.reverse();
+            return items.filter(function (bp) {
+                return _this._matchMedia.isActive(bp.mediaQuery);
+            });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MediaMonitor.prototype, "active", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            /** @type {?} */
+            var found = null;
+            /** @type {?} */
+            var items = this.breakpoints.reverse();
+            items.forEach(function (bp) {
+                if (bp.alias !== '') {
+                    if (!found && _this._matchMedia.isActive(bp.mediaQuery)) {
+                        found = bp;
+                    }
+                }
+            });
+            /** @type {?} */
+            var first = this.breakpoints[0];
+            return found || (this._matchMedia.isActive(first.mediaQuery) ? first : null);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * For the specified mediaQuery alias, is the mediaQuery range active?
+     */
+    /**
+     * For the specified mediaQuery alias, is the mediaQuery range active?
+     * @param {?} alias
+     * @return {?}
+     */
+    MediaMonitor.prototype.isActive = /**
+     * For the specified mediaQuery alias, is the mediaQuery range active?
+     * @param {?} alias
+     * @return {?}
+     */
+    function (alias) {
+        /** @type {?} */
+        var bp = this._breakpoints.findByAlias(alias) || this._breakpoints.findByQuery(alias);
+        return this._matchMedia.isActive(bp ? bp.mediaQuery : alias);
+    };
+    /**
+     * External observers can watch for all (or a specific) mql changes.
+     * If specific breakpoint is observed, only return *activated* events
+     * otherwise return all events for BOTH activated + deactivated changes.
+     */
+    /**
+     * External observers can watch for all (or a specific) mql changes.
+     * If specific breakpoint is observed, only return *activated* events
+     * otherwise return all events for BOTH activated + deactivated changes.
+     * @param {?=} alias
+     * @return {?}
+     */
+    MediaMonitor.prototype.observe = /**
+     * External observers can watch for all (or a specific) mql changes.
+     * If specific breakpoint is observed, only return *activated* events
+     * otherwise return all events for BOTH activated + deactivated changes.
+     * @param {?=} alias
+     * @return {?}
+     */
+    function (alias) {
+        /** @type {?} */
+        var bp = this._breakpoints.findByAlias(alias || '') ||
+            this._breakpoints.findByQuery(alias || '');
+        /** @type {?} */
+        var hasAlias = function (change) { return (bp ? change.mqAlias !== '' : true); };
+        /** @type {?} */
+        var media$ = this._matchMedia.observe(bp ? bp.mediaQuery : alias);
+        return media$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (change) { return mergeAlias(change, bp); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["filter"])(hasAlias));
+    };
+    /**
+     * Immediate calls to matchMedia() to establish listeners
+     * and prepare for immediate subscription notifications
+     * @return {?}
+     */
+    MediaMonitor.prototype._registerBreakpoints = /**
+     * Immediate calls to matchMedia() to establish listeners
+     * and prepare for immediate subscription notifications
+     * @return {?}
+     */
+    function () {
+        /** @type {?} */
+        var queries = this._breakpoints.sortedItems.map(function (bp) { return bp.mediaQuery; });
+        this._matchMedia.registerQuery(queries);
+    };
+    MediaMonitor.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"], args: [{ providedIn: 'root' },] },
+    ];
+    /** @nocollapse */
+    MediaMonitor.ctorParameters = function () { return [
+        { type: BreakPointRegistry },
+        { type: MatchMedia }
+    ]; };
+    /** @nocollapse */ MediaMonitor.ngInjectableDef = Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["defineInjectable"])({ factory: function MediaMonitor_Factory() { return new MediaMonitor(Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(BreakPointRegistry), Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(MatchMedia)); }, token: MediaMonitor, providedIn: "root" });
+    return MediaMonitor;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Ensure a single global service provider
+ * @deprecated
+ * \@deletion-target v6.0.0-beta.16
+ * @param {?} parentMonitor
+ * @param {?} breakpoints
+ * @param {?} matchMedia
+ * @return {?}
+ */
+function MEDIA_MONITOR_PROVIDER_FACTORY(parentMonitor, breakpoints, matchMedia) {
+    return parentMonitor || new MediaMonitor(breakpoints, matchMedia);
+}
+/** *
+ * Export provider that uses a global service factory (above)
+ * @deprecated
+ * \@deletion-target v6.0.0-beta.16
+  @type {?} */
+var MEDIA_MONITOR_PROVIDER = {
+    provide: MediaMonitor,
+    deps: [
+        [new _angular_core__WEBPACK_IMPORTED_MODULE_0__["Optional"](), new _angular_core__WEBPACK_IMPORTED_MODULE_0__["SkipSelf"](), MediaMonitor],
+        BreakPointRegistry,
+        MatchMedia,
+    ],
+    useFactory: MEDIA_MONITOR_PROVIDER_FACTORY
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Ensure a single global ObservableMedia service provider
+ * @deprecated
+ * \@deletion-target v6.0.0-beta.16
+ * @param {?} parentService
+ * @param {?} matchMedia
+ * @param {?} breakpoints
+ * @return {?}
+ */
+function OBSERVABLE_MEDIA_PROVIDER_FACTORY(parentService, matchMedia, breakpoints) {
+    return parentService || new MediaService(breakpoints, matchMedia);
+}
+/** *
+ *  Provider to return global service for observable service for all MediaQuery activations
+ * @deprecated
+ * \@deletion-target v6.0.0-beta.16
+  @type {?} */
+var OBSERVABLE_MEDIA_PROVIDER = {
+    // tslint:disable-line:variable-name
+    provide: ObservableMedia,
+    deps: [
+        [new _angular_core__WEBPACK_IMPORTED_MODULE_0__["Optional"](), new _angular_core__WEBPACK_IMPORTED_MODULE_0__["SkipSelf"](), ObservableMedia],
+        MatchMedia,
+        BreakPointRegistry
+    ],
+    useFactory: OBSERVABLE_MEDIA_PROVIDER_FACTORY
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * Applies CSS prefixes to appropriate style keys.
+ *
+ * Note: `-ms-`, `-moz` and `-webkit-box` are no longer supported. e.g.
+ *    {
+ *      display: -webkit-flex;     NEW - Safari 6.1+. iOS 7.1+, BB10
+ *      display: flex;             NEW, Spec - Firefox, Chrome, Opera
+ *      // display: -webkit-box;   OLD - iOS 6-, Safari 3.1-6, BB7
+ *      // display: -ms-flexbox;   TWEENER - IE 10
+ *      // display: -moz-flexbox;  OLD - Firefox
+ *    }
+ * @param {?} target
+ * @return {?}
+ */
+function applyCssPrefixes(target) {
+    for (var key in target) {
+        /** @type {?} */
+        var value = target[key] || '';
+        switch (key) {
+            case 'display':
+                if (value === 'flex') {
+                    target['display'] = [
+                        '-webkit-flex',
+                        'flex'
+                    ];
+                }
+                else if (value === 'inline-flex') {
+                    target['display'] = [
+                        '-webkit-inline-flex',
+                        'inline-flex'
+                    ];
+                }
+                else {
+                    target['display'] = value;
+                }
+                break;
+            case 'align-items':
+            case 'align-self':
+            case 'align-content':
+            case 'flex':
+            case 'flex-basis':
+            case 'flex-flow':
+            case 'flex-grow':
+            case 'flex-shrink':
+            case 'flex-wrap':
+            case 'justify-content':
+                target['-webkit-' + key] = value;
+                break;
+            case 'flex-direction':
+                value = value || 'row';
+                target['-webkit-flex-direction'] = value;
+                target['flex-direction'] = value;
+                break;
+            case 'order':
+                target['order'] = target['-webkit-' + key] = isNaN(value) ? '0' : value;
+                break;
+        }
+    }
+    return target;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+var StyleUtils = /** @class */ (function () {
+    function StyleUtils(_serverStylesheet, _serverModuleLoaded, _platformId, layoutConfig) {
+        this._serverStylesheet = _serverStylesheet;
+        this._serverModuleLoaded = _serverModuleLoaded;
+        this._platformId = _platformId;
+        this.layoutConfig = layoutConfig;
+    }
+    /**
+     * Applies styles given via string pair or object map to the directive element
+     */
+    /**
+     * Applies styles given via string pair or object map to the directive element
+     * @param {?} element
+     * @param {?} style
+     * @param {?=} value
+     * @return {?}
+     */
+    StyleUtils.prototype.applyStyleToElement = /**
+     * Applies styles given via string pair or object map to the directive element
+     * @param {?} element
+     * @param {?} style
+     * @param {?=} value
+     * @return {?}
+     */
+    function (element, style, value) {
+        /** @type {?} */
+        var styles = {};
+        if (typeof style === 'string') {
+            styles[style] = value;
+            style = styles;
+        }
+        styles = this.layoutConfig.disableVendorPrefixes ? style : applyCssPrefixes(style);
+        this._applyMultiValueStyleToElement(styles, element);
+    };
+    /**
+     * Applies styles given via string pair or object map to the directive's element
+     */
+    /**
+     * Applies styles given via string pair or object map to the directive's element
+     * @param {?} style
+     * @param {?=} elements
+     * @return {?}
+     */
+    StyleUtils.prototype.applyStyleToElements = /**
+     * Applies styles given via string pair or object map to the directive's element
+     * @param {?} style
+     * @param {?=} elements
+     * @return {?}
+     */
+    function (style, elements) {
+        var _this = this;
+        if (elements === void 0) { elements = []; }
+        /** @type {?} */
+        var styles = this.layoutConfig.disableVendorPrefixes ? style : applyCssPrefixes(style);
+        elements.forEach(function (el) {
+            _this._applyMultiValueStyleToElement(styles, el);
+        });
+    };
+    /**
+     * Determine the DOM element's Flexbox flow (flex-direction)
+     *
+     * Check inline style first then check computed (stylesheet) style
+     */
+    /**
+     * Determine the DOM element's Flexbox flow (flex-direction)
+     *
+     * Check inline style first then check computed (stylesheet) style
+     * @param {?} target
+     * @return {?}
+     */
+    StyleUtils.prototype.getFlowDirection = /**
+     * Determine the DOM element's Flexbox flow (flex-direction)
+     *
+     * Check inline style first then check computed (stylesheet) style
+     * @param {?} target
+     * @return {?}
+     */
+    function (target) {
+        /** @type {?} */
+        var query = 'flex-direction';
+        /** @type {?} */
+        var value = this.lookupStyle(target, query);
+        if (value === FALLBACK_STYLE) {
+            value = '';
+        }
+        /** @type {?} */
+        var hasInlineValue = this.lookupInlineStyle(target, query) ||
+            (Object(_angular_common__WEBPACK_IMPORTED_MODULE_1__["isPlatformServer"])(this._platformId) && this._serverModuleLoaded) ? value : '';
+        return [value || 'row', hasInlineValue];
+    };
+    /**
+     * Find the DOM element's raw attribute value (if any)
+     */
+    /**
+     * Find the DOM element's raw attribute value (if any)
+     * @param {?} element
+     * @param {?} attribute
+     * @return {?}
+     */
+    StyleUtils.prototype.lookupAttributeValue = /**
+     * Find the DOM element's raw attribute value (if any)
+     * @param {?} element
+     * @param {?} attribute
+     * @return {?}
+     */
+    function (element, attribute) {
+        return element.getAttribute(attribute) || '';
+    };
+    /**
+     * Find the DOM element's inline style value (if any)
+     */
+    /**
+     * Find the DOM element's inline style value (if any)
+     * @param {?} element
+     * @param {?} styleName
+     * @return {?}
+     */
+    StyleUtils.prototype.lookupInlineStyle = /**
+     * Find the DOM element's inline style value (if any)
+     * @param {?} element
+     * @param {?} styleName
+     * @return {?}
+     */
+    function (element, styleName) {
+        return Object(_angular_common__WEBPACK_IMPORTED_MODULE_1__["isPlatformBrowser"])(this._platformId) ?
+            element.style[styleName] : this._getServerStyle(element, styleName);
+    };
+    /**
+     * Determine the inline or inherited CSS style
+     * NOTE: platform-server has no implementation for getComputedStyle
+     */
+    /**
+     * Determine the inline or inherited CSS style
+     * NOTE: platform-server has no implementation for getComputedStyle
+     * @param {?} element
+     * @param {?} styleName
+     * @param {?=} inlineOnly
+     * @return {?}
+     */
+    StyleUtils.prototype.lookupStyle = /**
+     * Determine the inline or inherited CSS style
+     * NOTE: platform-server has no implementation for getComputedStyle
+     * @param {?} element
+     * @param {?} styleName
+     * @param {?=} inlineOnly
+     * @return {?}
+     */
+    function (element, styleName, inlineOnly) {
+        if (inlineOnly === void 0) { inlineOnly = false; }
+        /** @type {?} */
+        var value = '';
+        if (element) {
+            /** @type {?} */
+            var immediateValue = value = this.lookupInlineStyle(element, styleName);
+            if (!immediateValue) {
+                if (Object(_angular_common__WEBPACK_IMPORTED_MODULE_1__["isPlatformBrowser"])(this._platformId)) {
+                    if (!inlineOnly) {
+                        value = getComputedStyle(element).getPropertyValue(styleName);
+                    }
+                }
+                else {
+                    if (this._serverModuleLoaded) {
+                        value = this._serverStylesheet.getStyleForElement(element, styleName);
+                    }
+                }
+            }
+        }
+        // Note: 'inline' is the default of all elements, unless UA stylesheet overrides;
+        //       in which case getComputedStyle() should determine a valid value.
+        return value ? value.trim() : FALLBACK_STYLE;
+    };
+    /**
+     * Applies the styles to the element. The styles object map may contain an array of values
+     * Each value will be added as element style
+     * Keys are sorted to add prefixed styles (like -webkit-x) first, before the standard ones
+     * @param {?} styles
+     * @param {?} element
+     * @return {?}
+     */
+    StyleUtils.prototype._applyMultiValueStyleToElement = /**
+     * Applies the styles to the element. The styles object map may contain an array of values
+     * Each value will be added as element style
+     * Keys are sorted to add prefixed styles (like -webkit-x) first, before the standard ones
+     * @param {?} styles
+     * @param {?} element
+     * @return {?}
+     */
+    function (styles, element) {
+        var _this = this;
+        Object.keys(styles).sort().forEach(function (key) {
+            /** @type {?} */
+            var values = Array.isArray(styles[key]) ? styles[key] : [styles[key]];
+            values.sort();
+            for (var _i = 0, values_1 = values; _i < values_1.length; _i++) {
+                var value = values_1[_i];
+                if (Object(_angular_common__WEBPACK_IMPORTED_MODULE_1__["isPlatformBrowser"])(_this._platformId) || !_this._serverModuleLoaded) {
+                    Object(_angular_common__WEBPACK_IMPORTED_MODULE_1__["isPlatformBrowser"])(_this._platformId) ?
+                        element.style.setProperty(key, value) : _this._setServerStyle(element, key, value);
+                }
+                else {
+                    _this._serverStylesheet.addStyleToElement(element, key, value);
+                }
+            }
+        });
+    };
+    /**
+     * @param {?} element
+     * @param {?} styleName
+     * @param {?=} styleValue
+     * @return {?}
+     */
+    StyleUtils.prototype._setServerStyle = /**
+     * @param {?} element
+     * @param {?} styleName
+     * @param {?=} styleValue
+     * @return {?}
+     */
+    function (element, styleName, styleValue) {
+        styleName = styleName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+        /** @type {?} */
+        var styleMap = this._readStyleAttribute(element);
+        styleMap[styleName] = styleValue || '';
+        this._writeStyleAttribute(element, styleMap);
+    };
+    /**
+     * @param {?} element
+     * @param {?} styleName
+     * @return {?}
+     */
+    StyleUtils.prototype._getServerStyle = /**
+     * @param {?} element
+     * @param {?} styleName
+     * @return {?}
+     */
+    function (element, styleName) {
+        /** @type {?} */
+        var styleMap = this._readStyleAttribute(element);
+        return styleMap[styleName] || '';
+    };
+    /**
+     * @param {?} element
+     * @return {?}
+     */
+    StyleUtils.prototype._readStyleAttribute = /**
+     * @param {?} element
+     * @return {?}
+     */
+    function (element) {
+        /** @type {?} */
+        var styleMap = {};
+        /** @type {?} */
+        var styleAttribute = element.getAttribute('style');
+        if (styleAttribute) {
+            /** @type {?} */
+            var styleList = styleAttribute.split(/;+/g);
+            for (var i = 0; i < styleList.length; i++) {
+                /** @type {?} */
+                var style = styleList[i].trim();
+                if (style.length > 0) {
+                    /** @type {?} */
+                    var colonIndex = style.indexOf(':');
+                    if (colonIndex === -1) {
+                        throw new Error("Invalid CSS style: " + style);
+                    }
+                    /** @type {?} */
+                    var name_1 = style.substr(0, colonIndex).trim();
+                    styleMap[name_1] = style.substr(colonIndex + 1).trim();
+                }
+            }
+        }
+        return styleMap;
+    };
+    /**
+     * @param {?} element
+     * @param {?} styleMap
+     * @return {?}
+     */
+    StyleUtils.prototype._writeStyleAttribute = /**
+     * @param {?} element
+     * @param {?} styleMap
+     * @return {?}
+     */
+    function (element, styleMap) {
+        /** @type {?} */
+        var styleAttrValue = '';
+        for (var key in styleMap) {
+            /** @type {?} */
+            var newValue = styleMap[key];
+            if (newValue) {
+                styleAttrValue += key + ':' + styleMap[key] + ';';
+            }
+        }
+        element.setAttribute('style', styleAttrValue);
+    };
+    StyleUtils.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"], args: [{ providedIn: 'root' },] },
+    ];
+    /** @nocollapse */
+    StyleUtils.ctorParameters = function () { return [
+        { type: StylesheetMap, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Optional"] }] },
+        { type: Boolean, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Optional"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [SERVER_TOKEN,] }] },
+        { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["PLATFORM_ID"],] }] },
+        { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [LAYOUT_CONFIG,] }] }
+    ]; };
+    /** @nocollapse */ StyleUtils.ngInjectableDef = Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["defineInjectable"])({ factory: function StyleUtils_Factory() { return new StyleUtils(Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(StylesheetMap, 8), Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(SERVER_TOKEN, 8), Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(_angular_core__WEBPACK_IMPORTED_MODULE_0__["PLATFORM_ID"]), Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(LAYOUT_CONFIG)); }, token: StyleUtils, providedIn: "root" });
+    return StyleUtils;
+}());
+/** @type {?} */
+var FALLBACK_STYLE = 'block';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * The flex API permits 3 or 1 parts of the value:
+ *    - `flex-grow flex-shrink flex-basis`, or
+ *    - `flex-basis`
+ * @param {?} basis
+ * @param {?=} grow
+ * @param {?=} shrink
+ * @return {?}
+ */
+function validateBasis(basis, grow, shrink) {
+    if (grow === void 0) { grow = '1'; }
+    if (shrink === void 0) { shrink = '1'; }
+    /** @type {?} */
+    var parts = [grow, shrink, basis];
+    /** @type {?} */
+    var j = basis.indexOf('calc');
+    if (j > 0) {
+        parts[2] = _validateCalcValue(basis.substring(j).trim());
+        /** @type {?} */
+        var matches = basis.substr(0, j).trim().split(' ');
+        if (matches.length == 2) {
+            parts[0] = matches[0];
+            parts[1] = matches[1];
+        }
+    }
+    else if (j == 0) {
+        parts[2] = _validateCalcValue(basis.trim());
+    }
+    else {
+        /** @type {?} */
+        var matches = basis.split(' ');
+        parts = (matches.length === 3) ? matches : [
+            grow, shrink, basis
+        ];
+    }
+    return parts;
+}
+/**
+ * Calc expressions require whitespace before & after any expression operators
+ * This is a simple, crude whitespace padding solution.
+ *   - '3 3 calc(15em + 20px)'
+ *   - calc(100% / 7 * 2)
+ *   - 'calc(15em + 20px)'
+ *   - 'calc(15em+20px)'
+ *   - '37px'
+ *   = '43%'
+ * @param {?} calc
+ * @return {?}
+ */
+function _validateCalcValue(calc) {
+    return calc.replace(/[\s]/g, '').replace(/[\/\*\+\-]/g, ' $& ');
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+
+//# sourceMappingURL=core.es5.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/@angular/flex-layout/esm5/extended.es5.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/@angular/flex-layout/esm5/extended.es5.js ***!
+  \****************************************************************/
+/*! exports provided: ExtendedModule, ClassDirective, ImgSrcDirective, negativeOf, ShowHideDirective, StyleDirective */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ExtendedModule", function() { return ExtendedModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ClassDirective", function() { return ClassDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImgSrcDirective", function() { return ImgSrcDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "negativeOf", function() { return negativeOf; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ShowHideDirective", function() { return ShowHideDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StyleDirective", function() { return StyleDirective; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
+/* harmony import */ var _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/flex-layout/core */ "./node_modules/@angular/flex-layout/esm5/core.es5.js");
+/* harmony import */ var _angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/flex-layout/flex */ "./node_modules/@angular/flex-layout/esm5/flex.es5.js");
+/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+
+
+
+
+
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * This directive provides a responsive API for the HTML <img> 'src' attribute
+ * and will update the img.src property upon each responsive activation.
+ *
+ * e.g.
+ *      <img src="defaultScene.jpg" src.xs="mobileScene.jpg"></img>
+ *
+ * @see https://css-tricks.com/responsive-images-youre-just-changing-resolutions-use-src/
+ */
+var ImgSrcDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ImgSrcDirective, _super);
+    /* tslint:enable */
+    function ImgSrcDirective(_elRef, _monitor, _styler, _platformId, _serverModuleLoaded) {
+        var _this = _super.call(this, _monitor, _elRef, _styler) || this;
+        _this._elRef = _elRef;
+        _this._monitor = _monitor;
+        _this._styler = _styler;
+        _this._platformId = _platformId;
+        _this._serverModuleLoaded = _serverModuleLoaded;
+        _this._cacheInput('src', _elRef.nativeElement.getAttribute('src') || '');
+        if (Object(_angular_common__WEBPACK_IMPORTED_MODULE_2__["isPlatformServer"])(_this._platformId) && _this._serverModuleLoaded) {
+            _this.nativeElement.setAttribute('src', '');
+        }
+        return _this;
+    }
+    Object.defineProperty(ImgSrcDirective.prototype, "srcBase", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this.cacheDefaultSrc(val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "srcXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('srcXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "srcSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('srcSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "srcMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('srcMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "srcLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('srcLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "srcXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('srcXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "srcLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('srcLtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "srcLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('srcLtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "srcLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('srcLtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "srcLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('srcLtXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "srcGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('srcGtXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "srcGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('srcGtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "srcGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('srcGtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "srcGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('srcGtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Listen for responsive changes to update the img.src attribute
+     */
+    /**
+     * Listen for responsive changes to update the img.src attribute
+     * @return {?}
+     */
+    ImgSrcDirective.prototype.ngOnInit = /**
+     * Listen for responsive changes to update the img.src attribute
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        if (this.hasResponsiveKeys) {
+            // Listen for responsive changes
+            this._listenForMediaQueryChanges('src', this.defaultSrc, function () {
+                _this._updateSrcFor();
+            });
+        }
+        this._updateSrcFor();
+    };
+    /**
+     * Update the 'src' property of the host <img> element
+     */
+    /**
+     * Update the 'src' property of the host <img> element
+     * @return {?}
+     */
+    ImgSrcDirective.prototype.ngOnChanges = /**
+     * Update the 'src' property of the host <img> element
+     * @return {?}
+     */
+    function () {
+        if (this.hasInitialized) {
+            this._updateSrcFor();
+        }
+    };
+    /**
+     * Use the [responsively] activated input value to update
+     * the host img src attribute or assign a default `img.src=''`
+     * if the src has not been defined.
+     *
+     * Do nothing to standard `<img src="">` usages, only when responsive
+     * keys are present do we actually call `setAttribute()`
+     */
+    /**
+     * Use the [responsively] activated input value to update
+     * the host img src attribute or assign a default `img.src=''`
+     * if the src has not been defined.
+     *
+     * Do nothing to standard `<img src="">` usages, only when responsive
+     * keys are present do we actually call `setAttribute()`
+     * @return {?}
+     */
+    ImgSrcDirective.prototype._updateSrcFor = /**
+     * Use the [responsively] activated input value to update
+     * the host img src attribute or assign a default `img.src=''`
+     * if the src has not been defined.
+     *
+     * Do nothing to standard `<img src="">` usages, only when responsive
+     * keys are present do we actually call `setAttribute()`
+     * @return {?}
+     */
+    function () {
+        if (this.hasResponsiveKeys) {
+            /** @type {?} */
+            var url = this.activatedValue || this.defaultSrc;
+            if (Object(_angular_common__WEBPACK_IMPORTED_MODULE_2__["isPlatformServer"])(this._platformId) && this._serverModuleLoaded) {
+                this._styler.applyStyleToElement(this.nativeElement, { 'content': url ? "url(" + url + ")" : '' });
+            }
+            else {
+                this.nativeElement.setAttribute('src', String(url));
+            }
+        }
+    };
+    /**
+     * Cache initial value of 'src', this will be used as fallback when breakpoint
+     * activations change.
+     * NOTE: The default 'src' property is not bound using @Input(), so perform
+     * a post-ngOnInit() lookup of the default src value (if any).
+     */
+    /**
+     * Cache initial value of 'src', this will be used as fallback when breakpoint
+     * activations change.
+     * NOTE: The default 'src' property is not bound using \@Input(), so perform
+     * a post-ngOnInit() lookup of the default src value (if any).
+     * @param {?=} value
+     * @return {?}
+     */
+    ImgSrcDirective.prototype.cacheDefaultSrc = /**
+     * Cache initial value of 'src', this will be used as fallback when breakpoint
+     * activations change.
+     * NOTE: The default 'src' property is not bound using \@Input(), so perform
+     * a post-ngOnInit() lookup of the default src value (if any).
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        this._cacheInput('src', value || '');
+    };
+    Object.defineProperty(ImgSrcDirective.prototype, "defaultSrc", {
+        /**
+         * Empty values are maintained, undefined values are exposed as ''
+         */
+        get: /**
+         * Empty values are maintained, undefined values are exposed as ''
+         * @return {?}
+         */
+        function () {
+            return this._queryInput('src') || '';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImgSrcDirective.prototype, "hasResponsiveKeys", {
+        /**
+         * Does the <img> have 1 or more src.<xxx> responsive inputs
+         * defined... these will be mapped to activated breakpoints.
+         */
+        get: /**
+         * Does the <img> have 1 or more src.<xxx> responsive inputs
+         * defined... these will be mapped to activated breakpoints.
+         * @return {?}
+         */
+        function () {
+            return Object.keys(this._inputMap).length > 1;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ImgSrcDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{
+                    selector: "\n  img[src.xs],    img[src.sm],    img[src.md],    img[src.lg],   img[src.xl],\n  img[src.lt-sm], img[src.lt-md], img[src.lt-lg], img[src.lt-xl],\n  img[src.gt-xs], img[src.gt-sm], img[src.gt-md], img[src.gt-lg]\n"
+                },] },
+    ];
+    /** @nocollapse */
+    ImgSrcDirective.ctorParameters = function () { return [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["MediaMonitor"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["StyleUtils"] },
+        { type: Object, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"], args: [_angular_core__WEBPACK_IMPORTED_MODULE_1__["PLATFORM_ID"],] }] },
+        { type: Boolean, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"], args: [_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["SERVER_TOKEN"],] }] }
+    ]; };
+    ImgSrcDirective.propDecorators = {
+        srcBase: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src',] }],
+        srcXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src.xs',] }],
+        srcSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src.sm',] }],
+        srcMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src.md',] }],
+        srcLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src.lg',] }],
+        srcXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src.xl',] }],
+        srcLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src.lt-sm',] }],
+        srcLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src.lt-md',] }],
+        srcLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src.lt-lg',] }],
+        srcLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src.lt-xl',] }],
+        srcGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src.gt-xs',] }],
+        srcGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src.gt-sm',] }],
+        srcGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src.gt-md',] }],
+        srcGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['src.gt-lg',] }]
+    };
+    return ImgSrcDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Directive to add responsive support for ngClass.
+ * This maintains the core functionality of 'ngClass' and adds responsive API
+ * Note: this class is a no-op when rendered on the server
+ */
+var ClassDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ClassDirective, _super);
+    /* tslint:enable */
+    function ClassDirective(monitor, _iterableDiffers, _keyValueDiffers, _ngEl, _renderer, _ngClassInstance, _styler) {
+        var _this = _super.call(this, monitor, _ngEl, _styler) || this;
+        _this.monitor = monitor;
+        _this._iterableDiffers = _iterableDiffers;
+        _this._keyValueDiffers = _keyValueDiffers;
+        _this._ngEl = _ngEl;
+        _this._renderer = _renderer;
+        _this._ngClassInstance = _ngClassInstance;
+        _this._styler = _styler;
+        _this._configureAdapters();
+        return _this;
+    }
+    Object.defineProperty(ClassDirective.prototype, "ngClassBase", {
+        /**
+         * Intercept ngClass assignments so we cache the default classes
+         * which are merged with activated styles or used as fallbacks.
+         * Note: Base ngClass values are applied during ngDoCheck()
+         */
+        set: /**
+         * Intercept ngClass assignments so we cache the default classes
+         * which are merged with activated styles or used as fallbacks.
+         * Note: Base ngClass values are applied during ngDoCheck()
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) {
+            /** @type {?} */
+            var key = 'ngClass';
+            this._base.cacheInput(key, val, true);
+            this._ngClassInstance.ngClass = this._base.queryInput(key);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "klazz", {
+        /**
+         * Capture class assignments so we cache the default classes
+         * which are merged with activated styles and used as fallbacks.
+         */
+        set: /**
+         * Capture class assignments so we cache the default classes
+         * which are merged with activated styles and used as fallbacks.
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) {
+            /** @type {?} */
+            var key = 'class';
+            this._base.cacheInput(key, val);
+            this._ngClassInstance.klass = val;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "ngClassXs", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngClassXs', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "ngClassSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngClassSm', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "ngClassMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngClassMd', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "ngClassLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngClassLg', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "ngClassXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngClassXl', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "ngClassLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngClassLtSm', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "ngClassLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngClassLtMd', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "ngClassLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngClassLtLg', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "ngClassLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngClassLtXl', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "ngClassGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngClassGtXs', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "ngClassGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngClassGtSm', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "ngClassGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngClassGtMd', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ClassDirective.prototype, "ngClassGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngClassGtLg', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    // ******************************************************************
+    // Lifecycle Hooks
+    // ******************************************************************
+    /**
+     * For @Input changes on the current mq activation property
+     */
+    /**
+     * For \@Input changes on the current mq activation property
+     * @param {?} changes
+     * @return {?}
+     */
+    ClassDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (this._base.activeKey in changes) {
+            this._ngClassInstance.ngClass = this._base.mqActivation.activatedInput || '';
+        }
+    };
+    /**
+     * @return {?}
+     */
+    ClassDirective.prototype.ngOnInit = /**
+     * @return {?}
+     */
+    function () {
+        this._configureMQListener();
+    };
+    /**
+     * For ChangeDetectionStrategy.onPush and ngOnChanges() updates
+     */
+    /**
+     * For ChangeDetectionStrategy.onPush and ngOnChanges() updates
+     * @return {?}
+     */
+    ClassDirective.prototype.ngDoCheck = /**
+     * For ChangeDetectionStrategy.onPush and ngOnChanges() updates
+     * @return {?}
+     */
+    function () {
+        this._ngClassInstance.ngDoCheck();
+    };
+    /**
+     * @return {?}
+     */
+    ClassDirective.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
+        this._base.ngOnDestroy();
+        delete this._ngClassInstance;
+    };
+    // ******************************************************************
+    // Internal Methods
+    // ******************************************************************
+    /**
+     * Configure adapters (that delegate to an internal ngClass instance) if responsive
+     * keys have been defined.
+     */
+    /**
+     * Configure adapters (that delegate to an internal ngClass instance) if responsive
+     * keys have been defined.
+     * @return {?}
+     */
+    ClassDirective.prototype._configureAdapters = /**
+     * Configure adapters (that delegate to an internal ngClass instance) if responsive
+     * keys have been defined.
+     * @return {?}
+     */
+    function () {
+        this._base = new _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["BaseDirectiveAdapter"]('ngClass', this.monitor, this._ngEl, this._styler);
+        if (!this._ngClassInstance) {
+            // Create an instance NgClass Directive instance only if `ngClass=""` has NOT been defined on
+            // the same host element; since the responsive variations may be defined...
+            this._ngClassInstance = new _angular_common__WEBPACK_IMPORTED_MODULE_2__["NgClass"](this._iterableDiffers, this._keyValueDiffers, this._ngEl, this._renderer);
+        }
+    };
+    /**
+     * Build an mqActivation object that bridges mql change events to onMediaQueryChange handlers
+     * NOTE: We delegate subsequent activity to the NgClass logic
+     *       Identify the activated input value and update the ngClass iterables...
+     *       Use ngDoCheck() to actually apply the values to the element
+     */
+    /**
+     * Build an mqActivation object that bridges mql change events to onMediaQueryChange handlers
+     * NOTE: We delegate subsequent activity to the NgClass logic
+     *       Identify the activated input value and update the ngClass iterables...
+     *       Use ngDoCheck() to actually apply the values to the element
+     * @param {?=} baseKey
+     * @return {?}
+     */
+    ClassDirective.prototype._configureMQListener = /**
+     * Build an mqActivation object that bridges mql change events to onMediaQueryChange handlers
+     * NOTE: We delegate subsequent activity to the NgClass logic
+     *       Identify the activated input value and update the ngClass iterables...
+     *       Use ngDoCheck() to actually apply the values to the element
+     * @param {?=} baseKey
+     * @return {?}
+     */
+    function (baseKey) {
+        var _this = this;
+        if (baseKey === void 0) { baseKey = 'ngClass'; }
+        /** @type {?} */
+        var fallbackValue = this._base.queryInput(baseKey);
+        this._base.listenForMediaQueryChanges(baseKey, fallbackValue, function (changes) {
+            _this._ngClassInstance.ngClass = changes.value || '';
+            _this._ngClassInstance.ngDoCheck();
+        });
+    };
+    ClassDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{
+                    selector: "\n    [ngClass.xs], [ngClass.sm], [ngClass.md], [ngClass.lg], [ngClass.xl],\n    [ngClass.lt-sm], [ngClass.lt-md], [ngClass.lt-lg], [ngClass.lt-xl],\n    [ngClass.gt-xs], [ngClass.gt-sm], [ngClass.gt-md], [ngClass.gt-lg]\n  "
+                },] },
+    ];
+    /** @nocollapse */
+    ClassDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["IterableDiffers"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["KeyValueDiffers"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Renderer2"] },
+        { type: _angular_common__WEBPACK_IMPORTED_MODULE_2__["NgClass"], decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Self"] }] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["StyleUtils"] }
+    ]; };
+    ClassDirective.propDecorators = {
+        ngClassBase: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass',] }],
+        klazz: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['class',] }],
+        ngClassXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass.xs',] }],
+        ngClassSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass.sm',] }],
+        ngClassMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass.md',] }],
+        ngClassLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass.lg',] }],
+        ngClassXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass.xl',] }],
+        ngClassLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass.lt-sm',] }],
+        ngClassLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass.lt-md',] }],
+        ngClassLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass.lt-lg',] }],
+        ngClassLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass.lt-xl',] }],
+        ngClassGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass.gt-xs',] }],
+        ngClassGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass.gt-sm',] }],
+        ngClassGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass.gt-md',] }],
+        ngClassGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngClass.gt-lg',] }]
+    };
+    return ClassDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var FALSY = ['false', false, 0];
+/**
+ * For fxHide selectors, we invert the 'value'
+ * and assign to the equivalent fxShow selector cache
+ *  - When 'hide' === '' === true, do NOT show the element
+ *  - When 'hide' === false or 0... we WILL show the element
+ * @param {?} hide
+ * @return {?}
+ */
+function negativeOf(hide) {
+    return (hide === '') ? false :
+        ((hide === 'false') || (hide === 0)) ? true : !hide;
+}
+/**
+ * 'show' Layout API directive
+ *
+ */
+var ShowHideDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ShowHideDirective, _super);
+    /* tslint:enable */
+    function ShowHideDirective(monitor, layout, elRef, styleUtils, platformId, serverModuleLoaded) {
+        var _this = _super.call(this, monitor, elRef, styleUtils) || this;
+        _this.layout = layout;
+        _this.elRef = elRef;
+        _this.styleUtils = styleUtils;
+        _this.platformId = platformId;
+        _this.serverModuleLoaded = serverModuleLoaded;
+        if (layout) {
+            /**
+                   * The Layout can set the display:flex (and incorrectly affect the Hide/Show directives.
+                   * Whenever Layout [on the same element] resets its CSS, then update the Hide/Show CSS
+                   */
+            /**
+             * The Layout can set the display:flex (and incorrectly affect the Hide/Show directives.
+             * Whenever Layout [on the same element] resets its CSS, then update the Hide/Show CSS
+             */
+            _this._layoutWatcher = layout.layout$.subscribe(function () { return _this._updateWithValue(); });
+        }
+        return _this;
+    }
+    Object.defineProperty(ShowHideDirective.prototype, "show", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('show', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "showXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "showSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "showMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "showLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "showXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "showLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showLtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "showLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showLtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "showLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showLtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "showLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showLtXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "showGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showGtXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "showGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showGtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "showGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showGtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "showGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showGtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hide", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('show', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hideXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showXs', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hideSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showSm', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hideMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showMd', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hideLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showLg', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hideXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showXl', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hideLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showLtSm', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hideLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showLtMd', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hideLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showLtLg', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hideLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showLtXl', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hideGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showGtXs', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hideGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showGtSm', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hideGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showGtMd', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ShowHideDirective.prototype, "hideGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('showGtLg', negativeOf(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * Override accessor to the current HTMLElement's `display` style
+     * Note: Show/Hide will not change the display to 'flex' but will set it to 'block'
+     * unless it was already explicitly specified inline or in a CSS stylesheet.
+     */
+    /**
+     * Override accessor to the current HTMLElement's `display` style
+     * Note: Show/Hide will not change the display to 'flex' but will set it to 'block'
+     * unless it was already explicitly specified inline or in a CSS stylesheet.
+     * @return {?}
+     */
+    ShowHideDirective.prototype._getDisplayStyle = /**
+     * Override accessor to the current HTMLElement's `display` style
+     * Note: Show/Hide will not change the display to 'flex' but will set it to 'block'
+     * unless it was already explicitly specified inline or in a CSS stylesheet.
+     * @return {?}
+     */
+    function () {
+        return this.layout ? 'flex' : _super.prototype._getDisplayStyle.call(this);
+    };
+    /**
+     * On changes to any @Input properties...
+     * Default to use the non-responsive Input value ('fxShow')
+     * Then conditionally override with the mq-activated Input's current value
+     */
+    /**
+     * On changes to any \@Input properties...
+     * Default to use the non-responsive Input value ('fxShow')
+     * Then conditionally override with the mq-activated Input's current value
+     * @param {?} changes
+     * @return {?}
+     */
+    ShowHideDirective.prototype.ngOnChanges = /**
+     * On changes to any \@Input properties...
+     * Default to use the non-responsive Input value ('fxShow')
+     * Then conditionally override with the mq-activated Input's current value
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (this.hasInitialized && (changes['show'] != null || this._mqActivation)) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    ShowHideDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._display = this._getDisplayStyle();
+        /** @type {?} */
+        var value = this._getDefaultVal('show', true);
+        // Build _mqActivation controller
+        this._listenForMediaQueryChanges('show', value, function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+        this._updateWithValue();
+    };
+    /**
+     * @return {?}
+     */
+    ShowHideDirective.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
+        _super.prototype.ngOnDestroy.call(this);
+        if (this._layoutWatcher) {
+            this._layoutWatcher.unsubscribe();
+        }
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /** Validate the visibility value and then update the host's inline display style */
+    /**
+     * Validate the visibility value and then update the host's inline display style
+     * @param {?=} value
+     * @return {?}
+     */
+    ShowHideDirective.prototype._updateWithValue = /**
+     * Validate the visibility value and then update the host's inline display style
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._getDefaultVal('show', true);
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        /** @type {?} */
+        var shouldShow = this._validateTruthy(value);
+        this._applyStyleToElement(this._buildCSS(shouldShow));
+        if (Object(_angular_common__WEBPACK_IMPORTED_MODULE_2__["isPlatformServer"])(this.platformId) && this.serverModuleLoaded) {
+            this.nativeElement.style.setProperty('display', '');
+        }
+    };
+    /** Build the CSS that should be assigned to the element instance */
+    /**
+     * Build the CSS that should be assigned to the element instance
+     * @param {?} show
+     * @return {?}
+     */
+    ShowHideDirective.prototype._buildCSS = /**
+     * Build the CSS that should be assigned to the element instance
+     * @param {?} show
+     * @return {?}
+     */
+    function (show) {
+        return { 'display': show ? this._display : 'none' };
+    };
+    /**  Validate the to be not FALSY */
+    /**
+     * Validate the to be not FALSY
+     * @param {?} show
+     * @return {?}
+     */
+    ShowHideDirective.prototype._validateTruthy = /**
+     * Validate the to be not FALSY
+     * @param {?} show
+     * @return {?}
+     */
+    function (show) {
+        return (FALSY.indexOf(show) == -1);
+    };
+    ShowHideDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{
+                    selector: "\n  [fxShow],\n  [fxShow.xs], [fxShow.sm], [fxShow.md], [fxShow.lg], [fxShow.xl],\n  [fxShow.lt-sm], [fxShow.lt-md], [fxShow.lt-lg], [fxShow.lt-xl],\n  [fxShow.gt-xs], [fxShow.gt-sm], [fxShow.gt-md], [fxShow.gt-lg],\n  [fxHide],\n  [fxHide.xs], [fxHide.sm], [fxHide.md], [fxHide.lg], [fxHide.xl],\n  [fxHide.lt-sm], [fxHide.lt-md], [fxHide.lt-lg], [fxHide.lt-xl],\n  [fxHide.gt-xs], [fxHide.gt-sm], [fxHide.gt-md], [fxHide.gt-lg]\n"
+                },] },
+    ];
+    /** @nocollapse */
+    ShowHideDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["MediaMonitor"] },
+        { type: _angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__["LayoutDirective"], decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Self"] }] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["StyleUtils"] },
+        { type: Object, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"], args: [_angular_core__WEBPACK_IMPORTED_MODULE_1__["PLATFORM_ID"],] }] },
+        { type: Boolean, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"], args: [_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["SERVER_TOKEN"],] }] }
+    ]; };
+    ShowHideDirective.propDecorators = {
+        show: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow',] }],
+        showXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow.xs',] }],
+        showSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow.sm',] }],
+        showMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow.md',] }],
+        showLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow.lg',] }],
+        showXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow.xl',] }],
+        showLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow.lt-sm',] }],
+        showLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow.lt-md',] }],
+        showLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow.lt-lg',] }],
+        showLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow.lt-xl',] }],
+        showGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow.gt-xs',] }],
+        showGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow.gt-sm',] }],
+        showGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow.gt-md',] }],
+        showGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShow.gt-lg',] }],
+        hide: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide',] }],
+        hideXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide.xs',] }],
+        hideSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide.sm',] }],
+        hideMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide.md',] }],
+        hideLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide.lg',] }],
+        hideXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide.xl',] }],
+        hideLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide.lt-sm',] }],
+        hideLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide.lt-md',] }],
+        hideLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide.lt-lg',] }],
+        hideLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide.lt-xl',] }],
+        hideGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide.gt-xs',] }],
+        hideGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide.gt-sm',] }],
+        hideGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide.gt-md',] }],
+        hideGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxHide.gt-lg',] }]
+    };
+    return ShowHideDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Extends an object with the *enumerable* and *own* properties of one or more source objects,
+ * similar to Object.assign.
+ *
+ * @param {?} dest The object which will have properties copied to it.
+ * @param {...?} sources The source objects from which properties will be copied.
+ * @return {?}
+ */
+function extendObject(dest) {
+    var sources = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        sources[_i - 1] = arguments[_i];
+    }
+    if (dest == null) {
+        throw TypeError('Cannot convert undefined or null to object');
+    }
+    for (var _a = 0, sources_1 = sources; _a < sources_1.length; _a++) {
+        var source = sources_1[_a];
+        if (source != null) {
+            for (var key in source) {
+                if (source.hasOwnProperty(key)) {
+                    dest[key] = source[key];
+                }
+            }
+        }
+    }
+    return dest;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * NgStyle allowed inputs
+ */
+var /**
+ * NgStyle allowed inputs
+ */
+NgStyleKeyValue = /** @class */ (function () {
+    function NgStyleKeyValue(key, value, noQuotes) {
+        if (noQuotes === void 0) { noQuotes = true; }
+        this.key = key;
+        this.value = value;
+        this.key = noQuotes ? key.replace(/['"]/g, '').trim() : key.trim();
+        this.value = noQuotes ? value.replace(/['"]/g, '').trim() : value.trim();
+        this.value = this.value.replace(/;/, '');
+    }
+    return NgStyleKeyValue;
+}());
+/** *
+ * Transform Operators for \@angular/flex-layout NgStyle Directive
+  @type {?} */
+var ngStyleUtils = {
+    getType: getType,
+    buildRawList: buildRawList,
+    buildMapFromList: buildMapFromList,
+    buildMapFromSet: buildMapFromSet
+};
+/**
+ * @param {?} target
+ * @return {?}
+ */
+function getType(target) {
+    /** @type {?} */
+    var what = typeof target;
+    if (what === 'object') {
+        return (target.constructor === Array) ? 'array' :
+            (target.constructor === Set) ? 'set' : 'object';
+    }
+    return what;
+}
+/**
+ * Split string of key:value pairs into Array of k-v pairs
+ * e.g.  'key:value; key:value; key:value;' -> ['key:value',...]
+ * @param {?} source
+ * @param {?=} delimiter
+ * @return {?}
+ */
+function buildRawList(source, delimiter) {
+    if (delimiter === void 0) { delimiter = ';'; }
+    return String(source)
+        .trim()
+        .split(delimiter)
+        .map(function (val) { return val.trim(); })
+        .filter(function (val) { return val !== ''; });
+}
+/**
+ * Convert array of key:value strings to a iterable map object
+ * @param {?} styles
+ * @param {?=} sanitize
+ * @return {?}
+ */
+function buildMapFromList(styles, sanitize) {
+    /** @type {?} */
+    var sanitizeValue = function (it) {
+        if (sanitize) {
+            it.value = sanitize(it.value);
+        }
+        return it;
+    };
+    return styles
+        .map(stringToKeyValue)
+        .filter(function (entry) { return !!entry; })
+        .map(sanitizeValue)
+        .reduce(keyValuesToMap, {});
+}
+/**
+ * Convert Set<string> or raw Object to an iterable NgStyleMap
+ * @param {?} source
+ * @param {?=} sanitize
+ * @return {?}
+ */
+function buildMapFromSet(source, sanitize) {
+    /** @type {?} */
+    var list = new Array();
+    if (getType(source) == 'set') {
+        source.forEach(function (entry) { return list.push(entry); });
+    }
+    else { // simple hashmap
+        // simple hashmap
+        Object.keys(source).forEach(function (key) {
+            list.push(key + ":" + source[key]);
+        });
+    }
+    return buildMapFromList(list, sanitize);
+}
+/**
+ * Convert 'key:value' -> [key, value]
+ * @param {?} it
+ * @return {?}
+ */
+function stringToKeyValue(it) {
+    var _a = it.split(':'), key = _a[0], val = _a[1];
+    return new NgStyleKeyValue(key, val);
+}
+/**
+ * Convert [ [key,value] ] -> { key : value }
+ * @param {?} map
+ * @param {?} entry
+ * @return {?}
+ */
+function keyValuesToMap(map, entry) {
+    if (!!entry.key) {
+        map[entry.key] = entry.value;
+    }
+    return map;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Directive to add responsive support for ngStyle.
+ *
+ */
+var StyleDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(StyleDirective, _super);
+    /* tslint:enable */
+    /**
+     *  Constructor for the ngStyle subclass; which adds selectors and
+     *  a MediaQuery Activation Adapter
+     */
+    function StyleDirective(monitor, _sanitizer, _ngEl, _renderer, _differs, _ngStyleInstance, _styler) {
+        var _this = _super.call(this, monitor, _ngEl, _styler) || this;
+        _this.monitor = monitor;
+        _this._sanitizer = _sanitizer;
+        _this._ngEl = _ngEl;
+        _this._renderer = _renderer;
+        _this._differs = _differs;
+        _this._ngStyleInstance = _ngStyleInstance;
+        _this._styler = _styler;
+        _this._configureAdapters();
+        return _this;
+    }
+    Object.defineProperty(StyleDirective.prototype, "ngStyleBase", {
+        /**
+         * Intercept ngStyle assignments so we cache the default styles
+         * which are merged with activated styles or used as fallbacks.
+         */
+        set: /**
+         * Intercept ngStyle assignments so we cache the default styles
+         * which are merged with activated styles or used as fallbacks.
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) {
+            /** @type {?} */
+            var key = 'ngStyle';
+            this._base.cacheInput(key, val, true); // convert val to hashmap
+            this._ngStyleInstance.ngStyle = this._base.queryInput(key);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StyleDirective.prototype, "ngStyleXs", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngStyleXs', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StyleDirective.prototype, "ngStyleSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngStyleSm', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StyleDirective.prototype, "ngStyleMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngStyleMd', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StyleDirective.prototype, "ngStyleLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngStyleLg', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StyleDirective.prototype, "ngStyleXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngStyleXl', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StyleDirective.prototype, "ngStyleLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngStyleLtSm', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StyleDirective.prototype, "ngStyleLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngStyleLtMd', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StyleDirective.prototype, "ngStyleLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngStyleLtLg', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StyleDirective.prototype, "ngStyleLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngStyleLtXl', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StyleDirective.prototype, "ngStyleGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngStyleGtXs', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StyleDirective.prototype, "ngStyleGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngStyleGtSm', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StyleDirective.prototype, "ngStyleGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngStyleGtMd', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StyleDirective.prototype, "ngStyleGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._base.cacheInput('ngStyleGtLg', val, true); },
+        enumerable: true,
+        configurable: true
+    });
+    // ******************************************************************
+    // Lifecycle Hooks
+    // ******************************************************************
+    /** For @Input changes on the current mq activation property */
+    /**
+     * For \@Input changes on the current mq activation property
+     * @param {?} changes
+     * @return {?}
+     */
+    StyleDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (this._base.activeKey in changes) {
+            this._ngStyleInstance.ngStyle = this._base.mqActivation.activatedInput || '';
+        }
+    };
+    /**
+     * @return {?}
+     */
+    StyleDirective.prototype.ngOnInit = /**
+     * @return {?}
+     */
+    function () {
+        this._configureMQListener();
+    };
+    /** For ChangeDetectionStrategy.onPush and ngOnChanges() updates */
+    /**
+     * For ChangeDetectionStrategy.onPush and ngOnChanges() updates
+     * @return {?}
+     */
+    StyleDirective.prototype.ngDoCheck = /**
+     * For ChangeDetectionStrategy.onPush and ngOnChanges() updates
+     * @return {?}
+     */
+    function () {
+        this._ngStyleInstance.ngDoCheck();
+    };
+    /**
+     * @return {?}
+     */
+    StyleDirective.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
+        this._base.ngOnDestroy();
+        delete this._ngStyleInstance;
+    };
+    // ******************************************************************
+    // Internal Methods
+    // ******************************************************************
+    /**
+     * Configure adapters (that delegate to an internal ngClass instance) if responsive
+     * keys have been defined.
+     */
+    /**
+     * Configure adapters (that delegate to an internal ngClass instance) if responsive
+     * keys have been defined.
+     * @return {?}
+     */
+    StyleDirective.prototype._configureAdapters = /**
+     * Configure adapters (that delegate to an internal ngClass instance) if responsive
+     * keys have been defined.
+     * @return {?}
+     */
+    function () {
+        this._base = new _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["BaseDirectiveAdapter"]('ngStyle', this.monitor, this._ngEl, this._styler);
+        if (!this._ngStyleInstance) {
+            // Create an instance NgClass Directive instance only if `ngClass=""` has NOT been
+            // defined on the same host element; since the responsive variations may be defined...
+            this._ngStyleInstance = new _angular_common__WEBPACK_IMPORTED_MODULE_2__["NgStyle"](this._differs, this._ngEl, this._renderer);
+        }
+        this._buildCacheInterceptor();
+        this._fallbackToStyle();
+    };
+    /**
+     * Build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * Build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @param {?=} baseKey
+     * @return {?}
+     */
+    StyleDirective.prototype._configureMQListener = /**
+     * Build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @param {?=} baseKey
+     * @return {?}
+     */
+    function (baseKey) {
+        var _this = this;
+        if (baseKey === void 0) { baseKey = 'ngStyle'; }
+        /** @type {?} */
+        var fallbackValue = this._base.queryInput(baseKey);
+        this._base.listenForMediaQueryChanges(baseKey, fallbackValue, function (changes) {
+            _this._ngStyleInstance.ngStyle = changes.value || '';
+            _this._ngStyleInstance.ngDoCheck();
+        });
+    };
+    // ************************************************************************
+    // Private Internal Methods
+    // ************************************************************************
+    /** Build intercept to convert raw strings to ngStyleMap */
+    /**
+     * Build intercept to convert raw strings to ngStyleMap
+     * @return {?}
+     */
+    StyleDirective.prototype._buildCacheInterceptor = /**
+     * Build intercept to convert raw strings to ngStyleMap
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        /** @type {?} */
+        var cacheInput = this._base.cacheInput.bind(this._base);
+        this._base.cacheInput = function (key, source, cacheRaw, merge) {
+            if (cacheRaw === void 0) { cacheRaw = false; }
+            if (merge === void 0) { merge = true; }
+            /** @type {?} */
+            var styles = _this._buildStyleMap(source);
+            if (merge) {
+                styles = extendObject({}, _this._base.inputMap['ngStyle'], styles);
+            }
+            cacheInput(key, styles, cacheRaw);
+        };
+    };
+    /**
+     * Convert raw strings to ngStyleMap; which is required by ngStyle
+     * NOTE: Raw string key-value pairs MUST be delimited by `;`
+     *       Comma-delimiters are not supported due to complexities of
+     *       possible style values such as `rgba(x,x,x,x)` and others
+     */
+    /**
+     * Convert raw strings to ngStyleMap; which is required by ngStyle
+     * NOTE: Raw string key-value pairs MUST be delimited by `;`
+     *       Comma-delimiters are not supported due to complexities of
+     *       possible style values such as `rgba(x,x,x,x)` and others
+     * @param {?} styles
+     * @return {?}
+     */
+    StyleDirective.prototype._buildStyleMap = /**
+     * Convert raw strings to ngStyleMap; which is required by ngStyle
+     * NOTE: Raw string key-value pairs MUST be delimited by `;`
+     *       Comma-delimiters are not supported due to complexities of
+     *       possible style values such as `rgba(x,x,x,x)` and others
+     * @param {?} styles
+     * @return {?}
+     */
+    function (styles) {
+        var _this = this;
+        /** @type {?} */
+        var sanitizer = function (val) {
+            // Always safe-guard (aka sanitize) style property values
+            return _this._sanitizer.sanitize(_angular_core__WEBPACK_IMPORTED_MODULE_1__["SecurityContext"].STYLE, val) || '';
+        };
+        if (styles) {
+            switch (ngStyleUtils.getType(styles)) {
+                case 'string': return ngStyleUtils.buildMapFromList(ngStyleUtils.buildRawList(styles), sanitizer);
+                case 'array': return ngStyleUtils.buildMapFromList(/** @type {?} */ (styles), sanitizer);
+                case 'set': return ngStyleUtils.buildMapFromSet(styles, sanitizer);
+                default: return ngStyleUtils.buildMapFromSet(styles, sanitizer);
+            }
+        }
+        return styles;
+    };
+    /** Initial lookup of raw 'class' value (if any) */
+    /**
+     * Initial lookup of raw 'class' value (if any)
+     * @return {?}
+     */
+    StyleDirective.prototype._fallbackToStyle = /**
+     * Initial lookup of raw 'class' value (if any)
+     * @return {?}
+     */
+    function () {
+        if (!this._base.queryInput('ngStyle')) {
+            this.ngStyleBase = this._getAttributeValue('style') || '';
+        }
+    };
+    StyleDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{
+                    selector: "\n    [ngStyle.xs], [ngStyle.sm], [ngStyle.md], [ngStyle.lg], [ngStyle.xl],\n    [ngStyle.lt-sm], [ngStyle.lt-md], [ngStyle.lt-lg], [ngStyle.lt-xl],\n    [ngStyle.gt-xs], [ngStyle.gt-sm], [ngStyle.gt-md], [ngStyle.gt-lg]\n  "
+                },] },
+    ];
+    /** @nocollapse */
+    StyleDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["MediaMonitor"] },
+        { type: _angular_platform_browser__WEBPACK_IMPORTED_MODULE_5__["DomSanitizer"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Renderer2"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["KeyValueDiffers"] },
+        { type: _angular_common__WEBPACK_IMPORTED_MODULE_2__["NgStyle"], decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Self"] }] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["StyleUtils"] }
+    ]; };
+    StyleDirective.propDecorators = {
+        ngStyleBase: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle',] }],
+        ngStyleXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle.xs',] }],
+        ngStyleSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle.sm',] }],
+        ngStyleMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle.md',] }],
+        ngStyleLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle.lg',] }],
+        ngStyleXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle.xl',] }],
+        ngStyleLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle.lt-sm',] }],
+        ngStyleLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle.lt-md',] }],
+        ngStyleLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle.lt-lg',] }],
+        ngStyleLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle.lt-xl',] }],
+        ngStyleGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle.gt-xs',] }],
+        ngStyleGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle.gt-sm',] }],
+        ngStyleGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle.gt-md',] }],
+        ngStyleGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['ngStyle.gt-lg',] }]
+    };
+    return StyleDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var ALL_DIRECTIVES = [
+    ShowHideDirective,
+    ClassDirective,
+    StyleDirective,
+    ImgSrcDirective
+];
+/**
+ * *****************************************************************
+ * Define module for the Extended API
+ * *****************************************************************
+ */
+var ExtendedModule = /** @class */ (function () {
+    function ExtendedModule() {
+    }
+    ExtendedModule.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"], args: [{
+                    imports: [_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_3__["CoreModule"]],
+                    declarations: ALL_DIRECTIVES.slice(),
+                    exports: ALL_DIRECTIVES.slice()
+                },] },
+    ];
+    return ExtendedModule;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+
+//# sourceMappingURL=extended.es5.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/@angular/flex-layout/esm5/flex-layout.es5.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@angular/flex-layout/esm5/flex-layout.es5.js ***!
+  \*******************************************************************/
+/*! exports provided: removeStyles, BROWSER_PROVIDER, CLASS_NAME, CoreModule, MediaChange, StylesheetMap, STYLESHEET_MAP_PROVIDER_FACTORY, STYLESHEET_MAP_PROVIDER, DEFAULT_CONFIG, LAYOUT_CONFIG, SERVER_TOKEN, BREAKPOINT, BaseDirective, BaseDirectiveAdapter, BaseFxDirective, RESPONSIVE_ALIASES, DEFAULT_BREAKPOINTS, ScreenTypes, ORIENTATION_BREAKPOINTS, BreakPointRegistry, BREAKPOINTS, MatchMedia, MockMatchMedia, MockMediaQueryList, MockMatchMediaProvider, ServerMediaQueryList, ServerMatchMedia, MediaMonitor, MEDIA_MONITOR_PROVIDER_FACTORY, MEDIA_MONITOR_PROVIDER, ObservableMedia, MediaService, ObservableMediaProvider, OBSERVABLE_MEDIA_PROVIDER_FACTORY, OBSERVABLE_MEDIA_PROVIDER, KeyOptions, ResponsiveActivation, StyleUtils, validateBasis, ExtendedModule, ClassDirective, ImgSrcDirective, negativeOf, ShowHideDirective, StyleDirective, FlexModule, FlexDirective, FlexAlignDirective, FlexFillDirective, FlexOffsetDirective, FlexOrderDirective, LayoutDirective, LayoutAlignDirective, LayoutGapDirective, ɵb, ɵc, ɵd, ɵe, ɵf, ɵg, ɵh, ɵi, ɵa, ɵj, ɵk, GridModule, VERSION, FlexLayoutModule */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return VERSION; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FlexLayoutModule", function() { return FlexLayoutModule; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
+/* harmony import */ var _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/flex-layout/core */ "./node_modules/@angular/flex-layout/esm5/core.es5.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "removeStyles", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["removeStyles"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "BROWSER_PROVIDER", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BROWSER_PROVIDER"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "CLASS_NAME", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["CLASS_NAME"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "CoreModule", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["CoreModule"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MediaChange", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaChange"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "StylesheetMap", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StylesheetMap"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "STYLESHEET_MAP_PROVIDER_FACTORY", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["STYLESHEET_MAP_PROVIDER_FACTORY"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "STYLESHEET_MAP_PROVIDER", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["STYLESHEET_MAP_PROVIDER"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_CONFIG", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["DEFAULT_CONFIG"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "LAYOUT_CONFIG", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["LAYOUT_CONFIG"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SERVER_TOKEN", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["SERVER_TOKEN"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "BREAKPOINT", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BREAKPOINT"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "BaseDirective", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "BaseDirectiveAdapter", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirectiveAdapter"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "BaseFxDirective", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseFxDirective"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "RESPONSIVE_ALIASES", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["RESPONSIVE_ALIASES"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_BREAKPOINTS", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["DEFAULT_BREAKPOINTS"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ScreenTypes", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["ScreenTypes"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ORIENTATION_BREAKPOINTS", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["ORIENTATION_BREAKPOINTS"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "BreakPointRegistry", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BreakPointRegistry"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "BREAKPOINTS", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BREAKPOINTS"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MatchMedia", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MatchMedia"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MockMatchMedia", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MockMatchMedia"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MockMediaQueryList", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MockMediaQueryList"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MockMatchMediaProvider", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MockMatchMediaProvider"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ServerMediaQueryList", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["ServerMediaQueryList"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ServerMatchMedia", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["ServerMatchMedia"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MediaMonitor", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MEDIA_MONITOR_PROVIDER_FACTORY", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MEDIA_MONITOR_PROVIDER_FACTORY"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MEDIA_MONITOR_PROVIDER", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MEDIA_MONITOR_PROVIDER"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ObservableMedia", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["ObservableMedia"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MediaService", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaService"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ObservableMediaProvider", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["ObservableMediaProvider"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "OBSERVABLE_MEDIA_PROVIDER_FACTORY", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["OBSERVABLE_MEDIA_PROVIDER_FACTORY"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "OBSERVABLE_MEDIA_PROVIDER", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["OBSERVABLE_MEDIA_PROVIDER"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "KeyOptions", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["KeyOptions"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ResponsiveActivation", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["ResponsiveActivation"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "StyleUtils", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "validateBasis", function() { return _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["validateBasis"]; });
+
+/* harmony import */ var _angular_flex_layout_extended__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/flex-layout/extended */ "./node_modules/@angular/flex-layout/esm5/extended.es5.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ExtendedModule", function() { return _angular_flex_layout_extended__WEBPACK_IMPORTED_MODULE_3__["ExtendedModule"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ClassDirective", function() { return _angular_flex_layout_extended__WEBPACK_IMPORTED_MODULE_3__["ClassDirective"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ImgSrcDirective", function() { return _angular_flex_layout_extended__WEBPACK_IMPORTED_MODULE_3__["ImgSrcDirective"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "negativeOf", function() { return _angular_flex_layout_extended__WEBPACK_IMPORTED_MODULE_3__["negativeOf"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ShowHideDirective", function() { return _angular_flex_layout_extended__WEBPACK_IMPORTED_MODULE_3__["ShowHideDirective"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "StyleDirective", function() { return _angular_flex_layout_extended__WEBPACK_IMPORTED_MODULE_3__["StyleDirective"]; });
+
+/* harmony import */ var _angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/flex-layout/flex */ "./node_modules/@angular/flex-layout/esm5/flex.es5.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "FlexModule", function() { return _angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__["FlexModule"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "FlexDirective", function() { return _angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__["FlexDirective"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "FlexAlignDirective", function() { return _angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__["FlexAlignDirective"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "FlexFillDirective", function() { return _angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__["FlexFillDirective"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "FlexOffsetDirective", function() { return _angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__["FlexOffsetDirective"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "FlexOrderDirective", function() { return _angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__["FlexOrderDirective"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "LayoutDirective", function() { return _angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__["LayoutDirective"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "LayoutAlignDirective", function() { return _angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__["LayoutAlignDirective"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "LayoutGapDirective", function() { return _angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__["LayoutGapDirective"]; });
+
+/* harmony import */ var _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/flex-layout/grid */ "./node_modules/@angular/flex-layout/esm5/grid.es5.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ɵb", function() { return _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["ɵb"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ɵc", function() { return _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["ɵc"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ɵd", function() { return _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["ɵd"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ɵe", function() { return _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["ɵe"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ɵf", function() { return _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["ɵf"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ɵg", function() { return _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["ɵg"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ɵh", function() { return _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["ɵh"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ɵi", function() { return _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["ɵi"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ɵa", function() { return _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["ɵa"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ɵj", function() { return _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["ɵj"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ɵk", function() { return _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["ɵk"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "GridModule", function() { return _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["GridModule"]; });
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** *
+ * Current version of Angular Flex-Layout.
+  @type {?} */
+var VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["Version"]('6.0.0-beta.18');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * FlexLayoutModule -- the main import for all utilities in the Angular Layout library
+ * * Will automatically provide Flex, Grid, and Extended modules for use in the application
+ * * Can be configured using the static withConfig method, options viewable on the Wiki's
+ *   Configuration page
+ */
+var FlexLayoutModule = /** @class */ (function () {
+    function FlexLayoutModule(serverModuleLoaded, platformId) {
+        if (Object(_angular_common__WEBPACK_IMPORTED_MODULE_1__["isPlatformServer"])(platformId) && !serverModuleLoaded) {
+            console.warn('Warning: Flex Layout loaded on the server without FlexLayoutServerModule');
+        }
+    }
+    /**
+     * Initialize the FlexLayoutModule with a set of config options,
+     * which sets the corresponding tokens accordingly
+     */
+    /**
+     * Initialize the FlexLayoutModule with a set of config options,
+     * which sets the corresponding tokens accordingly
+     * @param {?} configOptions
+     * @param {?=} breakpoints
+     * @return {?}
+     */
+    FlexLayoutModule.withConfig = /**
+     * Initialize the FlexLayoutModule with a set of config options,
+     * which sets the corresponding tokens accordingly
+     * @param {?} configOptions
+     * @param {?=} breakpoints
+     * @return {?}
+     */
+    function (configOptions, breakpoints) {
+        return {
+            ngModule: FlexLayoutModule,
+            providers: Array.isArray(breakpoints) ?
+                configOptions.serverLoaded ?
+                    [
+                        { provide: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["LAYOUT_CONFIG"], useValue: configOptions },
+                        { provide: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BREAKPOINT"], useValue: breakpoints, multi: true },
+                        { provide: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["SERVER_TOKEN"], useValue: true },
+                    ] : [
+                    { provide: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["LAYOUT_CONFIG"], useValue: configOptions },
+                    { provide: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BREAKPOINT"], useValue: breakpoints, multi: true },
+                ]
+                :
+                    configOptions.serverLoaded ?
+                        [
+                            { provide: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["LAYOUT_CONFIG"], useValue: configOptions },
+                            { provide: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["SERVER_TOKEN"], useValue: true },
+                        ] :
+                        [
+                            { provide: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["LAYOUT_CONFIG"], useValue: configOptions },
+                        ]
+        };
+    };
+    FlexLayoutModule.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"], args: [{
+                    imports: [_angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__["FlexModule"], _angular_flex_layout_extended__WEBPACK_IMPORTED_MODULE_3__["ExtendedModule"], _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["GridModule"]],
+                    exports: [_angular_flex_layout_flex__WEBPACK_IMPORTED_MODULE_4__["FlexModule"], _angular_flex_layout_extended__WEBPACK_IMPORTED_MODULE_3__["ExtendedModule"], _angular_flex_layout_grid__WEBPACK_IMPORTED_MODULE_5__["GridModule"]]
+                },] },
+    ];
+    /** @nocollapse */
+    FlexLayoutModule.ctorParameters = function () { return [
+        { type: Boolean, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Optional"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["SERVER_TOKEN"],] }] },
+        { type: Object, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"], args: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["PLATFORM_ID"],] }] }
+    ]; };
+    return FlexLayoutModule;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+
+//# sourceMappingURL=flex-layout.es5.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/@angular/flex-layout/esm5/flex.es5.js":
+/*!************************************************************!*\
+  !*** ./node_modules/@angular/flex-layout/esm5/flex.es5.js ***!
+  \************************************************************/
+/*! exports provided: FlexModule, FlexDirective, FlexAlignDirective, FlexFillDirective, FlexOffsetDirective, FlexOrderDirective, LayoutDirective, LayoutAlignDirective, LayoutGapDirective */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FlexModule", function() { return FlexModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FlexDirective", function() { return FlexDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FlexAlignDirective", function() { return FlexAlignDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FlexFillDirective", function() { return FlexFillDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FlexOffsetDirective", function() { return FlexOffsetDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FlexOrderDirective", function() { return FlexOrderDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LayoutDirective", function() { return LayoutDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LayoutAlignDirective", function() { return LayoutAlignDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LayoutGapDirective", function() { return LayoutGapDirective; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/flex-layout/core */ "./node_modules/@angular/flex-layout/esm5/core.es5.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var _angular_cdk_bidi__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/cdk/bidi */ "./node_modules/@angular/cdk/esm5/bidi.es5.js");
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+
+
+
+
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** *
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+  @type {?} */
+var INLINE = 'inline';
+/** @type {?} */
+var LAYOUT_VALUES = ['row', 'column', 'row-reverse', 'column-reverse'];
+/**
+ * Validate the direction|'direction wrap' value and then update the host's inline flexbox styles
+ * @param {?} value
+ * @return {?}
+ */
+function buildLayoutCSS(value) {
+    var _a = validateValue(value), direction = _a[0], wrap = _a[1], isInline = _a[2];
+    return buildCSS(direction, wrap, isInline);
+}
+/**
+ * Validate the value to be one of the acceptable value options
+ * Use default fallback of 'row'
+ * @param {?} value
+ * @return {?}
+ */
+function validateValue(value) {
+    value = value ? value.toLowerCase() : '';
+    var _a = value.split(' '), direction = _a[0], wrap = _a[1], inline = _a[2];
+    // First value must be the `flex-direction`
+    if (!LAYOUT_VALUES.find(function (x) { return x === direction; })) {
+        direction = LAYOUT_VALUES[0];
+    }
+    if (wrap === INLINE) {
+        wrap = (inline !== INLINE) ? inline : '';
+        inline = INLINE;
+    }
+    return [direction, validateWrapValue(wrap), !!inline];
+}
+/**
+ * Determine if the validated, flex-direction value specifies
+ * a horizontal/row flow.
+ * @param {?} value
+ * @return {?}
+ */
+function isFlowHorizontal(value) {
+    var flow = validateValue(value)[0];
+    return flow.indexOf('row') > -1;
+}
+/**
+ * Convert layout-wrap='<value>' to expected flex-wrap style
+ * @param {?} value
+ * @return {?}
+ */
+function validateWrapValue(value) {
+    if (!!value) {
+        switch (value.toLowerCase()) {
+            case 'reverse':
+            case 'wrap-reverse':
+            case 'reverse-wrap':
+                value = 'wrap-reverse';
+                break;
+            case 'no':
+            case 'none':
+            case 'nowrap':
+                value = 'nowrap';
+                break;
+            // All other values fallback to 'wrap'
+            default:
+                value = 'wrap';
+                break;
+        }
+    }
+    return value;
+}
+/**
+ * Build the CSS that should be assigned to the element instance
+ * BUG:
+ *   1) min-height on a column flex container won’t apply to its flex item children in IE 10-11.
+ *      Use height instead if possible; height : <xxx>vh;
+ *
+ *  This way any padding or border specified on the child elements are
+ *  laid out and drawn inside that element's specified width and height.
+ * @param {?} direction
+ * @param {?=} wrap
+ * @param {?=} inline
+ * @return {?}
+ */
+function buildCSS(direction, wrap, inline) {
+    if (wrap === void 0) { wrap = null; }
+    if (inline === void 0) { inline = false; }
+    return {
+        'display': inline ? 'inline-flex' : 'flex',
+        'box-sizing': 'border-box',
+        'flex-direction': direction,
+        'flex-wrap': !!wrap ? wrap : null
+    };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * 'layout' flexbox styling directive
+ * Defines the positioning flow direction for the child elements: row or column
+ * Optional values: column or row (default)
+ * @see https://css-tricks.com/almanac/properties/f/flex-direction/
+ *
+ */
+var LayoutDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(LayoutDirective, _super);
+    /* tslint:enable */
+    function LayoutDirective(monitor, elRef, styleUtils) {
+        var _this = _super.call(this, monitor, elRef, styleUtils) || this;
+        _this._announcer = new rxjs__WEBPACK_IMPORTED_MODULE_3__["ReplaySubject"](1);
+        _this.layout$ = _this._announcer.asObservable();
+        return _this;
+    }
+    Object.defineProperty(LayoutDirective.prototype, "layout", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layout', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutDirective.prototype, "layoutXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layoutXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutDirective.prototype, "layoutSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layoutSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutDirective.prototype, "layoutMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layoutMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutDirective.prototype, "layoutLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layoutLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutDirective.prototype, "layoutXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layoutXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutDirective.prototype, "layoutGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layoutGtXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutDirective.prototype, "layoutGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layoutGtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutDirective.prototype, "layoutGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layoutGtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutDirective.prototype, "layoutGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layoutGtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutDirective.prototype, "layoutLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layoutLtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutDirective.prototype, "layoutLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layoutLtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutDirective.prototype, "layoutLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layoutLtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutDirective.prototype, "layoutLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('layoutLtXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * On changes to any @Input properties...
+     * Default to use the non-responsive Input value ('fxLayout')
+     * Then conditionally override with the mq-activated Input's current value
+     */
+    /**
+     * On changes to any \@Input properties...
+     * Default to use the non-responsive Input value ('fxLayout')
+     * Then conditionally override with the mq-activated Input's current value
+     * @param {?} changes
+     * @return {?}
+     */
+    LayoutDirective.prototype.ngOnChanges = /**
+     * On changes to any \@Input properties...
+     * Default to use the non-responsive Input value ('fxLayout')
+     * Then conditionally override with the mq-activated Input's current value
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes['layout'] != null || this._mqActivation) {
+            this._updateWithDirection();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    LayoutDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges('layout', 'row', function (changes) {
+            _this._updateWithDirection(changes.value);
+        });
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /** Validate the direction value and then update the host's inline flexbox styles */
+    /**
+     * Validate the direction value and then update the host's inline flexbox styles
+     * @param {?=} value
+     * @return {?}
+     */
+    LayoutDirective.prototype._updateWithDirection = /**
+     * Validate the direction value and then update the host's inline flexbox styles
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput('layout') || 'row';
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        /** @type {?} */
+        var css = buildLayoutCSS(!!value ? value : '');
+        this._applyStyleToElement(css);
+        this._announcer.next({
+            direction: css['flex-direction'],
+            wrap: !!css['flex-wrap'] && css['flex-wrap'] !== 'nowrap'
+        });
+    };
+    LayoutDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [fxLayout],\n  [fxLayout.xs], [fxLayout.sm], [fxLayout.md], [fxLayout.lg], [fxLayout.xl],\n  [fxLayout.lt-sm], [fxLayout.lt-md], [fxLayout.lt-lg], [fxLayout.lt-xl],\n  [fxLayout.gt-xs], [fxLayout.gt-sm], [fxLayout.gt-md], [fxLayout.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    LayoutDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    LayoutDirective.propDecorators = {
+        layout: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout',] }],
+        layoutXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout.xs',] }],
+        layoutSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout.sm',] }],
+        layoutMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout.md',] }],
+        layoutLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout.lg',] }],
+        layoutXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout.xl',] }],
+        layoutGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout.gt-xs',] }],
+        layoutGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout.gt-sm',] }],
+        layoutGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout.gt-md',] }],
+        layoutGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout.gt-lg',] }],
+        layoutLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout.lt-sm',] }],
+        layoutLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout.lt-md',] }],
+        layoutLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout.lt-lg',] }],
+        layoutLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayout.lt-xl',] }]
+    };
+    return LayoutDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * 'layout-padding' styling directive
+ *  Defines padding of child elements in a layout container
+ */
+var LayoutGapDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(LayoutGapDirective, _super);
+    /* tslint:enable */
+    function LayoutGapDirective(monitor, elRef, container, _zone, _directionality, styleUtils) {
+        var _this = _super.call(this, monitor, elRef, styleUtils) || this;
+        _this._zone = _zone;
+        _this._directionality = _directionality;
+        _this._layout = 'row';
+        if (container) { // Subscribe to layout direction changes
+            // Subscribe to layout direction changes
+            _this._layoutWatcher = container.layout$.subscribe(_this._onLayoutChange.bind(_this));
+        }
+        _this._directionWatcher =
+            _this._directionality.change.subscribe(_this._updateWithValue.bind(_this));
+        return _this;
+    }
+    Object.defineProperty(LayoutGapDirective.prototype, "gap", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gap', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutGapDirective.prototype, "gapXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gapXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutGapDirective.prototype, "gapSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gapSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutGapDirective.prototype, "gapMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gapMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutGapDirective.prototype, "gapLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gapLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutGapDirective.prototype, "gapXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gapXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutGapDirective.prototype, "gapGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gapGtXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutGapDirective.prototype, "gapGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gapGtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutGapDirective.prototype, "gapGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gapGtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutGapDirective.prototype, "gapGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gapGtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutGapDirective.prototype, "gapLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gapLtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutGapDirective.prototype, "gapLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gapLtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutGapDirective.prototype, "gapLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gapLtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutGapDirective.prototype, "gapLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('gapLtXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * @param {?} changes
+     * @return {?}
+     */
+    LayoutGapDirective.prototype.ngOnChanges = /**
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes['gap'] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    LayoutGapDirective.prototype.ngAfterContentInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        this._watchContentChanges();
+        this._listenForMediaQueryChanges('gap', '0', function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+        this._updateWithValue();
+    };
+    /**
+     * @return {?}
+     */
+    LayoutGapDirective.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
+        _super.prototype.ngOnDestroy.call(this);
+        if (this._layoutWatcher) {
+            this._layoutWatcher.unsubscribe();
+        }
+        if (this._observer) {
+            this._observer.disconnect();
+        }
+        if (this._directionWatcher) {
+            this._directionWatcher.unsubscribe();
+        }
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     * Watch for child nodes to be added... and apply the layout gap styles to each.
+     * NOTE: this does NOT! differentiate between viewChildren and contentChildren
+     */
+    /**
+     * Watch for child nodes to be added... and apply the layout gap styles to each.
+     * NOTE: this does NOT! differentiate between viewChildren and contentChildren
+     * @return {?}
+     */
+    LayoutGapDirective.prototype._watchContentChanges = /**
+     * Watch for child nodes to be added... and apply the layout gap styles to each.
+     * NOTE: this does NOT! differentiate between viewChildren and contentChildren
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        this._zone.runOutsideAngular(function () {
+            if (typeof MutationObserver !== 'undefined') {
+                _this._observer = new MutationObserver(function (mutations) {
+                    /** @type {?} */
+                    var validatedChanges = function (it) {
+                        return (it.addedNodes && it.addedNodes.length > 0) ||
+                            (it.removedNodes && it.removedNodes.length > 0);
+                    };
+                    // update gap styles only for child 'added' or 'removed' events
+                    if (mutations.some(validatedChanges)) {
+                        _this._updateWithValue();
+                    }
+                });
+                _this._observer.observe(_this.nativeElement, { childList: true });
+            }
+        });
+    };
+    /**
+     * Cache the parent container 'flex-direction' and update the 'margin' styles
+     */
+    /**
+     * Cache the parent container 'flex-direction' and update the 'margin' styles
+     * @param {?} layout
+     * @return {?}
+     */
+    LayoutGapDirective.prototype._onLayoutChange = /**
+     * Cache the parent container 'flex-direction' and update the 'margin' styles
+     * @param {?} layout
+     * @return {?}
+     */
+    function (layout) {
+        var _this = this;
+        this._layout = (layout.direction || '').toLowerCase();
+        if (!LAYOUT_VALUES.find(function (x) { return x === _this._layout; })) {
+            this._layout = 'row';
+        }
+        this._updateWithValue();
+    };
+    /**
+     *
+     */
+    /**
+     *
+     * @param {?=} value
+     * @return {?}
+     */
+    LayoutGapDirective.prototype._updateWithValue = /**
+     *
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        var _this = this;
+        /** @type {?} */
+        var gapValue = value || this._queryInput('gap') || '0';
+        if (this._mqActivation) {
+            gapValue = this._mqActivation.activatedInput;
+        }
+        /** @type {?} */
+        var items = this.childrenNodes
+            .filter(function (el) { return el.nodeType === 1 && _this._getDisplayStyle(el) != 'none'; })
+            .sort(function (a, b) {
+            /** @type {?} */
+            var orderA = +_this._styler.lookupStyle(a, 'order');
+            /** @type {?} */
+            var orderB = +_this._styler.lookupStyle(b, 'order');
+            if (isNaN(orderA) || isNaN(orderB) || orderA === orderB) {
+                return 0;
+            }
+            else {
+                return orderA > orderB ? 1 : -1;
+            }
+        });
+        if (items.length > 0) {
+            if (gapValue.endsWith(GRID_SPECIFIER)) {
+                gapValue = gapValue.substring(0, gapValue.indexOf(GRID_SPECIFIER));
+                // For each `element` children, set the padding
+                this._applyStyleToElements(this._buildGridPadding(gapValue), items);
+                // Add the margin to the host element
+                this._applyStyleToElement(this._buildGridMargin(gapValue));
+            }
+            else {
+                /** @type {?} */
+                var lastItem = items.pop();
+                // For each `element` children EXCEPT the last,
+                // set the margin right/bottom styles...
+                this._applyStyleToElements(this._buildCSS(gapValue), items);
+                // Clear all gaps for all visible elements
+                this._applyStyleToElements(this._buildCSS(), [lastItem]);
+            }
+        }
+    };
+    /**
+     *
+     * @param {?} value
+     * @return {?}
+     */
+    LayoutGapDirective.prototype._buildGridPadding = /**
+     *
+     * @param {?} value
+     * @return {?}
+     */
+    function (value) {
+        /** @type {?} */
+        var paddingTop = '0px';
+        /** @type {?} */
+        var paddingRight = '0px';
+        /** @type {?} */
+        var paddingBottom = value;
+        /** @type {?} */
+        var paddingLeft = '0px';
+        if (this._directionality.value === 'rtl') {
+            paddingLeft = value;
+        }
+        else {
+            paddingRight = value;
+        }
+        return { 'padding': paddingTop + " " + paddingRight + " " + paddingBottom + " " + paddingLeft };
+    };
+    /**
+     * Prepare margin CSS, remove any previous explicitly
+     * assigned margin assignments
+     * Note: this will not work with calc values (negative calc values are invalid)
+     * @param {?} value
+     * @return {?}
+     */
+    LayoutGapDirective.prototype._buildGridMargin = /**
+     * Prepare margin CSS, remove any previous explicitly
+     * assigned margin assignments
+     * Note: this will not work with calc values (negative calc values are invalid)
+     * @param {?} value
+     * @return {?}
+     */
+    function (value) {
+        /** @type {?} */
+        var marginTop = '0px';
+        /** @type {?} */
+        var marginRight = '0px';
+        /** @type {?} */
+        var marginBottom = '-' + value;
+        /** @type {?} */
+        var marginLeft = '0px';
+        if (this._directionality.value === 'rtl') {
+            marginLeft = '-' + value;
+        }
+        else {
+            marginRight = '-' + value;
+        }
+        return { 'margin': marginTop + " " + marginRight + " " + marginBottom + " " + marginLeft };
+    };
+    /**
+     * Prepare margin CSS, remove any previous explicitly
+     * assigned margin assignments
+     * @param {?=} value
+     * @return {?}
+     */
+    LayoutGapDirective.prototype._buildCSS = /**
+     * Prepare margin CSS, remove any previous explicitly
+     * assigned margin assignments
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        if (value === void 0) { value = null; }
+        /** @type {?} */
+        var key;
+        /** @type {?} */
+        var margins = {
+            'margin-left': null,
+            'margin-right': null,
+            'margin-top': null,
+            'margin-bottom': null
+        };
+        switch (this._layout) {
+            case 'column':
+                key = 'margin-bottom';
+                break;
+            case 'column-reverse':
+                key = 'margin-top';
+                break;
+            case 'row':
+                key = this._directionality.value === 'rtl' ? 'margin-left' : 'margin-right';
+                break;
+            case 'row-reverse':
+                key = this._directionality.value === 'rtl' ? 'margin-right' : 'margin-left';
+                break;
+            default:
+                key = this._directionality.value === 'rtl' ? 'margin-left' : 'margin-right';
+                break;
+        }
+        margins[key] = value;
+        return margins;
+    };
+    LayoutGapDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{
+                    selector: "\n  [fxLayoutGap],\n  [fxLayoutGap.xs], [fxLayoutGap.sm], [fxLayoutGap.md], [fxLayoutGap.lg], [fxLayoutGap.xl],\n  [fxLayoutGap.lt-sm], [fxLayoutGap.lt-md], [fxLayoutGap.lt-lg], [fxLayoutGap.lt-xl],\n  [fxLayoutGap.gt-xs], [fxLayoutGap.gt-sm], [fxLayoutGap.gt-md], [fxLayoutGap.gt-lg]\n"
+                },] },
+    ];
+    /** @nocollapse */
+    LayoutGapDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: LayoutDirective, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Self"] }] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["NgZone"] },
+        { type: _angular_cdk_bidi__WEBPACK_IMPORTED_MODULE_4__["Directionality"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    LayoutGapDirective.propDecorators = {
+        gap: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap',] }],
+        gapXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap.xs',] }],
+        gapSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap.sm',] }],
+        gapMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap.md',] }],
+        gapLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap.lg',] }],
+        gapXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap.xl',] }],
+        gapGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap.gt-xs',] }],
+        gapGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap.gt-sm',] }],
+        gapGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap.gt-md',] }],
+        gapGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap.gt-lg',] }],
+        gapLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap.lt-sm',] }],
+        gapLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap.lt-md',] }],
+        gapLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap.lt-lg',] }],
+        gapLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutGap.lt-xl',] }]
+    };
+    return LayoutGapDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+/** @type {?} */
+var GRID_SPECIFIER = ' grid';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Extends an object with the *enumerable* and *own* properties of one or more source objects,
+ * similar to Object.assign.
+ *
+ * @param {?} dest The object which will have properties copied to it.
+ * @param {...?} sources The source objects from which properties will be copied.
+ * @return {?}
+ */
+function extendObject(dest) {
+    var sources = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        sources[_i - 1] = arguments[_i];
+    }
+    if (dest == null) {
+        throw TypeError('Cannot convert undefined or null to object');
+    }
+    for (var _a = 0, sources_1 = sources; _a < sources_1.length; _a++) {
+        var source = sources_1[_a];
+        if (source != null) {
+            for (var key in source) {
+                if (source.hasOwnProperty(key)) {
+                    dest[key] = source[key];
+                }
+            }
+        }
+    }
+    return dest;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Directive to control the size of a flex item using flex-basis, flex-grow, and flex-shrink.
+ * Corresponds to the css `flex` shorthand property.
+ *
+ * @see https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+ */
+var FlexDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FlexDirective, _super);
+    /* tslint:enable */
+    // Note: Explicitly @SkipSelf on LayoutDirective because we are looking
+    //       for the parent flex container for this flex item.
+    function FlexDirective(monitor, elRef, _container, styleUtils, layoutConfig) {
+        var _this = _super.call(this, monitor, elRef, styleUtils) || this;
+        _this._container = _container;
+        _this.styleUtils = styleUtils;
+        _this.layoutConfig = layoutConfig;
+        _this._cacheInput('flex', '');
+        _this._cacheInput('shrink', 1);
+        _this._cacheInput('grow', 1);
+        return _this;
+    }
+    Object.defineProperty(FlexDirective.prototype, "shrink", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('shrink', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "grow", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('grow', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flex", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flex', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flexXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flexXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flexSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flexSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flexMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flexMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flexLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flexLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flexXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flexXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flexGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flexGtXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flexGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flexGtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flexGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flexGtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flexGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flexGtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flexLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flexLtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flexLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flexLtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flexLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flexLtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexDirective.prototype, "flexLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('flexLtXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    FlexDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes['flex'] != null || this._mqActivation) {
+            this._updateStyle();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    FlexDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges('flex', '', function (changes) {
+            _this._updateStyle(changes.value);
+        });
+        if (this._container) {
+            // If this flex item is inside of a flex container marked with
+            // Subscribe to layout immediate parent direction changes
+            this._layoutWatcher = this._container.layout$.subscribe(function (layout) {
+                // `direction` === null if parent container does not have a `fxLayout`
+                // `direction` === null if parent container does not have a `fxLayout`
+                _this._onLayoutChange(layout);
+            });
+        }
+    };
+    /**
+     * @return {?}
+     */
+    FlexDirective.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
+        _super.prototype.ngOnDestroy.call(this);
+        if (this._layoutWatcher) {
+            this._layoutWatcher.unsubscribe();
+        }
+    };
+    /**
+     * Caches the parent container's 'flex-direction' and updates the element's style.
+     * Used as a handler for layout change events from the parent flex container.
+     */
+    /**
+     * Caches the parent container's 'flex-direction' and updates the element's style.
+     * Used as a handler for layout change events from the parent flex container.
+     * @param {?=} layout
+     * @return {?}
+     */
+    FlexDirective.prototype._onLayoutChange = /**
+     * Caches the parent container's 'flex-direction' and updates the element's style.
+     * Used as a handler for layout change events from the parent flex container.
+     * @param {?=} layout
+     * @return {?}
+     */
+    function (layout) {
+        this._layout = layout || this._layout || { direction: 'row', wrap: false };
+        this._updateStyle();
+    };
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
+    FlexDirective.prototype._updateStyle = /**
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        /** @type {?} */
+        var flexBasis = value || this._queryInput('flex') || '';
+        if (this._mqActivation) {
+            flexBasis = this._mqActivation.activatedInput;
+        }
+        /** @type {?} */
+        var basis = String(flexBasis).replace(';', '');
+        /** @type {?} */
+        var parts = Object(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["validateBasis"])(basis, this._queryInput('grow'), this._queryInput('shrink'));
+        this._applyStyleToElement(this._validateValue.apply(this, parts));
+    };
+    /**
+     * Validate the value to be one of the acceptable value options
+     * Use default fallback of 'row'
+     */
+    /**
+     * Validate the value to be one of the acceptable value options
+     * Use default fallback of 'row'
+     * @param {?} grow
+     * @param {?} shrink
+     * @param {?} basis
+     * @return {?}
+     */
+    FlexDirective.prototype._validateValue = /**
+     * Validate the value to be one of the acceptable value options
+     * Use default fallback of 'row'
+     * @param {?} grow
+     * @param {?} shrink
+     * @param {?} basis
+     * @return {?}
+     */
+    function (grow, shrink, basis) {
+        /** @type {?} */
+        var addFlexToParent = this.layoutConfig.addFlexToParent !== false;
+        /** @type {?} */
+        var layout = this._getFlexFlowDirection(this.parentElement, addFlexToParent);
+        /** @type {?} */
+        var direction = (layout.indexOf('column') > -1) ? 'column' : 'row';
+        /** @type {?} */
+        var max = isFlowHorizontal(direction) ? 'max-width' : 'max-height';
+        /** @type {?} */
+        var min = isFlowHorizontal(direction) ? 'min-width' : 'min-height';
+        /** @type {?} */
+        var hasCalc = String(basis).indexOf('calc') > -1;
+        /** @type {?} */
+        var usingCalc = hasCalc || (basis == 'auto');
+        /** @type {?} */
+        var isPercent = String(basis).indexOf('%') > -1 && !hasCalc;
+        /** @type {?} */
+        var hasUnits = String(basis).indexOf('px') > -1 || String(basis).indexOf('em') > -1 ||
+            String(basis).indexOf('vw') > -1 || String(basis).indexOf('vh') > -1;
+        /** @type {?} */
+        var isPx = String(basis).indexOf('px') > -1 || usingCalc;
+        /** @type {?} */
+        var isValue = (hasCalc || hasUnits);
+        grow = (grow == '0') ? 0 : grow;
+        shrink = (shrink == '0') ? 0 : shrink;
+        /** @type {?} */
+        var isFixed = !grow && !shrink;
+        /** @type {?} */
+        var css = {};
+        /** @type {?} */
+        var clearStyles = {
+            'max-width': null,
+            'max-height': null,
+            'min-width': null,
+            'min-height': null
+        };
+        switch (basis || '') {
+            case '':
+                /** @type {?} */
+                var useColumnBasisZero = this.layoutConfig.useColumnBasisZero !== false;
+                basis = direction === 'row' ? '0%' : (useColumnBasisZero ? '0.000000001px' : 'auto');
+                break;
+            case 'initial': // default
+            case 'nogrow':
+                grow = 0;
+                basis = 'auto';
+                break;
+            case 'grow':
+                basis = '100%';
+                break;
+            case 'noshrink':
+                shrink = 0;
+                basis = 'auto';
+                break;
+            case 'auto':
+                break;
+            case 'none':
+                grow = 0;
+                shrink = 0;
+                basis = 'auto';
+                break;
+            default:
+                // Defaults to percentage sizing unless `px` is explicitly set
+                if (!isValue && !isPercent && !isNaN(/** @type {?} */ (basis))) {
+                    basis = basis + '%';
+                }
+                // Fix for issue 280
+                if (basis === '0%') {
+                    isValue = true;
+                }
+                if (basis === '0px') {
+                    basis = '0%';
+                }
+                // fix issue #5345
+                if (hasCalc) {
+                    css = extendObject(clearStyles, {
+                        'flex-grow': grow,
+                        'flex-shrink': shrink,
+                        'flex-basis': isValue ? basis : '100%'
+                    });
+                }
+                else {
+                    css = extendObject(clearStyles, {
+                        'flex': grow + " " + shrink + " " + (isValue ? basis : '100%')
+                    });
+                }
+                break;
+        }
+        if (!(css['flex'] || css['flex-grow'])) {
+            if (hasCalc) {
+                css = extendObject(clearStyles, {
+                    'flex-grow': grow,
+                    'flex-shrink': shrink,
+                    'flex-basis': basis
+                });
+            }
+            else {
+                css = extendObject(clearStyles, {
+                    'flex': grow + " " + shrink + " " + basis
+                });
+            }
+        }
+        // Fix for issues 277, 534, and 728
+        if (basis !== '0%' && basis !== '0px' && basis !== '0.000000001px' && basis !== 'auto') {
+            css[min] = isFixed || (isPx && grow) ? basis : null;
+            css[max] = isFixed || (!usingCalc && shrink) ? basis : null;
+        }
+        // Fix for issue 528
+        if (!css[min] && !css[max]) {
+            if (hasCalc) {
+                css = extendObject(clearStyles, {
+                    'flex-grow': grow,
+                    'flex-shrink': shrink,
+                    'flex-basis': basis
+                });
+            }
+            else {
+                css = extendObject(clearStyles, {
+                    'flex': grow + " " + shrink + " " + basis
+                });
+            }
+        }
+        else {
+            // Fix for issue 660
+            if (this._layout && this._layout.wrap) {
+                css[hasCalc ? 'flex-basis' : 'flex'] = css[max] ?
+                    (hasCalc ? css[max] : grow + " " + shrink + " " + css[max]) :
+                    (hasCalc ? css[min] : grow + " " + shrink + " " + css[min]);
+            }
+        }
+        return extendObject(css, { 'box-sizing': 'border-box' });
+    };
+    FlexDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [fxFlex],\n  [fxFlex.xs], [fxFlex.sm], [fxFlex.md], [fxFlex.lg], [fxFlex.xl],\n  [fxFlex.lt-sm], [fxFlex.lt-md], [fxFlex.lt-lg], [fxFlex.lt-xl],\n  [fxFlex.gt-xs], [fxFlex.gt-sm], [fxFlex.gt-md], [fxFlex.gt-lg],\n"
+                },] },
+    ];
+    /** @nocollapse */
+    FlexDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: LayoutDirective, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["SkipSelf"] }] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] },
+        { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"], args: [_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["LAYOUT_CONFIG"],] }] }
+    ]; };
+    FlexDirective.propDecorators = {
+        shrink: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxShrink',] }],
+        grow: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxGrow',] }],
+        flex: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex',] }],
+        flexXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex.xs',] }],
+        flexSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex.sm',] }],
+        flexMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex.md',] }],
+        flexLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex.lg',] }],
+        flexXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex.xl',] }],
+        flexGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex.gt-xs',] }],
+        flexGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex.gt-sm',] }],
+        flexGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex.gt-md',] }],
+        flexGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex.gt-lg',] }],
+        flexLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex.lt-sm',] }],
+        flexLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex.lt-md',] }],
+        flexLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex.lt-lg',] }],
+        flexLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlex.lt-xl',] }]
+    };
+    return FlexDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * 'flex-order' flexbox styling directive
+ * Configures the positional ordering of the element in a sorted layout container
+ * @see https://css-tricks.com/almanac/properties/o/order/
+ */
+var FlexOrderDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FlexOrderDirective, _super);
+    /* tslint:enable */
+    function FlexOrderDirective(monitor, elRef, styleUtils) {
+        return _super.call(this, monitor, elRef, styleUtils) || this;
+    }
+    Object.defineProperty(FlexOrderDirective.prototype, "order", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('order', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOrderDirective.prototype, "orderXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('orderXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOrderDirective.prototype, "orderSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('orderSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOrderDirective.prototype, "orderMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('orderMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOrderDirective.prototype, "orderLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('orderLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOrderDirective.prototype, "orderXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('orderXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOrderDirective.prototype, "orderGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('orderGtXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOrderDirective.prototype, "orderGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('orderGtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOrderDirective.prototype, "orderGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('orderGtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOrderDirective.prototype, "orderGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('orderGtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOrderDirective.prototype, "orderLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('orderLtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOrderDirective.prototype, "orderLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('orderLtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOrderDirective.prototype, "orderLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('orderLtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOrderDirective.prototype, "orderLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('orderLtXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    FlexOrderDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes['order'] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    FlexOrderDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges('order', '0', function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
+    FlexOrderDirective.prototype._updateWithValue = /**
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput('order') || '0';
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    FlexOrderDirective.prototype._buildCSS = /**
+     * @param {?} value
+     * @return {?}
+     */
+    function (value) {
+        value = parseInt(value, 10);
+        return { order: isNaN(value) ? 0 : value };
+    };
+    FlexOrderDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [fxFlexOrder],\n  [fxFlexOrder.xs], [fxFlexOrder.sm], [fxFlexOrder.md], [fxFlexOrder.lg], [fxFlexOrder.xl],\n  [fxFlexOrder.lt-sm], [fxFlexOrder.lt-md], [fxFlexOrder.lt-lg], [fxFlexOrder.lt-xl],\n  [fxFlexOrder.gt-xs], [fxFlexOrder.gt-sm], [fxFlexOrder.gt-md], [fxFlexOrder.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    FlexOrderDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    FlexOrderDirective.propDecorators = {
+        order: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder',] }],
+        orderXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder.xs',] }],
+        orderSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder.sm',] }],
+        orderMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder.md',] }],
+        orderLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder.lg',] }],
+        orderXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder.xl',] }],
+        orderGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder.gt-xs',] }],
+        orderGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder.gt-sm',] }],
+        orderGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder.gt-md',] }],
+        orderGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder.gt-lg',] }],
+        orderLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder.lt-sm',] }],
+        orderLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder.lt-md',] }],
+        orderLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder.lt-lg',] }],
+        orderLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOrder.lt-xl',] }]
+    };
+    return FlexOrderDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * 'flex-offset' flexbox styling directive
+ * Configures the 'margin-left' of the element in a layout container
+ */
+var FlexOffsetDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FlexOffsetDirective, _super);
+    /* tslint:enable */
+    function FlexOffsetDirective(monitor, elRef, _container, _directionality, styleUtils) {
+        var _this = _super.call(this, monitor, elRef, styleUtils) || this;
+        _this._container = _container;
+        _this._directionality = _directionality;
+        /**
+         * The flex-direction of this element's host container. Defaults to 'row'.
+         */
+        _this._layout = { direction: 'row', wrap: false };
+        _this._directionWatcher =
+            _this._directionality.change.subscribe(_this._updateWithValue.bind(_this));
+        _this.watchParentFlow();
+        return _this;
+    }
+    Object.defineProperty(FlexOffsetDirective.prototype, "offset", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offset', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOffsetDirective.prototype, "offsetXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offsetXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOffsetDirective.prototype, "offsetSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offsetSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOffsetDirective.prototype, "offsetMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offsetMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOffsetDirective.prototype, "offsetLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offsetLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOffsetDirective.prototype, "offsetXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offsetXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOffsetDirective.prototype, "offsetLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offsetLtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOffsetDirective.prototype, "offsetLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offsetLtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOffsetDirective.prototype, "offsetLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offsetLtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOffsetDirective.prototype, "offsetLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offsetLtXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOffsetDirective.prototype, "offsetGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offsetGtXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOffsetDirective.prototype, "offsetGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offsetGtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOffsetDirective.prototype, "offsetGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offsetGtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexOffsetDirective.prototype, "offsetGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('offsetGtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    FlexOffsetDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes['offset'] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * Cleanup
+     */
+    /**
+     * Cleanup
+     * @return {?}
+     */
+    FlexOffsetDirective.prototype.ngOnDestroy = /**
+     * Cleanup
+     * @return {?}
+     */
+    function () {
+        _super.prototype.ngOnDestroy.call(this);
+        if (this._layoutWatcher) {
+            this._layoutWatcher.unsubscribe();
+        }
+        if (this._directionWatcher) {
+            this._directionWatcher.unsubscribe();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    FlexOffsetDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges('offset', 0, function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+    };
+    /**
+     * If parent flow-direction changes, then update the margin property
+     * used to offset
+     */
+    /**
+     * If parent flow-direction changes, then update the margin property
+     * used to offset
+     * @return {?}
+     */
+    FlexOffsetDirective.prototype.watchParentFlow = /**
+     * If parent flow-direction changes, then update the margin property
+     * used to offset
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        if (this._container) {
+            // Subscribe to layout immediate parent direction changes (if any)
+            this._layoutWatcher = this._container.layout$.subscribe(function (layout) {
+                // `direction` === null if parent container does not have a `fxLayout`
+                // `direction` === null if parent container does not have a `fxLayout`
+                _this._onLayoutChange(layout);
+            });
+        }
+    };
+    /**
+     * Caches the parent container's 'flex-direction' and updates the element's style.
+     * Used as a handler for layout change events from the parent flex container.
+     */
+    /**
+     * Caches the parent container's 'flex-direction' and updates the element's style.
+     * Used as a handler for layout change events from the parent flex container.
+     * @param {?=} layout
+     * @return {?}
+     */
+    FlexOffsetDirective.prototype._onLayoutChange = /**
+     * Caches the parent container's 'flex-direction' and updates the element's style.
+     * Used as a handler for layout change events from the parent flex container.
+     * @param {?=} layout
+     * @return {?}
+     */
+    function (layout) {
+        this._layout = layout || this._layout || { direction: 'row', wrap: false };
+        this._updateWithValue();
+    };
+    /**
+     * Using the current fxFlexOffset value, update the inline CSS
+     * NOTE: this will assign `margin-left` if the parent flex-direction == 'row',
+     *       otherwise `margin-top` is used for the offset.
+     */
+    /**
+     * Using the current fxFlexOffset value, update the inline CSS
+     * NOTE: this will assign `margin-left` if the parent flex-direction == 'row',
+     *       otherwise `margin-top` is used for the offset.
+     * @param {?=} value
+     * @return {?}
+     */
+    FlexOffsetDirective.prototype._updateWithValue = /**
+     * Using the current fxFlexOffset value, update the inline CSS
+     * NOTE: this will assign `margin-left` if the parent flex-direction == 'row',
+     *       otherwise `margin-top` is used for the offset.
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput('offset') || 0;
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} offset
+     * @return {?}
+     */
+    FlexOffsetDirective.prototype._buildCSS = /**
+     * @param {?} offset
+     * @return {?}
+     */
+    function (offset) {
+        var _a;
+        /** @type {?} */
+        var isPercent = String(offset).indexOf('%') > -1;
+        /** @type {?} */
+        var isPx = String(offset).indexOf('px') > -1;
+        if (!isPx && !isPercent && !isNaN(offset)) {
+            offset = offset + '%';
+        }
+        /** @type {?} */
+        var isRtl = this._directionality.value === 'rtl';
+        /** @type {?} */
+        var layout = this._getFlexFlowDirection(this.parentElement, true);
+        /** @type {?} */
+        var horizontalLayoutKey = isRtl ? 'margin-right' : 'margin-left';
+        return isFlowHorizontal(layout) ? (_a = {}, _a[horizontalLayoutKey] = "" + offset, _a) :
+            { 'margin-top': "" + offset };
+    };
+    FlexOffsetDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [fxFlexOffset],\n  [fxFlexOffset.xs], [fxFlexOffset.sm], [fxFlexOffset.md], [fxFlexOffset.lg], [fxFlexOffset.xl],\n  [fxFlexOffset.lt-sm], [fxFlexOffset.lt-md], [fxFlexOffset.lt-lg], [fxFlexOffset.lt-xl],\n  [fxFlexOffset.gt-xs], [fxFlexOffset.gt-sm], [fxFlexOffset.gt-md], [fxFlexOffset.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    FlexOffsetDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: LayoutDirective, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["SkipSelf"] }] },
+        { type: _angular_cdk_bidi__WEBPACK_IMPORTED_MODULE_4__["Directionality"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    FlexOffsetDirective.propDecorators = {
+        offset: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset',] }],
+        offsetXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset.xs',] }],
+        offsetSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset.sm',] }],
+        offsetMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset.md',] }],
+        offsetLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset.lg',] }],
+        offsetXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset.xl',] }],
+        offsetLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset.lt-sm',] }],
+        offsetLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset.lt-md',] }],
+        offsetLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset.lt-lg',] }],
+        offsetLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset.lt-xl',] }],
+        offsetGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset.gt-xs',] }],
+        offsetGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset.gt-sm',] }],
+        offsetGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset.gt-md',] }],
+        offsetGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexOffset.gt-lg',] }]
+    };
+    return FlexOffsetDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * 'flex-align' flexbox styling directive
+ * Allows element-specific overrides for cross-axis alignments in a layout container
+ * @see https://css-tricks.com/almanac/properties/a/align-self/
+ */
+var FlexAlignDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FlexAlignDirective, _super);
+    /* tslint:enable */
+    function FlexAlignDirective(monitor, elRef, styleUtils) {
+        return _super.call(this, monitor, elRef, styleUtils) || this;
+    }
+    Object.defineProperty(FlexAlignDirective.prototype, "align", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('align', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexAlignDirective.prototype, "alignXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexAlignDirective.prototype, "alignSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexAlignDirective.prototype, "alignMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexAlignDirective.prototype, "alignLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexAlignDirective.prototype, "alignXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexAlignDirective.prototype, "alignLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignLtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexAlignDirective.prototype, "alignLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignLtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexAlignDirective.prototype, "alignLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignLtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexAlignDirective.prototype, "alignLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignLtXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexAlignDirective.prototype, "alignGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignGtXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexAlignDirective.prototype, "alignGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignGtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexAlignDirective.prototype, "alignGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignGtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(FlexAlignDirective.prototype, "alignGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignGtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    FlexAlignDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes['align'] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    FlexAlignDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges('align', 'stretch', function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
+    FlexAlignDirective.prototype._updateWithValue = /**
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput('align') || 'stretch';
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} align
+     * @return {?}
+     */
+    FlexAlignDirective.prototype._buildCSS = /**
+     * @param {?} align
+     * @return {?}
+     */
+    function (align) {
+        /** @type {?} */
+        var css = {};
+        // Cross-axis
+        switch (align) {
+            case 'start':
+                css['align-self'] = 'flex-start';
+                break;
+            case 'end':
+                css['align-self'] = 'flex-end';
+                break;
+            default:
+                css['align-self'] = align;
+                break;
+        }
+        return css;
+    };
+    FlexAlignDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{
+                    selector: "\n  [fxFlexAlign],\n  [fxFlexAlign.xs], [fxFlexAlign.sm], [fxFlexAlign.md], [fxFlexAlign.lg], [fxFlexAlign.xl],\n  [fxFlexAlign.lt-sm], [fxFlexAlign.lt-md], [fxFlexAlign.lt-lg], [fxFlexAlign.lt-xl],\n  [fxFlexAlign.gt-xs], [fxFlexAlign.gt-sm], [fxFlexAlign.gt-md], [fxFlexAlign.gt-lg]\n"
+                },] },
+    ];
+    /** @nocollapse */
+    FlexAlignDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    FlexAlignDirective.propDecorators = {
+        align: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign',] }],
+        alignXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign.xs',] }],
+        alignSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign.sm',] }],
+        alignMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign.md',] }],
+        alignLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign.lg',] }],
+        alignXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign.xl',] }],
+        alignLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign.lt-sm',] }],
+        alignLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign.lt-md',] }],
+        alignLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign.lt-lg',] }],
+        alignLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign.lt-xl',] }],
+        alignGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign.gt-xs',] }],
+        alignGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign.gt-sm',] }],
+        alignGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign.gt-md',] }],
+        alignGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxFlexAlign.gt-lg',] }]
+    };
+    return FlexAlignDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var FLEX_FILL_CSS = {
+    'margin': 0,
+    'width': '100%',
+    'height': '100%',
+    'min-width': '100%',
+    'min-height': '100%'
+};
+/**
+ * 'fxFill' flexbox styling directive
+ *  Maximizes width and height of element in a layout container
+ *
+ *  NOTE: fxFill is NOT responsive API!!
+ */
+var FlexFillDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FlexFillDirective, _super);
+    function FlexFillDirective(monitor, elRef, styleUtils) {
+        var _this = _super.call(this, monitor, elRef, styleUtils) || this;
+        _this.elRef = elRef;
+        _this._applyStyleToElement(FLEX_FILL_CSS);
+        return _this;
+    }
+    FlexFillDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [fxFill],\n  [fxFlexFill]\n" },] },
+    ];
+    /** @nocollapse */
+    FlexFillDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    return FlexFillDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * 'layout-align' flexbox styling directive
+ *  Defines positioning of child elements along main and cross axis in a layout container
+ *  Optional values: {main-axis} values or {main-axis cross-axis} value pairs
+ *
+ * @see https://css-tricks.com/almanac/properties/j/justify-content/
+ * @see https://css-tricks.com/almanac/properties/a/align-items/
+ * @see https://css-tricks.com/almanac/properties/a/align-content/
+ */
+var LayoutAlignDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(LayoutAlignDirective, _super);
+    /* tslint:enable */
+    function LayoutAlignDirective(monitor, elRef, container, styleUtils) {
+        var _this = _super.call(this, monitor, elRef, styleUtils) || this;
+        _this._layout = 'row';
+        if (container) { // Subscribe to layout direction changes
+            // Subscribe to layout direction changes
+            _this._layoutWatcher = container.layout$.subscribe(_this._onLayoutChange.bind(_this));
+        }
+        return _this;
+    }
+    Object.defineProperty(LayoutAlignDirective.prototype, "align", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('align', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutAlignDirective.prototype, "alignXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutAlignDirective.prototype, "alignSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutAlignDirective.prototype, "alignMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutAlignDirective.prototype, "alignLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutAlignDirective.prototype, "alignXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutAlignDirective.prototype, "alignGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignGtXs', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutAlignDirective.prototype, "alignGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignGtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutAlignDirective.prototype, "alignGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignGtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutAlignDirective.prototype, "alignGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignGtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutAlignDirective.prototype, "alignLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignLtSm', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutAlignDirective.prototype, "alignLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignLtMd', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutAlignDirective.prototype, "alignLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignLtLg', val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LayoutAlignDirective.prototype, "alignLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('alignLtXl', val); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * @param {?} changes
+     * @return {?}
+     */
+    LayoutAlignDirective.prototype.ngOnChanges = /**
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes['align'] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    LayoutAlignDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges('align', 'start stretch', function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+    };
+    /**
+     * @return {?}
+     */
+    LayoutAlignDirective.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
+        _super.prototype.ngOnDestroy.call(this);
+        if (this._layoutWatcher) {
+            this._layoutWatcher.unsubscribe();
+        }
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     *
+     */
+    /**
+     *
+     * @param {?=} value
+     * @return {?}
+     */
+    LayoutAlignDirective.prototype._updateWithValue = /**
+     *
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput('align') || 'start stretch';
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+        this._allowStretching(value, !this._layout ? 'row' : this._layout);
+    };
+    /**
+     * Cache the parent container 'flex-direction' and update the 'flex' styles
+     */
+    /**
+     * Cache the parent container 'flex-direction' and update the 'flex' styles
+     * @param {?} layout
+     * @return {?}
+     */
+    LayoutAlignDirective.prototype._onLayoutChange = /**
+     * Cache the parent container 'flex-direction' and update the 'flex' styles
+     * @param {?} layout
+     * @return {?}
+     */
+    function (layout) {
+        var _this = this;
+        this._layout = (layout.direction || '').toLowerCase();
+        if (!LAYOUT_VALUES.find(function (x) { return x === _this._layout; })) {
+            this._layout = 'row';
+        }
+        /** @type {?} */
+        var value = this._queryInput('align') || 'start stretch';
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._allowStretching(value, this._layout || 'row');
+    };
+    /**
+     * @param {?} align
+     * @return {?}
+     */
+    LayoutAlignDirective.prototype._buildCSS = /**
+     * @param {?} align
+     * @return {?}
+     */
+    function (align) {
+        /** @type {?} */
+        var css = {};
+        var _a = align.split(' '), main_axis = _a[0], cross_axis = _a[1]; // tslint:disable-line:variable-name
+        // Main axis
+        switch (main_axis) {
+            case 'center':
+                css['justify-content'] = 'center';
+                break;
+            case 'space-around':
+                css['justify-content'] = 'space-around';
+                break;
+            case 'space-between':
+                css['justify-content'] = 'space-between';
+                break;
+            case 'space-evenly':
+                css['justify-content'] = 'space-evenly';
+                break;
+            case 'end':
+            case 'flex-end':
+                css['justify-content'] = 'flex-end';
+                break;
+            case 'start':
+            case 'flex-start':
+            default:
+                css['justify-content'] = 'flex-start'; // default main axis
+                break;
+        }
+        // Cross-axis
+        switch (cross_axis) {
+            case 'start':
+            case 'flex-start':
+                css['align-items'] = css['align-content'] = 'flex-start';
+                break;
+            case 'baseline':
+                css['align-items'] = 'baseline';
+                break;
+            case 'center':
+                css['align-items'] = css['align-content'] = 'center';
+                break;
+            case 'end':
+            case 'flex-end':
+                css['align-items'] = css['align-content'] = 'flex-end';
+                break;
+            case 'stretch':
+            default: // 'stretch'
+                // 'stretch'
+                css['align-items'] = css['align-content'] = 'stretch'; // default cross axis
+                break;
+        }
+        return extendObject(css, {
+            'display': 'flex',
+            'flex-direction': this._layout || 'row',
+            'box-sizing': 'border-box'
+        });
+    };
+    /**
+     * Update container element to 'stretch' as needed...
+     * NOTE: this is only done if the crossAxis is explicitly set to 'stretch'
+     */
+    /**
+     * Update container element to 'stretch' as needed...
+     * NOTE: this is only done if the crossAxis is explicitly set to 'stretch'
+     * @param {?} align
+     * @param {?} layout
+     * @return {?}
+     */
+    LayoutAlignDirective.prototype._allowStretching = /**
+     * Update container element to 'stretch' as needed...
+     * NOTE: this is only done if the crossAxis is explicitly set to 'stretch'
+     * @param {?} align
+     * @param {?} layout
+     * @return {?}
+     */
+    function (align, layout) {
+        var _a = align.split(' '), cross_axis = _a[1]; // tslint:disable-line:variable-name
+        if (cross_axis == 'stretch') {
+            // Use `null` values to remove style
+            this._applyStyleToElement({
+                'box-sizing': 'border-box',
+                'max-width': !isFlowHorizontal(layout) ? '100%' : null,
+                'max-height': isFlowHorizontal(layout) ? '100%' : null
+            });
+        }
+    };
+    LayoutAlignDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [fxLayoutAlign],\n  [fxLayoutAlign.xs], [fxLayoutAlign.sm], [fxLayoutAlign.md], [fxLayoutAlign.lg],[fxLayoutAlign.xl],\n  [fxLayoutAlign.lt-sm], [fxLayoutAlign.lt-md], [fxLayoutAlign.lt-lg], [fxLayoutAlign.lt-xl],\n  [fxLayoutAlign.gt-xs], [fxLayoutAlign.gt-sm], [fxLayoutAlign.gt-md], [fxLayoutAlign.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    LayoutAlignDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: LayoutDirective, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Self"] }] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    LayoutAlignDirective.propDecorators = {
+        align: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign',] }],
+        alignXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign.xs',] }],
+        alignSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign.sm',] }],
+        alignMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign.md',] }],
+        alignLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign.lg',] }],
+        alignXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign.xl',] }],
+        alignGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign.gt-xs',] }],
+        alignGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign.gt-sm',] }],
+        alignGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign.gt-md',] }],
+        alignGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign.gt-lg',] }],
+        alignLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign.lt-sm',] }],
+        alignLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign.lt-md',] }],
+        alignLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign.lt-lg',] }],
+        alignLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['fxLayoutAlign.lt-xl',] }]
+    };
+    return LayoutAlignDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var ALL_DIRECTIVES = [
+    LayoutDirective,
+    LayoutGapDirective,
+    LayoutAlignDirective,
+    FlexDirective,
+    FlexOrderDirective,
+    FlexOffsetDirective,
+    FlexFillDirective,
+    FlexAlignDirective,
+];
+/**
+ * *****************************************************************
+ * Define module for the Flex API
+ * *****************************************************************
+ */
+var FlexModule = /** @class */ (function () {
+    function FlexModule() {
+    }
+    FlexModule.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"], args: [{
+                    imports: [_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["CoreModule"], _angular_cdk_bidi__WEBPACK_IMPORTED_MODULE_4__["BidiModule"]],
+                    declarations: ALL_DIRECTIVES.slice(),
+                    exports: ALL_DIRECTIVES.slice()
+                },] },
+    ];
+    return FlexModule;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+
+//# sourceMappingURL=flex.es5.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/@angular/flex-layout/esm5/grid.es5.js":
+/*!************************************************************!*\
+  !*** ./node_modules/@angular/flex-layout/esm5/grid.es5.js ***!
+  \************************************************************/
+/*! exports provided: GridModule, ɵb, ɵc, ɵd, ɵe, ɵf, ɵg, ɵh, ɵi, ɵa, ɵj, ɵk */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GridModule", function() { return GridModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵb", function() { return GridAlignColumnsDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵc", function() { return GridAlignRowsDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵd", function() { return GridAreaDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵe", function() { return GridAreasDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵf", function() { return GridAutoDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵg", function() { return GridColumnDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵh", function() { return GridColumnsDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵi", function() { return GridGapDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵa", function() { return GridAlignDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵj", function() { return GridRowDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵk", function() { return GridRowsDirective; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/flex-layout/core */ "./node_modules/@angular/flex-layout/esm5/core.es5.js");
+/* harmony import */ var _angular_cdk_coercion__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/cdk/coercion */ "./node_modules/@angular/cdk/esm5/coercion.es5.js");
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+
+
+
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CACHE_KEY = 'align';
+/** @type {?} */
+var ROW_DEFAULT = 'stretch';
+/** @type {?} */
+var COL_DEFAULT = 'stretch';
+/**
+ * 'align' CSS Grid styling directive for grid children
+ *  Defines positioning of child elements along row and column axis in a grid container
+ *  Optional values: {row-axis} values or {row-axis column-axis} value pairs
+ *
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#prop-justify-self
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#prop-align-self
+ */
+var GridAlignDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GridAlignDirective, _super);
+    /* tslint:enable */
+    function GridAlignDirective(monitor, elRef, styleUtils) {
+        return _super.call(this, monitor, elRef, styleUtils) || this;
+    }
+    Object.defineProperty(GridAlignDirective.prototype, "align", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput("" + CACHE_KEY, val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignDirective.prototype, "alignXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY + "Xs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignDirective.prototype, "alignSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY + "Sm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignDirective.prototype, "alignMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY + "Md", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignDirective.prototype, "alignLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY + "Lg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignDirective.prototype, "alignXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY + "Xl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignDirective.prototype, "alignGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY + "GtXs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignDirective.prototype, "alignGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY + "GtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignDirective.prototype, "alignGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY + "GtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignDirective.prototype, "alignGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY + "GtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignDirective.prototype, "alignLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY + "LtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignDirective.prototype, "alignLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY + "LtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignDirective.prototype, "alignLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY + "LtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignDirective.prototype, "alignLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY + "LtXl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * @param {?} changes
+     * @return {?}
+     */
+    GridAlignDirective.prototype.ngOnChanges = /**
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes[CACHE_KEY] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    GridAlignDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges(CACHE_KEY, ROW_DEFAULT, function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+        this._updateWithValue();
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     *
+     */
+    /**
+     *
+     * @param {?=} value
+     * @return {?}
+     */
+    GridAlignDirective.prototype._updateWithValue = /**
+     *
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput(CACHE_KEY) || ROW_DEFAULT;
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} align
+     * @return {?}
+     */
+    GridAlignDirective.prototype._buildCSS = /**
+     * @param {?} align
+     * @return {?}
+     */
+    function (align) {
+        /** @type {?} */
+        var css = {};
+        var _a = align.split(' '), rowAxis = _a[0], columnAxis = _a[1];
+        // Row axis
+        switch (rowAxis) {
+            case 'end':
+                css['justify-self'] = 'end';
+                break;
+            case 'center':
+                css['justify-self'] = 'center';
+                break;
+            case 'stretch':
+                css['justify-self'] = 'stretch';
+                break;
+            case 'start':
+                css['justify-self'] = 'start';
+                break;
+            default:
+                css['justify-self'] = ROW_DEFAULT; // default row axis
+                break;
+        }
+        // Column axis
+        switch (columnAxis) {
+            case 'end':
+                css['align-self'] = 'end';
+                break;
+            case 'center':
+                css['align-self'] = 'center';
+                break;
+            case 'stretch':
+                css['align-self'] = 'stretch';
+                break;
+            case 'start':
+                css['align-self'] = 'start';
+                break;
+            default:
+                css['align-self'] = COL_DEFAULT; // default column axis
+                break;
+        }
+        return css;
+    };
+    GridAlignDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [gdGridAlign],\n  [gdGridAlign.xs], [gdGridAlign.sm], [gdGridAlign.md], [gdGridAlign.lg],[gdGridAlign.xl],\n  [gdGridAlign.lt-sm], [gdGridAlign.lt-md], [gdGridAlign.lt-lg], [gdGridAlign.lt-xl],\n  [gdGridAlign.gt-xs], [gdGridAlign.gt-sm], [gdGridAlign.gt-md], [gdGridAlign.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    GridAlignDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    GridAlignDirective.propDecorators = {
+        align: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign',] }],
+        alignXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign.xs',] }],
+        alignSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign.sm',] }],
+        alignMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign.md',] }],
+        alignLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign.lg',] }],
+        alignXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign.xl',] }],
+        alignGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign.gt-xs',] }],
+        alignGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign.gt-sm',] }],
+        alignGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign.gt-md',] }],
+        alignGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign.gt-lg',] }],
+        alignLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign.lt-sm',] }],
+        alignLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign.lt-md',] }],
+        alignLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign.lt-lg',] }],
+        alignLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGridAlign.lt-xl',] }]
+    };
+    return GridAlignDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * Extends an object with the *enumerable* and *own* properties of one or more source objects,
+ * similar to Object.assign.
+ *
+ * @param {?} dest The object which will have properties copied to it.
+ * @param {...?} sources The source objects from which properties will be copied.
+ * @return {?}
+ */
+function extendObject(dest) {
+    var sources = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        sources[_i - 1] = arguments[_i];
+    }
+    if (dest == null) {
+        throw TypeError('Cannot convert undefined or null to object');
+    }
+    for (var _a = 0, sources_1 = sources; _a < sources_1.length; _a++) {
+        var source = sources_1[_a];
+        if (source != null) {
+            for (var key in source) {
+                if (source.hasOwnProperty(key)) {
+                    dest[key] = source[key];
+                }
+            }
+        }
+    }
+    return dest;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CACHE_KEY$1 = 'alignColumns';
+/** @type {?} */
+var DEFAULT_MAIN = 'start';
+/** @type {?} */
+var DEFAULT_CROSS = 'stretch';
+/**
+ * 'column alignment' CSS Grid styling directive
+ * Configures the alignment in the column direction
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#article-header-id-19
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#article-header-id-21
+ */
+var GridAlignColumnsDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GridAlignColumnsDirective, _super);
+    /* tslint:enable */
+    function GridAlignColumnsDirective(monitor, elRef, styleUtils) {
+        return _super.call(this, monitor, elRef, styleUtils) || this;
+    }
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "align", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput("" + CACHE_KEY$1, val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "alignXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$1 + "Xs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "alignSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$1 + "Sm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "alignMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$1 + "Md", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "alignLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$1 + "Lg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "alignXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$1 + "Xl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "alignGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$1 + "GtXs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "alignGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$1 + "GtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "alignGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$1 + "GtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "alignGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$1 + "GtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "alignLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$1 + "LtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "alignLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$1 + "LtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "alignLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$1 + "LtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "alignLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$1 + "LtXl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignColumnsDirective.prototype, "inline", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('inline', Object(_angular_cdk_coercion__WEBPACK_IMPORTED_MODULE_3__["coerceBooleanProperty"])(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    GridAlignColumnsDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes[CACHE_KEY$1] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    GridAlignColumnsDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges(CACHE_KEY$1, DEFAULT_MAIN + " " + DEFAULT_CROSS, function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+        this._updateWithValue();
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
+    GridAlignColumnsDirective.prototype._updateWithValue = /**
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput(CACHE_KEY$1) || DEFAULT_MAIN + " " + DEFAULT_CROSS;
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} align
+     * @return {?}
+     */
+    GridAlignColumnsDirective.prototype._buildCSS = /**
+     * @param {?} align
+     * @return {?}
+     */
+    function (align) {
+        /** @type {?} */
+        var css = {};
+        var _a = align.split(' '), mainAxis = _a[0], crossAxis = _a[1];
+        // Main axis
+        switch (mainAxis) {
+            case 'center':
+                css['align-content'] = 'center';
+                break;
+            case 'space-around':
+                css['align-content'] = 'space-around';
+                break;
+            case 'space-between':
+                css['align-content'] = 'space-between';
+                break;
+            case 'space-evenly':
+                css['align-content'] = 'space-evenly';
+                break;
+            case 'end':
+                css['align-content'] = 'end';
+                break;
+            case 'start':
+                css['align-content'] = 'start';
+                break;
+            case 'stretch':
+                css['align-content'] = 'stretch';
+                break;
+            default:
+                css['align-content'] = DEFAULT_MAIN; // default main axis
+                break;
+        }
+        // Cross-axis
+        switch (crossAxis) {
+            case 'start':
+                css['align-items'] = 'start';
+                break;
+            case 'center':
+                css['align-items'] = 'center';
+                break;
+            case 'end':
+                css['align-items'] = 'end';
+                break;
+            case 'stretch':
+                css['align-items'] = 'stretch';
+                break;
+            default: // 'stretch'
+                // 'stretch'
+                css['align-items'] = DEFAULT_CROSS; // default cross axis
+                break;
+        }
+        return extendObject(css, { 'display': this._queryInput('inline') ? 'inline-grid' : 'grid' });
+    };
+    GridAlignColumnsDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [gdAlignColumns],\n  [gdAlignColumns.xs], [gdAlignColumns.sm], [gdAlignColumns.md],\n  [gdAlignColumns.lg], [gdAlignColumns.xl], [gdAlignColumns.lt-sm],\n  [gdAlignColumns.lt-md], [gdAlignColumns.lt-lg], [gdAlignColumns.lt-xl],\n  [gdAlignColumns.gt-xs], [gdAlignColumns.gt-sm], [gdAlignColumns.gt-md],\n  [gdAlignColumns.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    GridAlignColumnsDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    GridAlignColumnsDirective.propDecorators = {
+        align: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns',] }],
+        alignXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns.xs',] }],
+        alignSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns.sm',] }],
+        alignMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns.md',] }],
+        alignLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns.lg',] }],
+        alignXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns.xl',] }],
+        alignGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns.gt-xs',] }],
+        alignGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns.gt-sm',] }],
+        alignGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns.gt-md',] }],
+        alignGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns.gt-lg',] }],
+        alignLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns.lt-sm',] }],
+        alignLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns.lt-md',] }],
+        alignLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns.lt-lg',] }],
+        alignLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignColumns.lt-xl',] }],
+        inline: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdInline',] }]
+    };
+    return GridAlignColumnsDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CACHE_KEY$2 = 'alignRows';
+/** @type {?} */
+var DEFAULT_MAIN$1 = 'start';
+/** @type {?} */
+var DEFAULT_CROSS$1 = 'stretch';
+/**
+ * 'row alignment' CSS Grid styling directive
+ * Configures the alignment in the row direction
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#article-header-id-18
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#article-header-id-20
+ */
+var GridAlignRowsDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GridAlignRowsDirective, _super);
+    /* tslint:enable */
+    function GridAlignRowsDirective(monitor, elRef, styleUtils) {
+        return _super.call(this, monitor, elRef, styleUtils) || this;
+    }
+    Object.defineProperty(GridAlignRowsDirective.prototype, "align", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput("" + CACHE_KEY$2, val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "alignXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$2 + "Xs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "alignSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$2 + "Sm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "alignMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$2 + "Md", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "alignLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$2 + "Lg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "alignXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$2 + "Xl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "alignGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$2 + "GtXs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "alignGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$2 + "GtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "alignGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$2 + "GtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "alignGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$2 + "GtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "alignLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$2 + "LtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "alignLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$2 + "LtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "alignLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$2 + "LtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "alignLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$2 + "LtXl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAlignRowsDirective.prototype, "inline", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('inline', Object(_angular_cdk_coercion__WEBPACK_IMPORTED_MODULE_3__["coerceBooleanProperty"])(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    GridAlignRowsDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes[CACHE_KEY$2] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    GridAlignRowsDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges(CACHE_KEY$2, DEFAULT_MAIN$1 + " " + DEFAULT_CROSS$1, function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+        this._updateWithValue();
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
+    GridAlignRowsDirective.prototype._updateWithValue = /**
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput(CACHE_KEY$2) || DEFAULT_MAIN$1 + " " + DEFAULT_CROSS$1;
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} align
+     * @return {?}
+     */
+    GridAlignRowsDirective.prototype._buildCSS = /**
+     * @param {?} align
+     * @return {?}
+     */
+    function (align) {
+        /** @type {?} */
+        var css = {};
+        var _a = align.split(' '), mainAxis = _a[0], crossAxis = _a[1];
+        // Main axis
+        switch (mainAxis) {
+            case 'center':
+            case 'space-around':
+            case 'space-between':
+            case 'space-evenly':
+            case 'end':
+            case 'start':
+            case 'stretch':
+                css['justify-content'] = mainAxis;
+                break;
+            default:
+                css['justify-content'] = DEFAULT_MAIN$1; // default main axis
+                break;
+        }
+        // Cross-axis
+        switch (crossAxis) {
+            case 'start':
+            case 'center':
+            case 'end':
+            case 'stretch':
+                css['justify-items'] = crossAxis;
+                break;
+            default: // 'stretch'
+                // 'stretch'
+                css['justify-items'] = DEFAULT_CROSS$1; // default cross axis
+                break;
+        }
+        return extendObject(css, { 'display': this._queryInput('inline') ? 'inline-grid' : 'grid' });
+    };
+    GridAlignRowsDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [gdAlignRows],\n  [gdAlignRows.xs], [gdAlignRows.sm], [gdAlignRows.md],\n  [gdAlignRows.lg], [gdAlignRows.xl], [gdAlignRows.lt-sm],\n  [gdAlignRows.lt-md], [gdAlignRows.lt-lg], [gdAlignRows.lt-xl],\n  [gdAlignRows.gt-xs], [gdAlignRows.gt-sm], [gdAlignRows.gt-md],\n  [gdAlignRows.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    GridAlignRowsDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    GridAlignRowsDirective.propDecorators = {
+        align: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows',] }],
+        alignXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows.xs',] }],
+        alignSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows.sm',] }],
+        alignMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows.md',] }],
+        alignLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows.lg',] }],
+        alignXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows.xl',] }],
+        alignGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows.gt-xs',] }],
+        alignGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows.gt-sm',] }],
+        alignGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows.gt-md',] }],
+        alignGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows.gt-lg',] }],
+        alignLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows.lt-sm',] }],
+        alignLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows.lt-md',] }],
+        alignLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows.lt-lg',] }],
+        alignLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAlignRows.lt-xl',] }],
+        inline: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdInline',] }]
+    };
+    return GridAlignRowsDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CACHE_KEY$3 = 'area';
+/** @type {?} */
+var DEFAULT_VALUE = 'auto';
+/**
+ * 'grid-area' CSS Grid styling directive
+ * Configures the name or position of an element within the grid
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#article-header-id-27
+ */
+var GridAreaDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GridAreaDirective, _super);
+    /* tslint:enable */
+    function GridAreaDirective(monitor, elRef, styleUtils) {
+        return _super.call(this, monitor, elRef, styleUtils) || this;
+    }
+    Object.defineProperty(GridAreaDirective.prototype, "align", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput("" + CACHE_KEY$3, val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreaDirective.prototype, "alignXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$3 + "Xs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreaDirective.prototype, "alignSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$3 + "Sm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreaDirective.prototype, "alignMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$3 + "Md", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreaDirective.prototype, "alignLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$3 + "Lg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreaDirective.prototype, "alignXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$3 + "Xl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreaDirective.prototype, "alignGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$3 + "GtXs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreaDirective.prototype, "alignGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$3 + "GtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreaDirective.prototype, "alignGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$3 + "GtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreaDirective.prototype, "alignGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$3 + "GtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreaDirective.prototype, "alignLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$3 + "LtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreaDirective.prototype, "alignLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$3 + "LtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreaDirective.prototype, "alignLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$3 + "LtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreaDirective.prototype, "alignLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$3 + "LtXl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    GridAreaDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes[CACHE_KEY$3] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    GridAreaDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges(CACHE_KEY$3, DEFAULT_VALUE, function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+        this._updateWithValue();
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
+    GridAreaDirective.prototype._updateWithValue = /**
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput(CACHE_KEY$3) || DEFAULT_VALUE;
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    GridAreaDirective.prototype._buildCSS = /**
+     * @param {?} value
+     * @return {?}
+     */
+    function (value) {
+        return { 'grid-area': value };
+    };
+    GridAreaDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [gdArea],\n  [gdArea.xs], [gdArea.sm], [gdArea.md], [gdArea.lg], [gdArea.xl],\n  [gdArea.lt-sm], [gdArea.lt-md], [gdArea.lt-lg], [gdArea.lt-xl],\n  [gdArea.gt-xs], [gdArea.gt-sm], [gdArea.gt-md], [gdArea.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    GridAreaDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    GridAreaDirective.propDecorators = {
+        align: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea',] }],
+        alignXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea.xs',] }],
+        alignSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea.sm',] }],
+        alignMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea.md',] }],
+        alignLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea.lg',] }],
+        alignXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea.xl',] }],
+        alignGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea.gt-xs',] }],
+        alignGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea.gt-sm',] }],
+        alignGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea.gt-md',] }],
+        alignGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea.gt-lg',] }],
+        alignLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea.lt-sm',] }],
+        alignLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea.lt-md',] }],
+        alignLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea.lt-lg',] }],
+        alignLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdArea.lt-xl',] }]
+    };
+    return GridAreaDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CACHE_KEY$4 = 'areas';
+/** @type {?} */
+var DEFAULT_VALUE$1 = 'none';
+/** @type {?} */
+var DELIMETER = '|';
+/**
+ * 'grid-template-areas' CSS Grid styling directive
+ * Configures the names of elements within the grid
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#article-header-id-14
+ */
+var GridAreasDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GridAreasDirective, _super);
+    /* tslint:enable */
+    function GridAreasDirective(monitor, elRef, styleUtils) {
+        return _super.call(this, monitor, elRef, styleUtils) || this;
+    }
+    Object.defineProperty(GridAreasDirective.prototype, "align", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput("" + CACHE_KEY$4, val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "alignXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$4 + "Xs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "alignSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$4 + "Sm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "alignMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$4 + "Md", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "alignLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$4 + "Lg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "alignXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$4 + "Xl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "alignGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$4 + "GtXs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "alignGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$4 + "GtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "alignGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$4 + "GtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "alignGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$4 + "GtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "alignLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$4 + "LtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "alignLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$4 + "LtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "alignLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$4 + "LtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "alignLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$4 + "LtXl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAreasDirective.prototype, "inline", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('inline', Object(_angular_cdk_coercion__WEBPACK_IMPORTED_MODULE_3__["coerceBooleanProperty"])(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    GridAreasDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes[CACHE_KEY$4] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    GridAreasDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges(CACHE_KEY$4, DEFAULT_VALUE$1, function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+        this._updateWithValue();
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
+    GridAreasDirective.prototype._updateWithValue = /**
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput(CACHE_KEY$4) || DEFAULT_VALUE$1;
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    GridAreasDirective.prototype._buildCSS = /**
+     * @param {?} value
+     * @return {?}
+     */
+    function (value) {
+        /** @type {?} */
+        var areas = value.split(DELIMETER).map(function (v) { return "\"" + v.trim() + "\""; });
+        return {
+            'display': this._queryInput('inline') ? 'inline-grid' : 'grid',
+            'grid-template-areas': areas.join(' ')
+        };
+    };
+    GridAreasDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [gdAreas],\n  [gdAreas.xs], [gdAreas.sm], [gdAreas.md], [gdAreas.lg], [gdAreas.xl],\n  [gdAreas.lt-sm], [gdAreas.lt-md], [gdAreas.lt-lg], [gdAreas.lt-xl],\n  [gdAreas.gt-xs], [gdAreas.gt-sm], [gdAreas.gt-md], [gdAreas.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    GridAreasDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    GridAreasDirective.propDecorators = {
+        align: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas',] }],
+        alignXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas.xs',] }],
+        alignSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas.sm',] }],
+        alignMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas.md',] }],
+        alignLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas.lg',] }],
+        alignXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas.xl',] }],
+        alignGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas.gt-xs',] }],
+        alignGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas.gt-sm',] }],
+        alignGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas.gt-md',] }],
+        alignGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas.gt-lg',] }],
+        alignLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas.lt-sm',] }],
+        alignLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas.lt-md',] }],
+        alignLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas.lt-lg',] }],
+        alignLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAreas.lt-xl',] }],
+        inline: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdInline',] }]
+    };
+    return GridAreasDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CACHE_KEY$5 = 'autoFlow';
+/** @type {?} */
+var DEFAULT_VALUE$2 = 'initial';
+/**
+ * 'grid-auto-flow' CSS Grid styling directive
+ * Configures the auto placement algorithm for the grid
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#article-header-id-23
+ */
+var GridAutoDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GridAutoDirective, _super);
+    /* tslint:enable */
+    function GridAutoDirective(monitor, elRef, styleUtils) {
+        return _super.call(this, monitor, elRef, styleUtils) || this;
+    }
+    Object.defineProperty(GridAutoDirective.prototype, "align", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput("" + CACHE_KEY$5, val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "alignXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$5 + "Xs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "alignSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$5 + "Sm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "alignMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$5 + "Md", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "alignLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$5 + "Lg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "alignXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$5 + "Xl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "alignGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$5 + "GtXs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "alignGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$5 + "GtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "alignGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$5 + "GtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "alignGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$5 + "GtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "alignLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$5 + "LtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "alignLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$5 + "LtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "alignLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$5 + "LtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "alignLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$5 + "LtXl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridAutoDirective.prototype, "inline", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('inline', Object(_angular_cdk_coercion__WEBPACK_IMPORTED_MODULE_3__["coerceBooleanProperty"])(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    GridAutoDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes[CACHE_KEY$5] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    GridAutoDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges(CACHE_KEY$5, DEFAULT_VALUE$2, function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+        this._updateWithValue();
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
+    GridAutoDirective.prototype._updateWithValue = /**
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput(CACHE_KEY$5) || DEFAULT_VALUE$2;
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    GridAutoDirective.prototype._buildCSS = /**
+     * @param {?} value
+     * @return {?}
+     */
+    function (value) {
+        var _a = value.split(' '), direction = _a[0], dense = _a[1];
+        if (direction !== 'column' && direction !== 'row' && direction !== 'dense') {
+            direction = 'row';
+        }
+        dense = (dense === 'dense' && direction !== 'dense') ? ' dense' : '';
+        return {
+            'display': this._queryInput('inline') ? 'inline-grid' : 'grid',
+            'grid-auto-flow': direction + dense
+        };
+    };
+    GridAutoDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [gdAuto],\n  [gdAuto.xs], [gdAuto.sm], [gdAuto.md], [gdAuto.lg], [gdAuto.xl],\n  [gdAuto.lt-sm], [gdAuto.lt-md], [gdAuto.lt-lg], [gdAuto.lt-xl],\n  [gdAuto.gt-xs], [gdAuto.gt-sm], [gdAuto.gt-md], [gdAuto.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    GridAutoDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    GridAutoDirective.propDecorators = {
+        align: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto',] }],
+        alignXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto.xs',] }],
+        alignSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto.sm',] }],
+        alignMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto.md',] }],
+        alignLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto.lg',] }],
+        alignXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto.xl',] }],
+        alignGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto.gt-xs',] }],
+        alignGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto.gt-sm',] }],
+        alignGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto.gt-md',] }],
+        alignGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto.gt-lg',] }],
+        alignLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto.lt-sm',] }],
+        alignLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto.lt-md',] }],
+        alignLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto.lt-lg',] }],
+        alignLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdAuto.lt-xl',] }],
+        inline: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdInline',] }]
+    };
+    return GridAutoDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CACHE_KEY$6 = 'column';
+/** @type {?} */
+var DEFAULT_VALUE$3 = 'auto';
+/**
+ * 'grid-column' CSS Grid styling directive
+ * Configures the name or position of an element within the grid
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#article-header-id-26
+ */
+var GridColumnDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GridColumnDirective, _super);
+    /* tslint:enable */
+    function GridColumnDirective(monitor, elRef, styleUtils) {
+        return _super.call(this, monitor, elRef, styleUtils) || this;
+    }
+    Object.defineProperty(GridColumnDirective.prototype, "align", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput("" + CACHE_KEY$6, val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnDirective.prototype, "alignXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$6 + "Xs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnDirective.prototype, "alignSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$6 + "Sm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnDirective.prototype, "alignMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$6 + "Md", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnDirective.prototype, "alignLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$6 + "Lg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnDirective.prototype, "alignXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$6 + "Xl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnDirective.prototype, "alignGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$6 + "GtXs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnDirective.prototype, "alignGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$6 + "GtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnDirective.prototype, "alignGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$6 + "GtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnDirective.prototype, "alignGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$6 + "GtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnDirective.prototype, "alignLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$6 + "LtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnDirective.prototype, "alignLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$6 + "LtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnDirective.prototype, "alignLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$6 + "LtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnDirective.prototype, "alignLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$6 + "LtXl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    GridColumnDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes[CACHE_KEY$6] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    GridColumnDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges(CACHE_KEY$6, DEFAULT_VALUE$3, function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+        this._updateWithValue();
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
+    GridColumnDirective.prototype._updateWithValue = /**
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput(CACHE_KEY$6) || DEFAULT_VALUE$3;
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    GridColumnDirective.prototype._buildCSS = /**
+     * @param {?} value
+     * @return {?}
+     */
+    function (value) {
+        return { 'grid-column': value };
+    };
+    GridColumnDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [gdColumn],\n  [gdColumn.xs], [gdColumn.sm], [gdColumn.md], [gdColumn.lg], [gdColumn.xl],\n  [gdColumn.lt-sm], [gdColumn.lt-md], [gdColumn.lt-lg], [gdColumn.lt-xl],\n  [gdColumn.gt-xs], [gdColumn.gt-sm], [gdColumn.gt-md], [gdColumn.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    GridColumnDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    GridColumnDirective.propDecorators = {
+        align: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn',] }],
+        alignXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn.xs',] }],
+        alignSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn.sm',] }],
+        alignMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn.md',] }],
+        alignLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn.lg',] }],
+        alignXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn.xl',] }],
+        alignGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn.gt-xs',] }],
+        alignGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn.gt-sm',] }],
+        alignGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn.gt-md',] }],
+        alignGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn.gt-lg',] }],
+        alignLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn.lt-sm',] }],
+        alignLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn.lt-md',] }],
+        alignLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn.lt-lg',] }],
+        alignLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumn.lt-xl',] }]
+    };
+    return GridColumnDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CACHE_KEY$7 = 'columns';
+/** @type {?} */
+var DEFAULT_VALUE$4 = 'none';
+/** @type {?} */
+var AUTO_SPECIFIER = '!';
+/**
+ * 'grid-template-columns' CSS Grid styling directive
+ * Configures the sizing for the columns in the grid
+ * Syntax: <column value> [auto]
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#article-header-id-13
+ */
+var GridColumnsDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GridColumnsDirective, _super);
+    /* tslint:enable */
+    function GridColumnsDirective(monitor, elRef, styleUtils) {
+        return _super.call(this, monitor, elRef, styleUtils) || this;
+    }
+    Object.defineProperty(GridColumnsDirective.prototype, "align", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput("" + CACHE_KEY$7, val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "alignXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$7 + "Xs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "alignSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$7 + "Sm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "alignMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$7 + "Md", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "alignLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$7 + "Lg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "alignXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$7 + "Xl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "alignGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$7 + "GtXs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "alignGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$7 + "GtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "alignGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$7 + "GtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "alignGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$7 + "GtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "alignLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$7 + "LtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "alignLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$7 + "LtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "alignLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$7 + "LtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "alignLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$7 + "LtXl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridColumnsDirective.prototype, "inline", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('inline', Object(_angular_cdk_coercion__WEBPACK_IMPORTED_MODULE_3__["coerceBooleanProperty"])(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    GridColumnsDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes[CACHE_KEY$7] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    GridColumnsDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges(CACHE_KEY$7, DEFAULT_VALUE$4, function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+        this._updateWithValue();
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
+    GridColumnsDirective.prototype._updateWithValue = /**
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput(CACHE_KEY$7) || DEFAULT_VALUE$4;
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    GridColumnsDirective.prototype._buildCSS = /**
+     * @param {?} value
+     * @return {?}
+     */
+    function (value) {
+        /** @type {?} */
+        var auto = false;
+        if (value.endsWith(AUTO_SPECIFIER)) {
+            value = value.substring(0, value.indexOf(AUTO_SPECIFIER));
+            auto = true;
+        }
+        /** @type {?} */
+        var css = {
+            'display': this._queryInput('inline') ? 'inline-grid' : 'grid',
+            'grid-auto-columns': '',
+            'grid-template-columns': '',
+        };
+        /** @type {?} */
+        var key = (auto ? 'grid-auto-columns' : 'grid-template-columns');
+        css[key] = value;
+        return css;
+    };
+    GridColumnsDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [gdColumns],\n  [gdColumns.xs], [gdColumns.sm], [gdColumns.md], [gdColumns.lg], [gdColumns.xl],\n  [gdColumns.lt-sm], [gdColumns.lt-md], [gdColumns.lt-lg], [gdColumns.lt-xl],\n  [gdColumns.gt-xs], [gdColumns.gt-sm], [gdColumns.gt-md], [gdColumns.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    GridColumnsDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    GridColumnsDirective.propDecorators = {
+        align: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns',] }],
+        alignXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns.xs',] }],
+        alignSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns.sm',] }],
+        alignMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns.md',] }],
+        alignLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns.lg',] }],
+        alignXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns.xl',] }],
+        alignGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns.gt-xs',] }],
+        alignGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns.gt-sm',] }],
+        alignGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns.gt-md',] }],
+        alignGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns.gt-lg',] }],
+        alignLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns.lt-sm',] }],
+        alignLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns.lt-md',] }],
+        alignLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns.lt-lg',] }],
+        alignLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdColumns.lt-xl',] }],
+        inline: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdInline',] }]
+    };
+    return GridColumnsDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CACHE_KEY$8 = 'gap';
+/** @type {?} */
+var DEFAULT_VALUE$5 = '0';
+/**
+ * 'grid-gap' CSS Grid styling directive
+ * Configures the gap between items in the grid
+ * Syntax: <row gap> [<column-gap>]
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#article-header-id-17
+ */
+var GridGapDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GridGapDirective, _super);
+    /* tslint:enable */
+    function GridGapDirective(monitor, elRef, styleUtils) {
+        return _super.call(this, monitor, elRef, styleUtils) || this;
+    }
+    Object.defineProperty(GridGapDirective.prototype, "align", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput("" + CACHE_KEY$8, val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "alignXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$8 + "Xs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "alignSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$8 + "Sm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "alignMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$8 + "Md", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "alignLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$8 + "Lg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "alignXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$8 + "Xl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "alignGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$8 + "GtXs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "alignGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$8 + "GtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "alignGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$8 + "GtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "alignGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$8 + "GtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "alignLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$8 + "LtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "alignLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$8 + "LtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "alignLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$8 + "LtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "alignLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$8 + "LtXl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridGapDirective.prototype, "inline", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('inline', Object(_angular_cdk_coercion__WEBPACK_IMPORTED_MODULE_3__["coerceBooleanProperty"])(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    GridGapDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes[CACHE_KEY$8] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    GridGapDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges(CACHE_KEY$8, DEFAULT_VALUE$5, function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+        this._updateWithValue();
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
+    GridGapDirective.prototype._updateWithValue = /**
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput(CACHE_KEY$8) || DEFAULT_VALUE$5;
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    GridGapDirective.prototype._buildCSS = /**
+     * @param {?} value
+     * @return {?}
+     */
+    function (value) {
+        return {
+            'display': this._queryInput('inline') ? 'inline-grid' : 'grid',
+            'grid-gap': value
+        };
+    };
+    GridGapDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [gdGap],\n  [gdGap.xs], [gdGap.sm], [gdGap.md], [gdGap.lg], [gdGap.xl],\n  [gdGap.lt-sm], [gdGap.lt-md], [gdGap.lt-lg], [gdGap.lt-xl],\n  [gdGap.gt-xs], [gdGap.gt-sm], [gdGap.gt-md], [gdGap.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    GridGapDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    GridGapDirective.propDecorators = {
+        align: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap',] }],
+        alignXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap.xs',] }],
+        alignSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap.sm',] }],
+        alignMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap.md',] }],
+        alignLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap.lg',] }],
+        alignXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap.xl',] }],
+        alignGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap.gt-xs',] }],
+        alignGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap.gt-sm',] }],
+        alignGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap.gt-md',] }],
+        alignGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap.gt-lg',] }],
+        alignLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap.lt-sm',] }],
+        alignLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap.lt-md',] }],
+        alignLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap.lt-lg',] }],
+        alignLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdGap.lt-xl',] }],
+        inline: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdInline',] }]
+    };
+    return GridGapDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CACHE_KEY$9 = 'row';
+/** @type {?} */
+var DEFAULT_VALUE$6 = 'auto';
+/**
+ * 'grid-row' CSS Grid styling directive
+ * Configures the name or position of an element within the grid
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#article-header-id-26
+ */
+var GridRowDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GridRowDirective, _super);
+    /* tslint:enable */
+    function GridRowDirective(monitor, elRef, styleUtils) {
+        return _super.call(this, monitor, elRef, styleUtils) || this;
+    }
+    Object.defineProperty(GridRowDirective.prototype, "align", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput("" + CACHE_KEY$9, val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowDirective.prototype, "alignXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$9 + "Xs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowDirective.prototype, "alignSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$9 + "Sm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowDirective.prototype, "alignMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$9 + "Md", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowDirective.prototype, "alignLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$9 + "Lg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowDirective.prototype, "alignXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$9 + "Xl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowDirective.prototype, "alignGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$9 + "GtXs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowDirective.prototype, "alignGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$9 + "GtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowDirective.prototype, "alignGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$9 + "GtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowDirective.prototype, "alignGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$9 + "GtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowDirective.prototype, "alignLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$9 + "LtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowDirective.prototype, "alignLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$9 + "LtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowDirective.prototype, "alignLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$9 + "LtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowDirective.prototype, "alignLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$9 + "LtXl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    GridRowDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes[CACHE_KEY$9] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    GridRowDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges(CACHE_KEY$9, DEFAULT_VALUE$6, function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+        this._updateWithValue();
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
+    GridRowDirective.prototype._updateWithValue = /**
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput(CACHE_KEY$9) || DEFAULT_VALUE$6;
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    GridRowDirective.prototype._buildCSS = /**
+     * @param {?} value
+     * @return {?}
+     */
+    function (value) {
+        return { 'grid-row': value };
+    };
+    GridRowDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [gdRow],\n  [gdRow.xs], [gdRow.sm], [gdRow.md], [gdRow.lg], [gdRow.xl],\n  [gdRow.lt-sm], [gdRow.lt-md], [gdRow.lt-lg], [gdRow.lt-xl],\n  [gdRow.gt-xs], [gdRow.gt-sm], [gdRow.gt-md], [gdRow.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    GridRowDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    GridRowDirective.propDecorators = {
+        align: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow',] }],
+        alignXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow.xs',] }],
+        alignSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow.sm',] }],
+        alignMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow.md',] }],
+        alignLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow.lg',] }],
+        alignXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow.xl',] }],
+        alignGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow.gt-xs',] }],
+        alignGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow.gt-sm',] }],
+        alignGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow.gt-md',] }],
+        alignGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow.gt-lg',] }],
+        alignLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow.lt-sm',] }],
+        alignLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow.lt-md',] }],
+        alignLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow.lt-lg',] }],
+        alignLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRow.lt-xl',] }]
+    };
+    return GridRowDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CACHE_KEY$10 = 'rows';
+/** @type {?} */
+var DEFAULT_VALUE$7 = 'none';
+/** @type {?} */
+var AUTO_SPECIFIER$1 = '!';
+/**
+ * 'grid-template-rows' CSS Grid styling directive
+ * Configures the sizing for the rows in the grid
+ * Syntax: <row value> [auto]
+ * @see https://css-tricks.com/snippets/css/complete-guide-grid/#article-header-id-13
+ */
+var GridRowsDirective = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GridRowsDirective, _super);
+    /* tslint:enable */
+    function GridRowsDirective(monitor, elRef, styleUtils) {
+        return _super.call(this, monitor, elRef, styleUtils) || this;
+    }
+    Object.defineProperty(GridRowsDirective.prototype, "align", {
+        /* tslint:disable */
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput("" + CACHE_KEY$10, val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "alignXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$10 + "Xs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "alignSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$10 + "Sm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "alignMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$10 + "Md", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "alignLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$10 + "Lg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "alignXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$10 + "Xl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "alignGtXs", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$10 + "GtXs", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "alignGtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$10 + "GtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "alignGtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$10 + "GtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "alignGtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$10 + "GtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "alignLtSm", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$10 + "LtSm", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "alignLtMd", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$10 + "LtMd", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "alignLtLg", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$10 + "LtLg", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "alignLtXl", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput(CACHE_KEY$10 + "LtXl", val); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GridRowsDirective.prototype, "inline", {
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) { this._cacheInput('inline', Object(_angular_cdk_coercion__WEBPACK_IMPORTED_MODULE_3__["coerceBooleanProperty"])(val)); },
+        enumerable: true,
+        configurable: true
+    });
+    // *********************************************
+    // Lifecycle Methods
+    // *********************************************
+    /**
+     * For @Input changes on the current mq activation property, see onMediaQueryChanges()
+     */
+    /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    GridRowsDirective.prototype.ngOnChanges = /**
+     * For \@Input changes on the current mq activation property, see onMediaQueryChanges()
+     * @param {?} changes
+     * @return {?}
+     */
+    function (changes) {
+        if (changes[CACHE_KEY$10] != null || this._mqActivation) {
+            this._updateWithValue();
+        }
+    };
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     */
+    /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    GridRowsDirective.prototype.ngOnInit = /**
+     * After the initial onChanges, build an mqActivation object that bridges
+     * mql change events to onMediaQueryChange handlers
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        _super.prototype.ngOnInit.call(this);
+        this._listenForMediaQueryChanges(CACHE_KEY$10, DEFAULT_VALUE$7, function (changes) {
+            _this._updateWithValue(changes.value);
+        });
+        this._updateWithValue();
+    };
+    // *********************************************
+    // Protected methods
+    // *********************************************
+    /**
+     * @param {?=} value
+     * @return {?}
+     */
+    GridRowsDirective.prototype._updateWithValue = /**
+     * @param {?=} value
+     * @return {?}
+     */
+    function (value) {
+        value = value || this._queryInput(CACHE_KEY$10) || DEFAULT_VALUE$7;
+        if (this._mqActivation) {
+            value = this._mqActivation.activatedInput;
+        }
+        this._applyStyleToElement(this._buildCSS(value));
+    };
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    GridRowsDirective.prototype._buildCSS = /**
+     * @param {?} value
+     * @return {?}
+     */
+    function (value) {
+        /** @type {?} */
+        var auto = false;
+        if (value.endsWith(AUTO_SPECIFIER$1)) {
+            value = value.substring(0, value.indexOf(AUTO_SPECIFIER$1));
+            auto = true;
+        }
+        /** @type {?} */
+        var css = {
+            'display': this._queryInput('inline') ? 'inline-grid' : 'grid',
+            'grid-auto-rows': '',
+            'grid-template-rows': '',
+        };
+        /** @type {?} */
+        var key = (auto ? 'grid-auto-rows' : 'grid-template-rows');
+        css[key] = value;
+        return css;
+    };
+    GridRowsDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{ selector: "\n  [gdRows],\n  [gdRows.xs], [gdRows.sm], [gdRows.md], [gdRows.lg], [gdRows.xl],\n  [gdRows.lt-sm], [gdRows.lt-md], [gdRows.lt-lg], [gdRows.lt-xl],\n  [gdRows.gt-xs], [gdRows.gt-sm], [gdRows.gt-md], [gdRows.gt-lg]\n" },] },
+    ];
+    /** @nocollapse */
+    GridRowsDirective.ctorParameters = function () { return [
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["MediaMonitor"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["StyleUtils"] }
+    ]; };
+    GridRowsDirective.propDecorators = {
+        align: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows',] }],
+        alignXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows.xs',] }],
+        alignSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows.sm',] }],
+        alignMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows.md',] }],
+        alignLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows.lg',] }],
+        alignXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows.xl',] }],
+        alignGtXs: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows.gt-xs',] }],
+        alignGtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows.gt-sm',] }],
+        alignGtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows.gt-md',] }],
+        alignGtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows.gt-lg',] }],
+        alignLtSm: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows.lt-sm',] }],
+        alignLtMd: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows.lt-md',] }],
+        alignLtLg: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows.lt-lg',] }],
+        alignLtXl: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdRows.lt-xl',] }],
+        inline: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"], args: ['gdInline',] }]
+    };
+    return GridRowsDirective;
+}(_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["BaseDirective"]));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var ALL_DIRECTIVES = [
+    GridAlignDirective,
+    GridAlignColumnsDirective,
+    GridAlignRowsDirective,
+    GridAreaDirective,
+    GridAreasDirective,
+    GridAutoDirective,
+    GridColumnDirective,
+    GridColumnsDirective,
+    GridGapDirective,
+    GridRowDirective,
+    GridRowsDirective,
+];
+/**
+ * *****************************************************************
+ * Define module for the CSS Grid API
+ * *****************************************************************
+ */
+var GridModule = /** @class */ (function () {
+    function GridModule() {
+    }
+    GridModule.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"], args: [{
+                    imports: [_angular_flex_layout_core__WEBPACK_IMPORTED_MODULE_2__["CoreModule"]],
+                    declarations: ALL_DIRECTIVES.slice(),
+                    exports: ALL_DIRECTIVES.slice()
+                },] },
+    ];
+    return GridModule;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+
+//# sourceMappingURL=grid.es5.js.map
+
+
+/***/ }),
+
 /***/ "./node_modules/@angular/platform-browser-dynamic/fesm5/platform-browser-dynamic.js":
 /*!******************************************************************************************!*\
   !*** ./node_modules/@angular/platform-browser-dynamic/fesm5/platform-browser-dynamic.js ***!
@@ -52907,6 +65076,5553 @@ var VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_2__["Version"]('6.1.9')
 
 
 //# sourceMappingURL=platform-browser.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/@angular/router/fesm5/router.js":
+/*!******************************************************!*\
+  !*** ./node_modules/@angular/router/fesm5/router.js ***!
+  \******************************************************/
+/*! exports provided: ɵangular_packages_router_router_a, ɵangular_packages_router_router_h, ɵangular_packages_router_router_c, ɵangular_packages_router_router_i, ɵangular_packages_router_router_j, ɵangular_packages_router_router_e, ɵangular_packages_router_router_d, ɵangular_packages_router_router_k, ɵangular_packages_router_router_g, ɵangular_packages_router_router_b, ɵangular_packages_router_router_f, ɵangular_packages_router_router_n, ɵangular_packages_router_router_l, ɵangular_packages_router_router_m, RouterLink, RouterLinkWithHref, RouterLinkActive, RouterOutlet, ActivationEnd, ActivationStart, ChildActivationEnd, ChildActivationStart, GuardsCheckEnd, GuardsCheckStart, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, ResolveEnd, ResolveStart, RouteConfigLoadEnd, RouteConfigLoadStart, RouterEvent, RoutesRecognized, Scroll, RouteReuseStrategy, Router, ROUTES, ROUTER_CONFIGURATION, ROUTER_INITIALIZER, RouterModule, provideRoutes, ChildrenOutletContexts, OutletContext, NoPreloading, PreloadAllModules, PreloadingStrategy, RouterPreloader, ActivatedRoute, ActivatedRouteSnapshot, RouterState, RouterStateSnapshot, PRIMARY_OUTLET, convertToParamMap, UrlHandlingStrategy, DefaultUrlSerializer, UrlSegment, UrlSegmentGroup, UrlSerializer, UrlTree, VERSION, ɵEmptyOutletComponent, ɵROUTER_PROVIDERS, ɵflatten */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_a", function() { return ROUTER_FORROOT_GUARD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_h", function() { return RouterInitializer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_c", function() { return createRouterScroller; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_i", function() { return getAppInitializer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_j", function() { return getBootstrapListener; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_e", function() { return provideForRootGuard; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_d", function() { return provideLocationStrategy; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_k", function() { return provideRouterInitializer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_g", function() { return rootRoute; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_b", function() { return routerNgProbeToken; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_f", function() { return setupRouter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_n", function() { return RouterScroller; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_l", function() { return Tree; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_router_router_m", function() { return TreeNode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RouterLink", function() { return RouterLink; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RouterLinkWithHref", function() { return RouterLinkWithHref; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RouterLinkActive", function() { return RouterLinkActive; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RouterOutlet", function() { return RouterOutlet; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ActivationEnd", function() { return ActivationEnd; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ActivationStart", function() { return ActivationStart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ChildActivationEnd", function() { return ChildActivationEnd; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ChildActivationStart", function() { return ChildActivationStart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GuardsCheckEnd", function() { return GuardsCheckEnd; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GuardsCheckStart", function() { return GuardsCheckStart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NavigationCancel", function() { return NavigationCancel; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NavigationEnd", function() { return NavigationEnd; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NavigationError", function() { return NavigationError; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NavigationStart", function() { return NavigationStart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ResolveEnd", function() { return ResolveEnd; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ResolveStart", function() { return ResolveStart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RouteConfigLoadEnd", function() { return RouteConfigLoadEnd; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RouteConfigLoadStart", function() { return RouteConfigLoadStart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RouterEvent", function() { return RouterEvent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RoutesRecognized", function() { return RoutesRecognized; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Scroll", function() { return Scroll; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RouteReuseStrategy", function() { return RouteReuseStrategy; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Router", function() { return Router; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUTES", function() { return ROUTES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUTER_CONFIGURATION", function() { return ROUTER_CONFIGURATION; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROUTER_INITIALIZER", function() { return ROUTER_INITIALIZER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RouterModule", function() { return RouterModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "provideRoutes", function() { return provideRoutes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ChildrenOutletContexts", function() { return ChildrenOutletContexts; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OutletContext", function() { return OutletContext; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NoPreloading", function() { return NoPreloading; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PreloadAllModules", function() { return PreloadAllModules; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PreloadingStrategy", function() { return PreloadingStrategy; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RouterPreloader", function() { return RouterPreloader; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ActivatedRoute", function() { return ActivatedRoute; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ActivatedRouteSnapshot", function() { return ActivatedRouteSnapshot; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RouterState", function() { return RouterState; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RouterStateSnapshot", function() { return RouterStateSnapshot; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PRIMARY_OUTLET", function() { return PRIMARY_OUTLET; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "convertToParamMap", function() { return convertToParamMap; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UrlHandlingStrategy", function() { return UrlHandlingStrategy; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DefaultUrlSerializer", function() { return DefaultUrlSerializer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UrlSegment", function() { return UrlSegment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UrlSegmentGroup", function() { return UrlSegmentGroup; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UrlSerializer", function() { return UrlSerializer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UrlTree", function() { return UrlTree; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return VERSION; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵEmptyOutletComponent", function() { return EmptyOutletComponent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵROUTER_PROVIDERS", function() { return ROUTER_PROVIDERS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵflatten", function() { return flatten; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
+/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
+/**
+ * @license Angular v6.1.9
+ * (c) 2010-2018 Google, Inc. https://angular.io/
+ * License: MIT
+ */
+
+
+
+
+
+
+
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * @description
+ *
+ * Base for events the Router goes through, as opposed to events tied to a specific
+ * Route. `RouterEvent`s will only be fired one time for any given navigation.
+ *
+ * Example:
+ *
+ * ```
+ * class MyService {
+ *   constructor(public router: Router, logger: Logger) {
+ *     router.events.filter(e => e instanceof RouterEvent).subscribe(e => {
+ *       logger.log(e.id, e.url);
+ *     });
+ *   }
+ * }
+ * ```
+ *
+ * @experimental
+ */
+var RouterEvent = /** @class */ (function () {
+    function RouterEvent(
+    /** @docsNotRequired */
+    id, 
+    /** @docsNotRequired */
+    url) {
+        this.id = id;
+        this.url = url;
+    }
+    return RouterEvent;
+}());
+/**
+ * @description
+ *
+ * Represents an event triggered when a navigation starts.
+ *
+ *
+ */
+var NavigationStart = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(NavigationStart, _super);
+    function NavigationStart(
+    /** @docsNotRequired */
+    id, 
+    /** @docsNotRequired */
+    url, 
+    /** @docsNotRequired */
+    navigationTrigger, 
+    /** @docsNotRequired */
+    restoredState) {
+        if (navigationTrigger === void 0) { 
+        /** @docsNotRequired */
+        navigationTrigger = 'imperative'; }
+        if (restoredState === void 0) { 
+        /** @docsNotRequired */
+        restoredState = null; }
+        var _this = _super.call(this, id, url) || this;
+        _this.navigationTrigger = navigationTrigger;
+        _this.restoredState = restoredState;
+        return _this;
+    }
+    /** @docsNotRequired */
+    NavigationStart.prototype.toString = function () { return "NavigationStart(id: " + this.id + ", url: '" + this.url + "')"; };
+    return NavigationStart;
+}(RouterEvent));
+/**
+ * @description
+ *
+ * Represents an event triggered when a navigation ends successfully.
+ *
+ *
+ */
+var NavigationEnd = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(NavigationEnd, _super);
+    function NavigationEnd(
+    /** @docsNotRequired */
+    id, 
+    /** @docsNotRequired */
+    url, 
+    /** @docsNotRequired */
+    urlAfterRedirects) {
+        var _this = _super.call(this, id, url) || this;
+        _this.urlAfterRedirects = urlAfterRedirects;
+        return _this;
+    }
+    /** @docsNotRequired */
+    NavigationEnd.prototype.toString = function () {
+        return "NavigationEnd(id: " + this.id + ", url: '" + this.url + "', urlAfterRedirects: '" + this.urlAfterRedirects + "')";
+    };
+    return NavigationEnd;
+}(RouterEvent));
+/**
+ * @description
+ *
+ * Represents an event triggered when a navigation is canceled.
+ *
+ *
+ */
+var NavigationCancel = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(NavigationCancel, _super);
+    function NavigationCancel(
+    /** @docsNotRequired */
+    id, 
+    /** @docsNotRequired */
+    url, 
+    /** @docsNotRequired */
+    reason) {
+        var _this = _super.call(this, id, url) || this;
+        _this.reason = reason;
+        return _this;
+    }
+    /** @docsNotRequired */
+    NavigationCancel.prototype.toString = function () { return "NavigationCancel(id: " + this.id + ", url: '" + this.url + "')"; };
+    return NavigationCancel;
+}(RouterEvent));
+/**
+ * @description
+ *
+ * Represents an event triggered when a navigation fails due to an unexpected error.
+ *
+ *
+ */
+var NavigationError = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(NavigationError, _super);
+    function NavigationError(
+    /** @docsNotRequired */
+    id, 
+    /** @docsNotRequired */
+    url, 
+    /** @docsNotRequired */
+    error) {
+        var _this = _super.call(this, id, url) || this;
+        _this.error = error;
+        return _this;
+    }
+    /** @docsNotRequired */
+    NavigationError.prototype.toString = function () {
+        return "NavigationError(id: " + this.id + ", url: '" + this.url + "', error: " + this.error + ")";
+    };
+    return NavigationError;
+}(RouterEvent));
+/**
+ * @description
+ *
+ * Represents an event triggered when routes are recognized.
+ *
+ *
+ */
+var RoutesRecognized = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RoutesRecognized, _super);
+    function RoutesRecognized(
+    /** @docsNotRequired */
+    id, 
+    /** @docsNotRequired */
+    url, 
+    /** @docsNotRequired */
+    urlAfterRedirects, 
+    /** @docsNotRequired */
+    state) {
+        var _this = _super.call(this, id, url) || this;
+        _this.urlAfterRedirects = urlAfterRedirects;
+        _this.state = state;
+        return _this;
+    }
+    /** @docsNotRequired */
+    RoutesRecognized.prototype.toString = function () {
+        return "RoutesRecognized(id: " + this.id + ", url: '" + this.url + "', urlAfterRedirects: '" + this.urlAfterRedirects + "', state: " + this.state + ")";
+    };
+    return RoutesRecognized;
+}(RouterEvent));
+/**
+ * @description
+ *
+ * Represents the start of the Guard phase of routing.
+ *
+ * @experimental
+ */
+var GuardsCheckStart = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GuardsCheckStart, _super);
+    function GuardsCheckStart(
+    /** @docsNotRequired */
+    id, 
+    /** @docsNotRequired */
+    url, 
+    /** @docsNotRequired */
+    urlAfterRedirects, 
+    /** @docsNotRequired */
+    state) {
+        var _this = _super.call(this, id, url) || this;
+        _this.urlAfterRedirects = urlAfterRedirects;
+        _this.state = state;
+        return _this;
+    }
+    GuardsCheckStart.prototype.toString = function () {
+        return "GuardsCheckStart(id: " + this.id + ", url: '" + this.url + "', urlAfterRedirects: '" + this.urlAfterRedirects + "', state: " + this.state + ")";
+    };
+    return GuardsCheckStart;
+}(RouterEvent));
+/**
+ * @description
+ *
+ * Represents the end of the Guard phase of routing.
+ *
+ * @experimental
+ */
+var GuardsCheckEnd = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GuardsCheckEnd, _super);
+    function GuardsCheckEnd(
+    /** @docsNotRequired */
+    id, 
+    /** @docsNotRequired */
+    url, 
+    /** @docsNotRequired */
+    urlAfterRedirects, 
+    /** @docsNotRequired */
+    state, 
+    /** @docsNotRequired */
+    shouldActivate) {
+        var _this = _super.call(this, id, url) || this;
+        _this.urlAfterRedirects = urlAfterRedirects;
+        _this.state = state;
+        _this.shouldActivate = shouldActivate;
+        return _this;
+    }
+    GuardsCheckEnd.prototype.toString = function () {
+        return "GuardsCheckEnd(id: " + this.id + ", url: '" + this.url + "', urlAfterRedirects: '" + this.urlAfterRedirects + "', state: " + this.state + ", shouldActivate: " + this.shouldActivate + ")";
+    };
+    return GuardsCheckEnd;
+}(RouterEvent));
+/**
+ * @description
+ *
+ * Represents the start of the Resolve phase of routing. The timing of this
+ * event may change, thus it's experimental. In the current iteration it will run
+ * in the "resolve" phase whether there's things to resolve or not. In the future this
+ * behavior may change to only run when there are things to be resolved.
+ *
+ * @experimental
+ */
+var ResolveStart = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ResolveStart, _super);
+    function ResolveStart(
+    /** @docsNotRequired */
+    id, 
+    /** @docsNotRequired */
+    url, 
+    /** @docsNotRequired */
+    urlAfterRedirects, 
+    /** @docsNotRequired */
+    state) {
+        var _this = _super.call(this, id, url) || this;
+        _this.urlAfterRedirects = urlAfterRedirects;
+        _this.state = state;
+        return _this;
+    }
+    ResolveStart.prototype.toString = function () {
+        return "ResolveStart(id: " + this.id + ", url: '" + this.url + "', urlAfterRedirects: '" + this.urlAfterRedirects + "', state: " + this.state + ")";
+    };
+    return ResolveStart;
+}(RouterEvent));
+/**
+ * @description
+ *
+ * Represents the end of the Resolve phase of routing. See note on
+ * `ResolveStart` for use of this experimental API.
+ *
+ * @experimental
+ */
+var ResolveEnd = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ResolveEnd, _super);
+    function ResolveEnd(
+    /** @docsNotRequired */
+    id, 
+    /** @docsNotRequired */
+    url, 
+    /** @docsNotRequired */
+    urlAfterRedirects, 
+    /** @docsNotRequired */
+    state) {
+        var _this = _super.call(this, id, url) || this;
+        _this.urlAfterRedirects = urlAfterRedirects;
+        _this.state = state;
+        return _this;
+    }
+    ResolveEnd.prototype.toString = function () {
+        return "ResolveEnd(id: " + this.id + ", url: '" + this.url + "', urlAfterRedirects: '" + this.urlAfterRedirects + "', state: " + this.state + ")";
+    };
+    return ResolveEnd;
+}(RouterEvent));
+/**
+ * @description
+ *
+ * Represents an event triggered before lazy loading a route config.
+ *
+ * @experimental
+ */
+var RouteConfigLoadStart = /** @class */ (function () {
+    function RouteConfigLoadStart(
+    /** @docsNotRequired */
+    route) {
+        this.route = route;
+    }
+    RouteConfigLoadStart.prototype.toString = function () { return "RouteConfigLoadStart(path: " + this.route.path + ")"; };
+    return RouteConfigLoadStart;
+}());
+/**
+ * @description
+ *
+ * Represents an event triggered when a route has been lazy loaded.
+ *
+ * @experimental
+ */
+var RouteConfigLoadEnd = /** @class */ (function () {
+    function RouteConfigLoadEnd(
+    /** @docsNotRequired */
+    route) {
+        this.route = route;
+    }
+    RouteConfigLoadEnd.prototype.toString = function () { return "RouteConfigLoadEnd(path: " + this.route.path + ")"; };
+    return RouteConfigLoadEnd;
+}());
+/**
+ * @description
+ *
+ * Represents the start of end of the Resolve phase of routing. See note on
+ * `ChildActivationEnd` for use of this experimental API.
+ *
+ * @experimental
+ */
+var ChildActivationStart = /** @class */ (function () {
+    function ChildActivationStart(
+    /** @docsNotRequired */
+    snapshot) {
+        this.snapshot = snapshot;
+    }
+    ChildActivationStart.prototype.toString = function () {
+        var path = this.snapshot.routeConfig && this.snapshot.routeConfig.path || '';
+        return "ChildActivationStart(path: '" + path + "')";
+    };
+    return ChildActivationStart;
+}());
+/**
+ * @description
+ *
+ * Represents the start of end of the Resolve phase of routing. See note on
+ * `ChildActivationStart` for use of this experimental API.
+ *
+ * @experimental
+ */
+var ChildActivationEnd = /** @class */ (function () {
+    function ChildActivationEnd(
+    /** @docsNotRequired */
+    snapshot) {
+        this.snapshot = snapshot;
+    }
+    ChildActivationEnd.prototype.toString = function () {
+        var path = this.snapshot.routeConfig && this.snapshot.routeConfig.path || '';
+        return "ChildActivationEnd(path: '" + path + "')";
+    };
+    return ChildActivationEnd;
+}());
+/**
+ * @description
+ *
+ * Represents the start of end of the Resolve phase of routing. See note on
+ * `ActivationEnd` for use of this experimental API.
+ *
+ * @experimental
+ */
+var ActivationStart = /** @class */ (function () {
+    function ActivationStart(
+    /** @docsNotRequired */
+    snapshot) {
+        this.snapshot = snapshot;
+    }
+    ActivationStart.prototype.toString = function () {
+        var path = this.snapshot.routeConfig && this.snapshot.routeConfig.path || '';
+        return "ActivationStart(path: '" + path + "')";
+    };
+    return ActivationStart;
+}());
+/**
+ * @description
+ *
+ * Represents the start of end of the Resolve phase of routing. See note on
+ * `ActivationStart` for use of this experimental API.
+ *
+ * @experimental
+ */
+var ActivationEnd = /** @class */ (function () {
+    function ActivationEnd(
+    /** @docsNotRequired */
+    snapshot) {
+        this.snapshot = snapshot;
+    }
+    ActivationEnd.prototype.toString = function () {
+        var path = this.snapshot.routeConfig && this.snapshot.routeConfig.path || '';
+        return "ActivationEnd(path: '" + path + "')";
+    };
+    return ActivationEnd;
+}());
+/**
+ * @description
+ *
+ * Represents a scrolling event.
+ */
+var Scroll = /** @class */ (function () {
+    function Scroll(
+    /** @docsNotRequired */
+    routerEvent, 
+    /** @docsNotRequired */
+    position, 
+    /** @docsNotRequired */
+    anchor) {
+        this.routerEvent = routerEvent;
+        this.position = position;
+        this.anchor = anchor;
+    }
+    Scroll.prototype.toString = function () {
+        var pos = this.position ? this.position[0] + ", " + this.position[1] : null;
+        return "Scroll(anchor: '" + this.anchor + "', position: '" + pos + "')";
+    };
+    return Scroll;
+}());
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * This component is used internally within the router to be a placeholder when an empty
+ * router-outlet is needed. For example, with a config such as:
+ *
+ * `{path: 'parent', outlet: 'nav', children: [...]}`
+ *
+ * In order to render, there needs to be a component on this config, which will default
+ * to this `EmptyOutletComponent`.
+ */
+var EmptyOutletComponent = /** @class */ (function () {
+    function EmptyOutletComponent() {
+    }
+    EmptyOutletComponent = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({ template: "<router-outlet></router-outlet>" })
+    ], EmptyOutletComponent);
+    return EmptyOutletComponent;
+}());
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * @description
+ *
+ * Name of the primary outlet.
+ *
+ *
+ */
+var PRIMARY_OUTLET = 'primary';
+var ParamsAsMap = /** @class */ (function () {
+    function ParamsAsMap(params) {
+        this.params = params || {};
+    }
+    ParamsAsMap.prototype.has = function (name) { return this.params.hasOwnProperty(name); };
+    ParamsAsMap.prototype.get = function (name) {
+        if (this.has(name)) {
+            var v = this.params[name];
+            return Array.isArray(v) ? v[0] : v;
+        }
+        return null;
+    };
+    ParamsAsMap.prototype.getAll = function (name) {
+        if (this.has(name)) {
+            var v = this.params[name];
+            return Array.isArray(v) ? v : [v];
+        }
+        return [];
+    };
+    Object.defineProperty(ParamsAsMap.prototype, "keys", {
+        get: function () { return Object.keys(this.params); },
+        enumerable: true,
+        configurable: true
+    });
+    return ParamsAsMap;
+}());
+/**
+ * Convert a `Params` instance to a `ParamMap`.
+ *
+ *
+ */
+function convertToParamMap(params) {
+    return new ParamsAsMap(params);
+}
+var NAVIGATION_CANCELING_ERROR = 'ngNavigationCancelingError';
+function navigationCancelingError(message) {
+    var error = Error('NavigationCancelingError: ' + message);
+    error[NAVIGATION_CANCELING_ERROR] = true;
+    return error;
+}
+function isNavigationCancelingError(error) {
+    return error && error[NAVIGATION_CANCELING_ERROR];
+}
+// Matches the route configuration (`route`) against the actual URL (`segments`).
+function defaultUrlMatcher(segments, segmentGroup, route) {
+    var parts = route.path.split('/');
+    if (parts.length > segments.length) {
+        // The actual URL is shorter than the config, no match
+        return null;
+    }
+    if (route.pathMatch === 'full' &&
+        (segmentGroup.hasChildren() || parts.length < segments.length)) {
+        // The config is longer than the actual URL but we are looking for a full match, return null
+        return null;
+    }
+    var posParams = {};
+    // Check each config part against the actual URL
+    for (var index = 0; index < parts.length; index++) {
+        var part = parts[index];
+        var segment = segments[index];
+        var isParameter = part.startsWith(':');
+        if (isParameter) {
+            posParams[part.substring(1)] = segment;
+        }
+        else if (part !== segment.path) {
+            // The actual URL part does not match the config, no match
+            return null;
+        }
+    }
+    return { consumed: segments.slice(0, parts.length), posParams: posParams };
+}
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+var LoadedRouterConfig = /** @class */ (function () {
+    function LoadedRouterConfig(routes, module) {
+        this.routes = routes;
+        this.module = module;
+    }
+    return LoadedRouterConfig;
+}());
+function validateConfig(config, parentPath) {
+    if (parentPath === void 0) { parentPath = ''; }
+    // forEach doesn't iterate undefined values
+    for (var i = 0; i < config.length; i++) {
+        var route = config[i];
+        var fullPath = getFullPath(parentPath, route);
+        validateNode(route, fullPath);
+    }
+}
+function validateNode(route, fullPath) {
+    if (!route) {
+        throw new Error("\n      Invalid configuration of route '" + fullPath + "': Encountered undefined route.\n      The reason might be an extra comma.\n\n      Example:\n      const routes: Routes = [\n        { path: '', redirectTo: '/dashboard', pathMatch: 'full' },\n        { path: 'dashboard',  component: DashboardComponent },, << two commas\n        { path: 'detail/:id', component: HeroDetailComponent }\n      ];\n    ");
+    }
+    if (Array.isArray(route)) {
+        throw new Error("Invalid configuration of route '" + fullPath + "': Array cannot be specified");
+    }
+    if (!route.component && !route.children && !route.loadChildren &&
+        (route.outlet && route.outlet !== PRIMARY_OUTLET)) {
+        throw new Error("Invalid configuration of route '" + fullPath + "': a componentless route without children or loadChildren cannot have a named outlet set");
+    }
+    if (route.redirectTo && route.children) {
+        throw new Error("Invalid configuration of route '" + fullPath + "': redirectTo and children cannot be used together");
+    }
+    if (route.redirectTo && route.loadChildren) {
+        throw new Error("Invalid configuration of route '" + fullPath + "': redirectTo and loadChildren cannot be used together");
+    }
+    if (route.children && route.loadChildren) {
+        throw new Error("Invalid configuration of route '" + fullPath + "': children and loadChildren cannot be used together");
+    }
+    if (route.redirectTo && route.component) {
+        throw new Error("Invalid configuration of route '" + fullPath + "': redirectTo and component cannot be used together");
+    }
+    if (route.path && route.matcher) {
+        throw new Error("Invalid configuration of route '" + fullPath + "': path and matcher cannot be used together");
+    }
+    if (route.redirectTo === void 0 && !route.component && !route.children && !route.loadChildren) {
+        throw new Error("Invalid configuration of route '" + fullPath + "'. One of the following must be provided: component, redirectTo, children or loadChildren");
+    }
+    if (route.path === void 0 && route.matcher === void 0) {
+        throw new Error("Invalid configuration of route '" + fullPath + "': routes must have either a path or a matcher specified");
+    }
+    if (typeof route.path === 'string' && route.path.charAt(0) === '/') {
+        throw new Error("Invalid configuration of route '" + fullPath + "': path cannot start with a slash");
+    }
+    if (route.path === '' && route.redirectTo !== void 0 && route.pathMatch === void 0) {
+        var exp = "The default value of 'pathMatch' is 'prefix', but often the intent is to use 'full'.";
+        throw new Error("Invalid configuration of route '{path: \"" + fullPath + "\", redirectTo: \"" + route.redirectTo + "\"}': please provide 'pathMatch'. " + exp);
+    }
+    if (route.pathMatch !== void 0 && route.pathMatch !== 'full' && route.pathMatch !== 'prefix') {
+        throw new Error("Invalid configuration of route '" + fullPath + "': pathMatch can only be set to 'prefix' or 'full'");
+    }
+    if (route.children) {
+        validateConfig(route.children, fullPath);
+    }
+}
+function getFullPath(parentPath, currentRoute) {
+    if (!currentRoute) {
+        return parentPath;
+    }
+    if (!parentPath && !currentRoute.path) {
+        return '';
+    }
+    else if (parentPath && !currentRoute.path) {
+        return parentPath + "/";
+    }
+    else if (!parentPath && currentRoute.path) {
+        return currentRoute.path;
+    }
+    else {
+        return parentPath + "/" + currentRoute.path;
+    }
+}
+/**
+ * Makes a copy of the config and adds any default required properties.
+ */
+function standardizeConfig(r) {
+    var children = r.children && r.children.map(standardizeConfig);
+    var c = children ? Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, r, { children: children }) : Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, r);
+    if (!c.component && (children || c.loadChildren) && (c.outlet && c.outlet !== PRIMARY_OUTLET)) {
+        c.component = EmptyOutletComponent;
+    }
+    return c;
+}
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+function shallowEqualArrays(a, b) {
+    if (a.length !== b.length)
+        return false;
+    for (var i = 0; i < a.length; ++i) {
+        if (!shallowEqual(a[i], b[i]))
+            return false;
+    }
+    return true;
+}
+function shallowEqual(a, b) {
+    var k1 = Object.keys(a);
+    var k2 = Object.keys(b);
+    if (k1.length != k2.length) {
+        return false;
+    }
+    var key;
+    for (var i = 0; i < k1.length; i++) {
+        key = k1[i];
+        if (a[key] !== b[key]) {
+            return false;
+        }
+    }
+    return true;
+}
+/**
+ * Flattens single-level nested arrays.
+ */
+function flatten(arr) {
+    return Array.prototype.concat.apply([], arr);
+}
+/**
+ * Return the last element of an array.
+ */
+function last$1(a) {
+    return a.length > 0 ? a[a.length - 1] : null;
+}
+function forEach(map$$1, callback) {
+    for (var prop in map$$1) {
+        if (map$$1.hasOwnProperty(prop)) {
+            callback(map$$1[prop], prop);
+        }
+    }
+}
+function waitForMap(obj, fn) {
+    if (Object.keys(obj).length === 0) {
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])({});
+    }
+    var waitHead = [];
+    var waitTail = [];
+    var res = {};
+    forEach(obj, function (a, k) {
+        var mapped = fn(k, a).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (r) { return res[k] = r; }));
+        if (k === PRIMARY_OUTLET) {
+            waitHead.push(mapped);
+        }
+        else {
+            waitTail.push(mapped);
+        }
+    });
+    // Closure compiler has problem with using spread operator here. So just using Array.concat.
+    return rxjs__WEBPACK_IMPORTED_MODULE_2__["of"].apply(null, waitHead.concat(waitTail)).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["concatAll"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["last"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function () { return res; }));
+}
+/**
+ * ANDs Observables by merging all input observables, reducing to an Observable verifying all
+ * input Observables return `true`.
+ */
+function andObservables(observables) {
+    return observables.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeAll"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["every"])(function (result) { return result === true; }));
+}
+function wrapIntoObservable(value) {
+    if (Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵisObservable"])(value)) {
+        return value;
+    }
+    if (Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵisPromise"])(value)) {
+        // Use `Promise.resolve()` to wrap promise-like instances.
+        // Required ie when a Resolver returns a AngularJS `$q` promise to correctly trigger the
+        // change detection.
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(Promise.resolve(value));
+    }
+    return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(value);
+}
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+function createEmptyUrlTree() {
+    return new UrlTree(new UrlSegmentGroup([], {}), {}, null);
+}
+function containsTree(container, containee, exact) {
+    if (exact) {
+        return equalQueryParams(container.queryParams, containee.queryParams) &&
+            equalSegmentGroups(container.root, containee.root);
+    }
+    return containsQueryParams(container.queryParams, containee.queryParams) &&
+        containsSegmentGroup(container.root, containee.root);
+}
+function equalQueryParams(container, containee) {
+    // TODO: This does not handle array params correctly.
+    return shallowEqual(container, containee);
+}
+function equalSegmentGroups(container, containee) {
+    if (!equalPath(container.segments, containee.segments))
+        return false;
+    if (container.numberOfChildren !== containee.numberOfChildren)
+        return false;
+    for (var c in containee.children) {
+        if (!container.children[c])
+            return false;
+        if (!equalSegmentGroups(container.children[c], containee.children[c]))
+            return false;
+    }
+    return true;
+}
+function containsQueryParams(container, containee) {
+    // TODO: This does not handle array params correctly.
+    return Object.keys(containee).length <= Object.keys(container).length &&
+        Object.keys(containee).every(function (key) { return containee[key] === container[key]; });
+}
+function containsSegmentGroup(container, containee) {
+    return containsSegmentGroupHelper(container, containee, containee.segments);
+}
+function containsSegmentGroupHelper(container, containee, containeePaths) {
+    if (container.segments.length > containeePaths.length) {
+        var current = container.segments.slice(0, containeePaths.length);
+        if (!equalPath(current, containeePaths))
+            return false;
+        if (containee.hasChildren())
+            return false;
+        return true;
+    }
+    else if (container.segments.length === containeePaths.length) {
+        if (!equalPath(container.segments, containeePaths))
+            return false;
+        for (var c in containee.children) {
+            if (!container.children[c])
+                return false;
+            if (!containsSegmentGroup(container.children[c], containee.children[c]))
+                return false;
+        }
+        return true;
+    }
+    else {
+        var current = containeePaths.slice(0, container.segments.length);
+        var next = containeePaths.slice(container.segments.length);
+        if (!equalPath(container.segments, current))
+            return false;
+        if (!container.children[PRIMARY_OUTLET])
+            return false;
+        return containsSegmentGroupHelper(container.children[PRIMARY_OUTLET], containee, next);
+    }
+}
+/**
+ * @description
+ *
+ * Represents the parsed URL.
+ *
+ * Since a router state is a tree, and the URL is nothing but a serialized state, the URL is a
+ * serialized tree.
+ * UrlTree is a data structure that provides a lot of affordances in dealing with URLs
+ *
+ * @usageNotes
+ * ### Example
+ *
+ * ```
+ * @Component({templateUrl:'template.html'})
+ * class MyComponent {
+ *   constructor(router: Router) {
+ *     const tree: UrlTree =
+ *       router.parseUrl('/team/33/(user/victor//support:help)?debug=true#fragment');
+ *     const f = tree.fragment; // return 'fragment'
+ *     const q = tree.queryParams; // returns {debug: 'true'}
+ *     const g: UrlSegmentGroup = tree.root.children[PRIMARY_OUTLET];
+ *     const s: UrlSegment[] = g.segments; // returns 2 segments 'team' and '33'
+ *     g.children[PRIMARY_OUTLET].segments; // returns 2 segments 'user' and 'victor'
+ *     g.children['support'].segments; // return 1 segment 'help'
+ *   }
+ * }
+ * ```
+ *
+ *
+ */
+var UrlTree = /** @class */ (function () {
+    /** @internal */
+    function UrlTree(
+    /** The root segment group of the URL tree */
+    root, 
+    /** The query params of the URL */
+    queryParams, 
+    /** The fragment of the URL */
+    fragment) {
+        this.root = root;
+        this.queryParams = queryParams;
+        this.fragment = fragment;
+    }
+    Object.defineProperty(UrlTree.prototype, "queryParamMap", {
+        get: function () {
+            if (!this._queryParamMap) {
+                this._queryParamMap = convertToParamMap(this.queryParams);
+            }
+            return this._queryParamMap;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /** @docsNotRequired */
+    UrlTree.prototype.toString = function () { return DEFAULT_SERIALIZER.serialize(this); };
+    return UrlTree;
+}());
+/**
+ * @description
+ *
+ * Represents the parsed URL segment group.
+ *
+ * See `UrlTree` for more information.
+ *
+ *
+ */
+var UrlSegmentGroup = /** @class */ (function () {
+    function UrlSegmentGroup(
+    /** The URL segments of this group. See `UrlSegment` for more information */
+    segments, 
+    /** The list of children of this group */
+    children) {
+        var _this = this;
+        this.segments = segments;
+        this.children = children;
+        /** The parent node in the url tree */
+        this.parent = null;
+        forEach(children, function (v, k) { return v.parent = _this; });
+    }
+    /** Whether the segment has child segments */
+    UrlSegmentGroup.prototype.hasChildren = function () { return this.numberOfChildren > 0; };
+    Object.defineProperty(UrlSegmentGroup.prototype, "numberOfChildren", {
+        /** Number of child segments */
+        get: function () { return Object.keys(this.children).length; },
+        enumerable: true,
+        configurable: true
+    });
+    /** @docsNotRequired */
+    UrlSegmentGroup.prototype.toString = function () { return serializePaths(this); };
+    return UrlSegmentGroup;
+}());
+/**
+ * @description
+ *
+ * Represents a single URL segment.
+ *
+ * A UrlSegment is a part of a URL between the two slashes. It contains a path and the matrix
+ * parameters associated with the segment.
+ *
+ * @usageNotes
+ * ### Example
+ *
+ * ```
+ * @Component({templateUrl:'template.html'})
+ * class MyComponent {
+ *   constructor(router: Router) {
+ *     const tree: UrlTree = router.parseUrl('/team;id=33');
+ *     const g: UrlSegmentGroup = tree.root.children[PRIMARY_OUTLET];
+ *     const s: UrlSegment[] = g.segments;
+ *     s[0].path; // returns 'team'
+ *     s[0].parameters; // returns {id: 33}
+ *   }
+ * }
+ * ```
+ *
+ *
+ */
+var UrlSegment = /** @class */ (function () {
+    function UrlSegment(
+    /** The path part of a URL segment */
+    path, 
+    /** The matrix parameters associated with a segment */
+    parameters) {
+        this.path = path;
+        this.parameters = parameters;
+    }
+    Object.defineProperty(UrlSegment.prototype, "parameterMap", {
+        get: function () {
+            if (!this._parameterMap) {
+                this._parameterMap = convertToParamMap(this.parameters);
+            }
+            return this._parameterMap;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /** @docsNotRequired */
+    UrlSegment.prototype.toString = function () { return serializePath(this); };
+    return UrlSegment;
+}());
+function equalSegments(as, bs) {
+    return equalPath(as, bs) && as.every(function (a, i) { return shallowEqual(a.parameters, bs[i].parameters); });
+}
+function equalPath(as, bs) {
+    if (as.length !== bs.length)
+        return false;
+    return as.every(function (a, i) { return a.path === bs[i].path; });
+}
+function mapChildrenIntoArray(segment, fn) {
+    var res = [];
+    forEach(segment.children, function (child, childOutlet) {
+        if (childOutlet === PRIMARY_OUTLET) {
+            res = res.concat(fn(child, childOutlet));
+        }
+    });
+    forEach(segment.children, function (child, childOutlet) {
+        if (childOutlet !== PRIMARY_OUTLET) {
+            res = res.concat(fn(child, childOutlet));
+        }
+    });
+    return res;
+}
+/**
+ * @description
+ *
+ * Serializes and deserializes a URL string into a URL tree.
+ *
+ * The url serialization strategy is customizable. You can
+ * make all URLs case insensitive by providing a custom UrlSerializer.
+ *
+ * See `DefaultUrlSerializer` for an example of a URL serializer.
+ *
+ *
+ */
+var UrlSerializer = /** @class */ (function () {
+    function UrlSerializer() {
+    }
+    return UrlSerializer;
+}());
+/**
+ * @description
+ *
+ * A default implementation of the `UrlSerializer`.
+ *
+ * Example URLs:
+ *
+ * ```
+ * /inbox/33(popup:compose)
+ * /inbox/33;open=true/messages/44
+ * ```
+ *
+ * DefaultUrlSerializer uses parentheses to serialize secondary segments (e.g., popup:compose), the
+ * colon syntax to specify the outlet, and the ';parameter=value' syntax (e.g., open=true) to
+ * specify route specific parameters.
+ *
+ *
+ */
+var DefaultUrlSerializer = /** @class */ (function () {
+    function DefaultUrlSerializer() {
+    }
+    /** Parses a url into a `UrlTree` */
+    DefaultUrlSerializer.prototype.parse = function (url) {
+        var p = new UrlParser(url);
+        return new UrlTree(p.parseRootSegment(), p.parseQueryParams(), p.parseFragment());
+    };
+    /** Converts a `UrlTree` into a url */
+    DefaultUrlSerializer.prototype.serialize = function (tree) {
+        var segment = "/" + serializeSegment(tree.root, true);
+        var query = serializeQueryParams(tree.queryParams);
+        var fragment = typeof tree.fragment === "string" ? "#" + encodeUriFragment(tree.fragment) : '';
+        return "" + segment + query + fragment;
+    };
+    return DefaultUrlSerializer;
+}());
+var DEFAULT_SERIALIZER = new DefaultUrlSerializer();
+function serializePaths(segment) {
+    return segment.segments.map(function (p) { return serializePath(p); }).join('/');
+}
+function serializeSegment(segment, root) {
+    if (!segment.hasChildren()) {
+        return serializePaths(segment);
+    }
+    if (root) {
+        var primary = segment.children[PRIMARY_OUTLET] ?
+            serializeSegment(segment.children[PRIMARY_OUTLET], false) :
+            '';
+        var children_1 = [];
+        forEach(segment.children, function (v, k) {
+            if (k !== PRIMARY_OUTLET) {
+                children_1.push(k + ":" + serializeSegment(v, false));
+            }
+        });
+        return children_1.length > 0 ? primary + "(" + children_1.join('//') + ")" : primary;
+    }
+    else {
+        var children = mapChildrenIntoArray(segment, function (v, k) {
+            if (k === PRIMARY_OUTLET) {
+                return [serializeSegment(segment.children[PRIMARY_OUTLET], false)];
+            }
+            return [k + ":" + serializeSegment(v, false)];
+        });
+        return serializePaths(segment) + "/(" + children.join('//') + ")";
+    }
+}
+/**
+ * Encodes a URI string with the default encoding. This function will only ever be called from
+ * `encodeUriQuery` or `encodeUriSegment` as it's the base set of encodings to be used. We need
+ * a custom encoding because encodeURIComponent is too aggressive and encodes stuff that doesn't
+ * have to be encoded per https://url.spec.whatwg.org.
+ */
+function encodeUriString(s) {
+    return encodeURIComponent(s)
+        .replace(/%40/g, '@')
+        .replace(/%3A/gi, ':')
+        .replace(/%24/g, '$')
+        .replace(/%2C/gi, ',');
+}
+/**
+ * This function should be used to encode both keys and values in a query string key/value. In
+ * the following URL, you need to call encodeUriQuery on "k" and "v":
+ *
+ * http://www.site.org/html;mk=mv?k=v#f
+ */
+function encodeUriQuery(s) {
+    return encodeUriString(s).replace(/%3B/gi, ';');
+}
+/**
+ * This function should be used to encode a URL fragment. In the following URL, you need to call
+ * encodeUriFragment on "f":
+ *
+ * http://www.site.org/html;mk=mv?k=v#f
+ */
+function encodeUriFragment(s) {
+    return encodeURI(s);
+}
+/**
+ * This function should be run on any URI segment as well as the key and value in a key/value
+ * pair for matrix params. In the following URL, you need to call encodeUriSegment on "html",
+ * "mk", and "mv":
+ *
+ * http://www.site.org/html;mk=mv?k=v#f
+ */
+function encodeUriSegment(s) {
+    return encodeUriString(s).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/%26/gi, '&');
+}
+function decode(s) {
+    return decodeURIComponent(s);
+}
+// Query keys/values should have the "+" replaced first, as "+" in a query string is " ".
+// decodeURIComponent function will not decode "+" as a space.
+function decodeQuery(s) {
+    return decode(s.replace(/\+/g, '%20'));
+}
+function serializePath(path) {
+    return "" + encodeUriSegment(path.path) + serializeMatrixParams(path.parameters);
+}
+function serializeMatrixParams(params) {
+    return Object.keys(params)
+        .map(function (key) { return ";" + encodeUriSegment(key) + "=" + encodeUriSegment(params[key]); })
+        .join('');
+}
+function serializeQueryParams(params) {
+    var strParams = Object.keys(params).map(function (name) {
+        var value = params[name];
+        return Array.isArray(value) ?
+            value.map(function (v) { return encodeUriQuery(name) + "=" + encodeUriQuery(v); }).join('&') :
+            encodeUriQuery(name) + "=" + encodeUriQuery(value);
+    });
+    return strParams.length ? "?" + strParams.join("&") : '';
+}
+var SEGMENT_RE = /^[^\/()?;=#]+/;
+function matchSegments(str) {
+    var match = str.match(SEGMENT_RE);
+    return match ? match[0] : '';
+}
+var QUERY_PARAM_RE = /^[^=?&#]+/;
+// Return the name of the query param at the start of the string or an empty string
+function matchQueryParams(str) {
+    var match = str.match(QUERY_PARAM_RE);
+    return match ? match[0] : '';
+}
+var QUERY_PARAM_VALUE_RE = /^[^?&#]+/;
+// Return the value of the query param at the start of the string or an empty string
+function matchUrlQueryParamValue(str) {
+    var match = str.match(QUERY_PARAM_VALUE_RE);
+    return match ? match[0] : '';
+}
+var UrlParser = /** @class */ (function () {
+    function UrlParser(url) {
+        this.url = url;
+        this.remaining = url;
+    }
+    UrlParser.prototype.parseRootSegment = function () {
+        this.consumeOptional('/');
+        if (this.remaining === '' || this.peekStartsWith('?') || this.peekStartsWith('#')) {
+            return new UrlSegmentGroup([], {});
+        }
+        // The root segment group never has segments
+        return new UrlSegmentGroup([], this.parseChildren());
+    };
+    UrlParser.prototype.parseQueryParams = function () {
+        var params = {};
+        if (this.consumeOptional('?')) {
+            do {
+                this.parseQueryParam(params);
+            } while (this.consumeOptional('&'));
+        }
+        return params;
+    };
+    UrlParser.prototype.parseFragment = function () {
+        return this.consumeOptional('#') ? decodeURIComponent(this.remaining) : null;
+    };
+    UrlParser.prototype.parseChildren = function () {
+        if (this.remaining === '') {
+            return {};
+        }
+        this.consumeOptional('/');
+        var segments = [];
+        if (!this.peekStartsWith('(')) {
+            segments.push(this.parseSegment());
+        }
+        while (this.peekStartsWith('/') && !this.peekStartsWith('//') && !this.peekStartsWith('/(')) {
+            this.capture('/');
+            segments.push(this.parseSegment());
+        }
+        var children = {};
+        if (this.peekStartsWith('/(')) {
+            this.capture('/');
+            children = this.parseParens(true);
+        }
+        var res = {};
+        if (this.peekStartsWith('(')) {
+            res = this.parseParens(false);
+        }
+        if (segments.length > 0 || Object.keys(children).length > 0) {
+            res[PRIMARY_OUTLET] = new UrlSegmentGroup(segments, children);
+        }
+        return res;
+    };
+    // parse a segment with its matrix parameters
+    // ie `name;k1=v1;k2`
+    UrlParser.prototype.parseSegment = function () {
+        var path = matchSegments(this.remaining);
+        if (path === '' && this.peekStartsWith(';')) {
+            throw new Error("Empty path url segment cannot have parameters: '" + this.remaining + "'.");
+        }
+        this.capture(path);
+        return new UrlSegment(decode(path), this.parseMatrixParams());
+    };
+    UrlParser.prototype.parseMatrixParams = function () {
+        var params = {};
+        while (this.consumeOptional(';')) {
+            this.parseParam(params);
+        }
+        return params;
+    };
+    UrlParser.prototype.parseParam = function (params) {
+        var key = matchSegments(this.remaining);
+        if (!key) {
+            return;
+        }
+        this.capture(key);
+        var value = '';
+        if (this.consumeOptional('=')) {
+            var valueMatch = matchSegments(this.remaining);
+            if (valueMatch) {
+                value = valueMatch;
+                this.capture(value);
+            }
+        }
+        params[decode(key)] = decode(value);
+    };
+    // Parse a single query parameter `name[=value]`
+    UrlParser.prototype.parseQueryParam = function (params) {
+        var key = matchQueryParams(this.remaining);
+        if (!key) {
+            return;
+        }
+        this.capture(key);
+        var value = '';
+        if (this.consumeOptional('=')) {
+            var valueMatch = matchUrlQueryParamValue(this.remaining);
+            if (valueMatch) {
+                value = valueMatch;
+                this.capture(value);
+            }
+        }
+        var decodedKey = decodeQuery(key);
+        var decodedVal = decodeQuery(value);
+        if (params.hasOwnProperty(decodedKey)) {
+            // Append to existing values
+            var currentVal = params[decodedKey];
+            if (!Array.isArray(currentVal)) {
+                currentVal = [currentVal];
+                params[decodedKey] = currentVal;
+            }
+            currentVal.push(decodedVal);
+        }
+        else {
+            // Create a new value
+            params[decodedKey] = decodedVal;
+        }
+    };
+    // parse `(a/b//outlet_name:c/d)`
+    UrlParser.prototype.parseParens = function (allowPrimary) {
+        var segments = {};
+        this.capture('(');
+        while (!this.consumeOptional(')') && this.remaining.length > 0) {
+            var path = matchSegments(this.remaining);
+            var next = this.remaining[path.length];
+            // if is is not one of these characters, then the segment was unescaped
+            // or the group was not closed
+            if (next !== '/' && next !== ')' && next !== ';') {
+                throw new Error("Cannot parse url '" + this.url + "'");
+            }
+            var outletName = undefined;
+            if (path.indexOf(':') > -1) {
+                outletName = path.substr(0, path.indexOf(':'));
+                this.capture(outletName);
+                this.capture(':');
+            }
+            else if (allowPrimary) {
+                outletName = PRIMARY_OUTLET;
+            }
+            var children = this.parseChildren();
+            segments[outletName] = Object.keys(children).length === 1 ? children[PRIMARY_OUTLET] :
+                new UrlSegmentGroup([], children);
+            this.consumeOptional('//');
+        }
+        return segments;
+    };
+    UrlParser.prototype.peekStartsWith = function (str) { return this.remaining.startsWith(str); };
+    // Consumes the prefix when it is present and returns whether it has been consumed
+    UrlParser.prototype.consumeOptional = function (str) {
+        if (this.peekStartsWith(str)) {
+            this.remaining = this.remaining.substring(str.length);
+            return true;
+        }
+        return false;
+    };
+    UrlParser.prototype.capture = function (str) {
+        if (!this.consumeOptional(str)) {
+            throw new Error("Expected \"" + str + "\".");
+        }
+    };
+    return UrlParser;
+}());
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+var NoMatch = /** @class */ (function () {
+    function NoMatch(segmentGroup) {
+        this.segmentGroup = segmentGroup || null;
+    }
+    return NoMatch;
+}());
+var AbsoluteRedirect = /** @class */ (function () {
+    function AbsoluteRedirect(urlTree) {
+        this.urlTree = urlTree;
+    }
+    return AbsoluteRedirect;
+}());
+function noMatch(segmentGroup) {
+    return new rxjs__WEBPACK_IMPORTED_MODULE_2__["Observable"](function (obs) { return obs.error(new NoMatch(segmentGroup)); });
+}
+function absoluteRedirect(newTree) {
+    return new rxjs__WEBPACK_IMPORTED_MODULE_2__["Observable"](function (obs) { return obs.error(new AbsoluteRedirect(newTree)); });
+}
+function namedOutletsRedirect(redirectTo) {
+    return new rxjs__WEBPACK_IMPORTED_MODULE_2__["Observable"](function (obs) { return obs.error(new Error("Only absolute redirects can have named outlets. redirectTo: '" + redirectTo + "'")); });
+}
+function canLoadFails(route) {
+    return new rxjs__WEBPACK_IMPORTED_MODULE_2__["Observable"](function (obs) { return obs.error(navigationCancelingError("Cannot load children because the guard of the route \"path: '" + route.path + "'\" returned false")); });
+}
+/**
+ * Returns the `UrlTree` with the redirection applied.
+ *
+ * Lazy modules are loaded along the way.
+ */
+function applyRedirects(moduleInjector, configLoader, urlSerializer, urlTree, config) {
+    return new ApplyRedirects(moduleInjector, configLoader, urlSerializer, urlTree, config).apply();
+}
+var ApplyRedirects = /** @class */ (function () {
+    function ApplyRedirects(moduleInjector, configLoader, urlSerializer, urlTree, config) {
+        this.configLoader = configLoader;
+        this.urlSerializer = urlSerializer;
+        this.urlTree = urlTree;
+        this.config = config;
+        this.allowRedirects = true;
+        this.ngModule = moduleInjector.get(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModuleRef"]);
+    }
+    ApplyRedirects.prototype.apply = function () {
+        var _this = this;
+        var expanded$ = this.expandSegmentGroup(this.ngModule, this.config, this.urlTree.root, PRIMARY_OUTLET);
+        var urlTrees$ = expanded$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (rootSegmentGroup) { return _this.createUrlTree(rootSegmentGroup, _this.urlTree.queryParams, _this.urlTree.fragment); }));
+        return urlTrees$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(function (e) {
+            if (e instanceof AbsoluteRedirect) {
+                // after an absolute redirect we do not apply any more redirects!
+                _this.allowRedirects = false;
+                // we need to run matching, so we can fetch all lazy-loaded modules
+                return _this.match(e.urlTree);
+            }
+            if (e instanceof NoMatch) {
+                throw _this.noMatchError(e);
+            }
+            throw e;
+        }));
+    };
+    ApplyRedirects.prototype.match = function (tree) {
+        var _this = this;
+        var expanded$ = this.expandSegmentGroup(this.ngModule, this.config, tree.root, PRIMARY_OUTLET);
+        var mapped$ = expanded$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (rootSegmentGroup) {
+            return _this.createUrlTree(rootSegmentGroup, tree.queryParams, tree.fragment);
+        }));
+        return mapped$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(function (e) {
+            if (e instanceof NoMatch) {
+                throw _this.noMatchError(e);
+            }
+            throw e;
+        }));
+    };
+    ApplyRedirects.prototype.noMatchError = function (e) {
+        return new Error("Cannot match any routes. URL Segment: '" + e.segmentGroup + "'");
+    };
+    ApplyRedirects.prototype.createUrlTree = function (rootCandidate, queryParams, fragment) {
+        var _a;
+        var root = rootCandidate.segments.length > 0 ?
+            new UrlSegmentGroup([], (_a = {}, _a[PRIMARY_OUTLET] = rootCandidate, _a)) :
+            rootCandidate;
+        return new UrlTree(root, queryParams, fragment);
+    };
+    ApplyRedirects.prototype.expandSegmentGroup = function (ngModule, routes, segmentGroup, outlet) {
+        if (segmentGroup.segments.length === 0 && segmentGroup.hasChildren()) {
+            return this.expandChildren(ngModule, routes, segmentGroup)
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (children) { return new UrlSegmentGroup([], children); }));
+        }
+        return this.expandSegment(ngModule, segmentGroup, routes, segmentGroup.segments, outlet, true);
+    };
+    // Recursively expand segment groups for all the child outlets
+    ApplyRedirects.prototype.expandChildren = function (ngModule, routes, segmentGroup) {
+        var _this = this;
+        return waitForMap(segmentGroup.children, function (childOutlet, child) { return _this.expandSegmentGroup(ngModule, routes, child, childOutlet); });
+    };
+    ApplyRedirects.prototype.expandSegment = function (ngModule, segmentGroup, routes, segments, outlet, allowRedirects) {
+        var _this = this;
+        return rxjs__WEBPACK_IMPORTED_MODULE_2__["of"].apply(void 0, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(routes)).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (r) {
+            var expanded$ = _this.expandSegmentAgainstRoute(ngModule, segmentGroup, routes, r, segments, outlet, allowRedirects);
+            return expanded$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(function (e) {
+                if (e instanceof NoMatch) {
+                    // TODO(i): this return type doesn't match the declared Observable<UrlSegmentGroup> -
+                    // talk to Jason
+                    return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(null);
+                }
+                throw e;
+            }));
+        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["concatAll"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["first"])(function (s) { return !!s; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(function (e, _) {
+            if (e instanceof rxjs__WEBPACK_IMPORTED_MODULE_2__["EmptyError"] || e.name === 'EmptyError') {
+                if (_this.noLeftoversInUrl(segmentGroup, segments, outlet)) {
+                    return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(new UrlSegmentGroup([], {}));
+                }
+                throw new NoMatch(segmentGroup);
+            }
+            throw e;
+        }));
+    };
+    ApplyRedirects.prototype.noLeftoversInUrl = function (segmentGroup, segments, outlet) {
+        return segments.length === 0 && !segmentGroup.children[outlet];
+    };
+    ApplyRedirects.prototype.expandSegmentAgainstRoute = function (ngModule, segmentGroup, routes, route, paths, outlet, allowRedirects) {
+        if (getOutlet(route) !== outlet) {
+            return noMatch(segmentGroup);
+        }
+        if (route.redirectTo === undefined) {
+            return this.matchSegmentAgainstRoute(ngModule, segmentGroup, route, paths);
+        }
+        if (allowRedirects && this.allowRedirects) {
+            return this.expandSegmentAgainstRouteUsingRedirect(ngModule, segmentGroup, routes, route, paths, outlet);
+        }
+        return noMatch(segmentGroup);
+    };
+    ApplyRedirects.prototype.expandSegmentAgainstRouteUsingRedirect = function (ngModule, segmentGroup, routes, route, segments, outlet) {
+        if (route.path === '**') {
+            return this.expandWildCardWithParamsAgainstRouteUsingRedirect(ngModule, routes, route, outlet);
+        }
+        return this.expandRegularSegmentAgainstRouteUsingRedirect(ngModule, segmentGroup, routes, route, segments, outlet);
+    };
+    ApplyRedirects.prototype.expandWildCardWithParamsAgainstRouteUsingRedirect = function (ngModule, routes, route, outlet) {
+        var _this = this;
+        var newTree = this.applyRedirectCommands([], route.redirectTo, {});
+        if (route.redirectTo.startsWith('/')) {
+            return absoluteRedirect(newTree);
+        }
+        return this.lineralizeSegments(route, newTree).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (newSegments) {
+            var group = new UrlSegmentGroup(newSegments, {});
+            return _this.expandSegment(ngModule, group, routes, newSegments, outlet, false);
+        }));
+    };
+    ApplyRedirects.prototype.expandRegularSegmentAgainstRouteUsingRedirect = function (ngModule, segmentGroup, routes, route, segments, outlet) {
+        var _this = this;
+        var _a = match(segmentGroup, route, segments), matched = _a.matched, consumedSegments = _a.consumedSegments, lastChild = _a.lastChild, positionalParamSegments = _a.positionalParamSegments;
+        if (!matched)
+            return noMatch(segmentGroup);
+        var newTree = this.applyRedirectCommands(consumedSegments, route.redirectTo, positionalParamSegments);
+        if (route.redirectTo.startsWith('/')) {
+            return absoluteRedirect(newTree);
+        }
+        return this.lineralizeSegments(route, newTree).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (newSegments) {
+            return _this.expandSegment(ngModule, segmentGroup, routes, newSegments.concat(segments.slice(lastChild)), outlet, false);
+        }));
+    };
+    ApplyRedirects.prototype.matchSegmentAgainstRoute = function (ngModule, rawSegmentGroup, route, segments) {
+        var _this = this;
+        if (route.path === '**') {
+            if (route.loadChildren) {
+                return this.configLoader.load(ngModule.injector, route)
+                    .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (cfg) {
+                    route._loadedConfig = cfg;
+                    return new UrlSegmentGroup(segments, {});
+                }));
+            }
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(new UrlSegmentGroup(segments, {}));
+        }
+        var _a = match(rawSegmentGroup, route, segments), matched = _a.matched, consumedSegments = _a.consumedSegments, lastChild = _a.lastChild;
+        if (!matched)
+            return noMatch(rawSegmentGroup);
+        var rawSlicedSegments = segments.slice(lastChild);
+        var childConfig$ = this.getChildConfig(ngModule, route);
+        return childConfig$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (routerConfig) {
+            var childModule = routerConfig.module;
+            var childConfig = routerConfig.routes;
+            var _a = split(rawSegmentGroup, consumedSegments, rawSlicedSegments, childConfig), segmentGroup = _a.segmentGroup, slicedSegments = _a.slicedSegments;
+            if (slicedSegments.length === 0 && segmentGroup.hasChildren()) {
+                var expanded$_1 = _this.expandChildren(childModule, childConfig, segmentGroup);
+                return expanded$_1.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (children) { return new UrlSegmentGroup(consumedSegments, children); }));
+            }
+            if (childConfig.length === 0 && slicedSegments.length === 0) {
+                return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(new UrlSegmentGroup(consumedSegments, {}));
+            }
+            var expanded$ = _this.expandSegment(childModule, segmentGroup, childConfig, slicedSegments, PRIMARY_OUTLET, true);
+            return expanded$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (cs) {
+                return new UrlSegmentGroup(consumedSegments.concat(cs.segments), cs.children);
+            }));
+        }));
+    };
+    ApplyRedirects.prototype.getChildConfig = function (ngModule, route) {
+        var _this = this;
+        if (route.children) {
+            // The children belong to the same module
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(new LoadedRouterConfig(route.children, ngModule));
+        }
+        if (route.loadChildren) {
+            // lazy children belong to the loaded module
+            if (route._loadedConfig !== undefined) {
+                return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(route._loadedConfig);
+            }
+            return runCanLoadGuard(ngModule.injector, route).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (shouldLoad) {
+                if (shouldLoad) {
+                    return _this.configLoader.load(ngModule.injector, route)
+                        .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (cfg) {
+                        route._loadedConfig = cfg;
+                        return cfg;
+                    }));
+                }
+                return canLoadFails(route);
+            }));
+        }
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(new LoadedRouterConfig([], ngModule));
+    };
+    ApplyRedirects.prototype.lineralizeSegments = function (route, urlTree) {
+        var res = [];
+        var c = urlTree.root;
+        while (true) {
+            res = res.concat(c.segments);
+            if (c.numberOfChildren === 0) {
+                return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(res);
+            }
+            if (c.numberOfChildren > 1 || !c.children[PRIMARY_OUTLET]) {
+                return namedOutletsRedirect(route.redirectTo);
+            }
+            c = c.children[PRIMARY_OUTLET];
+        }
+    };
+    ApplyRedirects.prototype.applyRedirectCommands = function (segments, redirectTo, posParams) {
+        return this.applyRedirectCreatreUrlTree(redirectTo, this.urlSerializer.parse(redirectTo), segments, posParams);
+    };
+    ApplyRedirects.prototype.applyRedirectCreatreUrlTree = function (redirectTo, urlTree, segments, posParams) {
+        var newRoot = this.createSegmentGroup(redirectTo, urlTree.root, segments, posParams);
+        return new UrlTree(newRoot, this.createQueryParams(urlTree.queryParams, this.urlTree.queryParams), urlTree.fragment);
+    };
+    ApplyRedirects.prototype.createQueryParams = function (redirectToParams, actualParams) {
+        var res = {};
+        forEach(redirectToParams, function (v, k) {
+            var copySourceValue = typeof v === 'string' && v.startsWith(':');
+            if (copySourceValue) {
+                var sourceName = v.substring(1);
+                res[k] = actualParams[sourceName];
+            }
+            else {
+                res[k] = v;
+            }
+        });
+        return res;
+    };
+    ApplyRedirects.prototype.createSegmentGroup = function (redirectTo, group, segments, posParams) {
+        var _this = this;
+        var updatedSegments = this.createSegments(redirectTo, group.segments, segments, posParams);
+        var children = {};
+        forEach(group.children, function (child, name) {
+            children[name] = _this.createSegmentGroup(redirectTo, child, segments, posParams);
+        });
+        return new UrlSegmentGroup(updatedSegments, children);
+    };
+    ApplyRedirects.prototype.createSegments = function (redirectTo, redirectToSegments, actualSegments, posParams) {
+        var _this = this;
+        return redirectToSegments.map(function (s) { return s.path.startsWith(':') ? _this.findPosParam(redirectTo, s, posParams) :
+            _this.findOrReturn(s, actualSegments); });
+    };
+    ApplyRedirects.prototype.findPosParam = function (redirectTo, redirectToUrlSegment, posParams) {
+        var pos = posParams[redirectToUrlSegment.path.substring(1)];
+        if (!pos)
+            throw new Error("Cannot redirect to '" + redirectTo + "'. Cannot find '" + redirectToUrlSegment.path + "'.");
+        return pos;
+    };
+    ApplyRedirects.prototype.findOrReturn = function (redirectToUrlSegment, actualSegments) {
+        var e_1, _a;
+        var idx = 0;
+        try {
+            for (var actualSegments_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(actualSegments), actualSegments_1_1 = actualSegments_1.next(); !actualSegments_1_1.done; actualSegments_1_1 = actualSegments_1.next()) {
+                var s = actualSegments_1_1.value;
+                if (s.path === redirectToUrlSegment.path) {
+                    actualSegments.splice(idx);
+                    return s;
+                }
+                idx++;
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (actualSegments_1_1 && !actualSegments_1_1.done && (_a = actualSegments_1.return)) _a.call(actualSegments_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return redirectToUrlSegment;
+    };
+    return ApplyRedirects;
+}());
+function runCanLoadGuard(moduleInjector, route) {
+    var canLoad = route.canLoad;
+    if (!canLoad || canLoad.length === 0)
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(true);
+    var obs = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(canLoad).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (injectionToken) {
+        var guard = moduleInjector.get(injectionToken);
+        return wrapIntoObservable(guard.canLoad ? guard.canLoad(route) : guard(route));
+    }));
+    return andObservables(obs);
+}
+function match(segmentGroup, route, segments) {
+    if (route.path === '') {
+        if ((route.pathMatch === 'full') && (segmentGroup.hasChildren() || segments.length > 0)) {
+            return { matched: false, consumedSegments: [], lastChild: 0, positionalParamSegments: {} };
+        }
+        return { matched: true, consumedSegments: [], lastChild: 0, positionalParamSegments: {} };
+    }
+    var matcher = route.matcher || defaultUrlMatcher;
+    var res = matcher(segments, segmentGroup, route);
+    if (!res) {
+        return {
+            matched: false,
+            consumedSegments: [],
+            lastChild: 0,
+            positionalParamSegments: {},
+        };
+    }
+    return {
+        matched: true,
+        consumedSegments: res.consumed,
+        lastChild: res.consumed.length,
+        positionalParamSegments: res.posParams,
+    };
+}
+function split(segmentGroup, consumedSegments, slicedSegments, config) {
+    if (slicedSegments.length > 0 &&
+        containsEmptyPathRedirectsWithNamedOutlets(segmentGroup, slicedSegments, config)) {
+        var s = new UrlSegmentGroup(consumedSegments, createChildrenForEmptySegments(config, new UrlSegmentGroup(slicedSegments, segmentGroup.children)));
+        return { segmentGroup: mergeTrivialChildren(s), slicedSegments: [] };
+    }
+    if (slicedSegments.length === 0 &&
+        containsEmptyPathRedirects(segmentGroup, slicedSegments, config)) {
+        var s = new UrlSegmentGroup(segmentGroup.segments, addEmptySegmentsToChildrenIfNeeded(segmentGroup, slicedSegments, config, segmentGroup.children));
+        return { segmentGroup: mergeTrivialChildren(s), slicedSegments: slicedSegments };
+    }
+    return { segmentGroup: segmentGroup, slicedSegments: slicedSegments };
+}
+function mergeTrivialChildren(s) {
+    if (s.numberOfChildren === 1 && s.children[PRIMARY_OUTLET]) {
+        var c = s.children[PRIMARY_OUTLET];
+        return new UrlSegmentGroup(s.segments.concat(c.segments), c.children);
+    }
+    return s;
+}
+function addEmptySegmentsToChildrenIfNeeded(segmentGroup, slicedSegments, routes, children) {
+    var e_2, _a;
+    var res = {};
+    try {
+        for (var routes_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(routes), routes_1_1 = routes_1.next(); !routes_1_1.done; routes_1_1 = routes_1.next()) {
+            var r = routes_1_1.value;
+            if (isEmptyPathRedirect(segmentGroup, slicedSegments, r) && !children[getOutlet(r)]) {
+                res[getOutlet(r)] = new UrlSegmentGroup([], {});
+            }
+        }
+    }
+    catch (e_2_1) { e_2 = { error: e_2_1 }; }
+    finally {
+        try {
+            if (routes_1_1 && !routes_1_1.done && (_a = routes_1.return)) _a.call(routes_1);
+        }
+        finally { if (e_2) throw e_2.error; }
+    }
+    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, children, res);
+}
+function createChildrenForEmptySegments(routes, primarySegmentGroup) {
+    var e_3, _a;
+    var res = {};
+    res[PRIMARY_OUTLET] = primarySegmentGroup;
+    try {
+        for (var routes_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(routes), routes_2_1 = routes_2.next(); !routes_2_1.done; routes_2_1 = routes_2.next()) {
+            var r = routes_2_1.value;
+            if (r.path === '' && getOutlet(r) !== PRIMARY_OUTLET) {
+                res[getOutlet(r)] = new UrlSegmentGroup([], {});
+            }
+        }
+    }
+    catch (e_3_1) { e_3 = { error: e_3_1 }; }
+    finally {
+        try {
+            if (routes_2_1 && !routes_2_1.done && (_a = routes_2.return)) _a.call(routes_2);
+        }
+        finally { if (e_3) throw e_3.error; }
+    }
+    return res;
+}
+function containsEmptyPathRedirectsWithNamedOutlets(segmentGroup, segments, routes) {
+    return routes.some(function (r) { return isEmptyPathRedirect(segmentGroup, segments, r) && getOutlet(r) !== PRIMARY_OUTLET; });
+}
+function containsEmptyPathRedirects(segmentGroup, segments, routes) {
+    return routes.some(function (r) { return isEmptyPathRedirect(segmentGroup, segments, r); });
+}
+function isEmptyPathRedirect(segmentGroup, segments, r) {
+    if ((segmentGroup.hasChildren() || segments.length > 0) && r.pathMatch === 'full') {
+        return false;
+    }
+    return r.path === '' && r.redirectTo !== undefined;
+}
+function getOutlet(route) {
+    return route.outlet || PRIMARY_OUTLET;
+}
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+var Tree = /** @class */ (function () {
+    function Tree(root) {
+        this._root = root;
+    }
+    Object.defineProperty(Tree.prototype, "root", {
+        get: function () { return this._root.value; },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * @internal
+     */
+    Tree.prototype.parent = function (t) {
+        var p = this.pathFromRoot(t);
+        return p.length > 1 ? p[p.length - 2] : null;
+    };
+    /**
+     * @internal
+     */
+    Tree.prototype.children = function (t) {
+        var n = findNode(t, this._root);
+        return n ? n.children.map(function (t) { return t.value; }) : [];
+    };
+    /**
+     * @internal
+     */
+    Tree.prototype.firstChild = function (t) {
+        var n = findNode(t, this._root);
+        return n && n.children.length > 0 ? n.children[0].value : null;
+    };
+    /**
+     * @internal
+     */
+    Tree.prototype.siblings = function (t) {
+        var p = findPath(t, this._root);
+        if (p.length < 2)
+            return [];
+        var c = p[p.length - 2].children.map(function (c) { return c.value; });
+        return c.filter(function (cc) { return cc !== t; });
+    };
+    /**
+     * @internal
+     */
+    Tree.prototype.pathFromRoot = function (t) { return findPath(t, this._root).map(function (s) { return s.value; }); };
+    return Tree;
+}());
+// DFS for the node matching the value
+function findNode(value, node) {
+    var e_1, _a;
+    if (value === node.value)
+        return node;
+    try {
+        for (var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(node.children), _c = _b.next(); !_c.done; _c = _b.next()) {
+            var child = _c.value;
+            var node_1 = findNode(value, child);
+            if (node_1)
+                return node_1;
+        }
+    }
+    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+    finally {
+        try {
+            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+        }
+        finally { if (e_1) throw e_1.error; }
+    }
+    return null;
+}
+// Return the path to the node with the given value using DFS
+function findPath(value, node) {
+    var e_2, _a;
+    if (value === node.value)
+        return [node];
+    try {
+        for (var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(node.children), _c = _b.next(); !_c.done; _c = _b.next()) {
+            var child = _c.value;
+            var path = findPath(value, child);
+            if (path.length) {
+                path.unshift(node);
+                return path;
+            }
+        }
+    }
+    catch (e_2_1) { e_2 = { error: e_2_1 }; }
+    finally {
+        try {
+            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+        }
+        finally { if (e_2) throw e_2.error; }
+    }
+    return [];
+}
+var TreeNode = /** @class */ (function () {
+    function TreeNode(value, children) {
+        this.value = value;
+        this.children = children;
+    }
+    TreeNode.prototype.toString = function () { return "TreeNode(" + this.value + ")"; };
+    return TreeNode;
+}());
+// Return the list of T indexed by outlet name
+function nodeChildrenAsMap(node) {
+    var map$$1 = {};
+    if (node) {
+        node.children.forEach(function (child) { return map$$1[child.value.outlet] = child; });
+    }
+    return map$$1;
+}
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * @description
+ *
+ * Represents the state of the router.
+ *
+ * RouterState is a tree of activated routes. Every node in this tree knows about the "consumed" URL
+ * segments, the extracted parameters, and the resolved data.
+ *
+ * @usageNotes
+ * ### Example
+ *
+ * ```
+ * @Component({templateUrl:'template.html'})
+ * class MyComponent {
+ *   constructor(router: Router) {
+ *     const state: RouterState = router.routerState;
+ *     const root: ActivatedRoute = state.root;
+ *     const child = root.firstChild;
+ *     const id: Observable<string> = child.params.map(p => p.id);
+ *     //...
+ *   }
+ * }
+ * ```
+ *
+ * See `ActivatedRoute` for more information.
+ *
+ *
+ */
+var RouterState = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RouterState, _super);
+    /** @internal */
+    function RouterState(root, 
+    /** The current snapshot of the router state */
+    snapshot) {
+        var _this = _super.call(this, root) || this;
+        _this.snapshot = snapshot;
+        setRouterState(_this, root);
+        return _this;
+    }
+    RouterState.prototype.toString = function () { return this.snapshot.toString(); };
+    return RouterState;
+}(Tree));
+function createEmptyState(urlTree, rootComponent) {
+    var snapshot = createEmptyStateSnapshot(urlTree, rootComponent);
+    var emptyUrl = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]([new UrlSegment('', {})]);
+    var emptyParams = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]({});
+    var emptyData = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]({});
+    var emptyQueryParams = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]({});
+    var fragment = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]('');
+    var activated = new ActivatedRoute(emptyUrl, emptyParams, emptyQueryParams, fragment, emptyData, PRIMARY_OUTLET, rootComponent, snapshot.root);
+    activated.snapshot = snapshot.root;
+    return new RouterState(new TreeNode(activated, []), snapshot);
+}
+function createEmptyStateSnapshot(urlTree, rootComponent) {
+    var emptyParams = {};
+    var emptyData = {};
+    var emptyQueryParams = {};
+    var fragment = '';
+    var activated = new ActivatedRouteSnapshot([], emptyParams, emptyQueryParams, fragment, emptyData, PRIMARY_OUTLET, rootComponent, null, urlTree.root, -1, {});
+    return new RouterStateSnapshot('', new TreeNode(activated, []));
+}
+/**
+ * @description
+ *
+ * Contains the information about a route associated with a component loaded in an
+ * outlet.  An `ActivatedRoute` can also be used to traverse the router state tree.
+ *
+ * ```
+ * @Component({...})
+ * class MyComponent {
+ *   constructor(route: ActivatedRoute) {
+ *     const id: Observable<string> = route.params.map(p => p.id);
+ *     const url: Observable<string> = route.url.map(segments => segments.join(''));
+ *     // route.data includes both `data` and `resolve`
+ *     const user = route.data.map(d => d.user);
+ *   }
+ * }
+ * ```
+ *
+ *
+ */
+var ActivatedRoute = /** @class */ (function () {
+    /** @internal */
+    function ActivatedRoute(
+    /** An observable of the URL segments matched by this route */
+    url, 
+    /** An observable of the matrix parameters scoped to this route */
+    params, 
+    /** An observable of the query parameters shared by all the routes */
+    queryParams, 
+    /** An observable of the URL fragment shared by all the routes */
+    fragment, 
+    /** An observable of the static and resolved data of this route. */
+    data, 
+    /** The outlet name of the route. It's a constant */
+    outlet, 
+    /** The component of the route. It's a constant */
+    // TODO(vsavkin): remove |string
+    component, futureSnapshot) {
+        this.url = url;
+        this.params = params;
+        this.queryParams = queryParams;
+        this.fragment = fragment;
+        this.data = data;
+        this.outlet = outlet;
+        this.component = component;
+        this._futureSnapshot = futureSnapshot;
+    }
+    Object.defineProperty(ActivatedRoute.prototype, "routeConfig", {
+        /** The configuration used to match this route */
+        get: function () { return this._futureSnapshot.routeConfig; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActivatedRoute.prototype, "root", {
+        /** The root of the router state */
+        get: function () { return this._routerState.root; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActivatedRoute.prototype, "parent", {
+        /** The parent of this route in the router state tree */
+        get: function () { return this._routerState.parent(this); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActivatedRoute.prototype, "firstChild", {
+        /** The first child of this route in the router state tree */
+        get: function () { return this._routerState.firstChild(this); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActivatedRoute.prototype, "children", {
+        /** The children of this route in the router state tree */
+        get: function () { return this._routerState.children(this); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActivatedRoute.prototype, "pathFromRoot", {
+        /** The path from the root of the router state tree to this route */
+        get: function () { return this._routerState.pathFromRoot(this); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActivatedRoute.prototype, "paramMap", {
+        get: function () {
+            if (!this._paramMap) {
+                this._paramMap = this.params.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (p) { return convertToParamMap(p); }));
+            }
+            return this._paramMap;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActivatedRoute.prototype, "queryParamMap", {
+        get: function () {
+            if (!this._queryParamMap) {
+                this._queryParamMap =
+                    this.queryParams.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (p) { return convertToParamMap(p); }));
+            }
+            return this._queryParamMap;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ActivatedRoute.prototype.toString = function () {
+        return this.snapshot ? this.snapshot.toString() : "Future(" + this._futureSnapshot + ")";
+    };
+    return ActivatedRoute;
+}());
+/**
+ * Returns the inherited params, data, and resolve for a given route.
+ * By default, this only inherits values up to the nearest path-less or component-less route.
+ * @internal
+ */
+function inheritedParamsDataResolve(route, paramsInheritanceStrategy) {
+    if (paramsInheritanceStrategy === void 0) { paramsInheritanceStrategy = 'emptyOnly'; }
+    var pathFromRoot = route.pathFromRoot;
+    var inheritingStartingFrom = 0;
+    if (paramsInheritanceStrategy !== 'always') {
+        inheritingStartingFrom = pathFromRoot.length - 1;
+        while (inheritingStartingFrom >= 1) {
+            var current = pathFromRoot[inheritingStartingFrom];
+            var parent_1 = pathFromRoot[inheritingStartingFrom - 1];
+            // current route is an empty path => inherits its parent's params and data
+            if (current.routeConfig && current.routeConfig.path === '') {
+                inheritingStartingFrom--;
+                // parent is componentless => current route should inherit its params and data
+            }
+            else if (!parent_1.component) {
+                inheritingStartingFrom--;
+            }
+            else {
+                break;
+            }
+        }
+    }
+    return flattenInherited(pathFromRoot.slice(inheritingStartingFrom));
+}
+/** @internal */
+function flattenInherited(pathFromRoot) {
+    return pathFromRoot.reduce(function (res, curr) {
+        var params = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, res.params, curr.params);
+        var data = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, res.data, curr.data);
+        var resolve = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, res.resolve, curr._resolvedData);
+        return { params: params, data: data, resolve: resolve };
+    }, { params: {}, data: {}, resolve: {} });
+}
+/**
+ * @description
+ *
+ * Contains the information about a route associated with a component loaded in an
+ * outlet at a particular moment in time. ActivatedRouteSnapshot can also be used to
+ * traverse the router state tree.
+ *
+ * ```
+ * @Component({templateUrl:'./my-component.html'})
+ * class MyComponent {
+ *   constructor(route: ActivatedRoute) {
+ *     const id: string = route.snapshot.params.id;
+ *     const url: string = route.snapshot.url.join('');
+ *     const user = route.snapshot.data.user;
+ *   }
+ * }
+ * ```
+ *
+ *
+ */
+var ActivatedRouteSnapshot = /** @class */ (function () {
+    /** @internal */
+    function ActivatedRouteSnapshot(
+    /** The URL segments matched by this route */
+    url, 
+    /** The matrix parameters scoped to this route */
+    params, 
+    /** The query parameters shared by all the routes */
+    queryParams, 
+    /** The URL fragment shared by all the routes */
+    fragment, 
+    /** The static and resolved data of this route */
+    data, 
+    /** The outlet name of the route */
+    outlet, 
+    /** The component of the route */
+    component, routeConfig, urlSegment, lastPathIndex, resolve) {
+        this.url = url;
+        this.params = params;
+        this.queryParams = queryParams;
+        this.fragment = fragment;
+        this.data = data;
+        this.outlet = outlet;
+        this.component = component;
+        this.routeConfig = routeConfig;
+        this._urlSegment = urlSegment;
+        this._lastPathIndex = lastPathIndex;
+        this._resolve = resolve;
+    }
+    Object.defineProperty(ActivatedRouteSnapshot.prototype, "root", {
+        /** The root of the router state */
+        get: function () { return this._routerState.root; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActivatedRouteSnapshot.prototype, "parent", {
+        /** The parent of this route in the router state tree */
+        get: function () { return this._routerState.parent(this); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActivatedRouteSnapshot.prototype, "firstChild", {
+        /** The first child of this route in the router state tree */
+        get: function () { return this._routerState.firstChild(this); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActivatedRouteSnapshot.prototype, "children", {
+        /** The children of this route in the router state tree */
+        get: function () { return this._routerState.children(this); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActivatedRouteSnapshot.prototype, "pathFromRoot", {
+        /** The path from the root of the router state tree to this route */
+        get: function () { return this._routerState.pathFromRoot(this); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActivatedRouteSnapshot.prototype, "paramMap", {
+        get: function () {
+            if (!this._paramMap) {
+                this._paramMap = convertToParamMap(this.params);
+            }
+            return this._paramMap;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ActivatedRouteSnapshot.prototype, "queryParamMap", {
+        get: function () {
+            if (!this._queryParamMap) {
+                this._queryParamMap = convertToParamMap(this.queryParams);
+            }
+            return this._queryParamMap;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ActivatedRouteSnapshot.prototype.toString = function () {
+        var url = this.url.map(function (segment) { return segment.toString(); }).join('/');
+        var matched = this.routeConfig ? this.routeConfig.path : '';
+        return "Route(url:'" + url + "', path:'" + matched + "')";
+    };
+    return ActivatedRouteSnapshot;
+}());
+/**
+ * @description
+ *
+ * Represents the state of the router at a moment in time.
+ *
+ * This is a tree of activated route snapshots. Every node in this tree knows about
+ * the "consumed" URL segments, the extracted parameters, and the resolved data.
+ *
+ * @usageNotes
+ * ### Example
+ *
+ * ```
+ * @Component({templateUrl:'template.html'})
+ * class MyComponent {
+ *   constructor(router: Router) {
+ *     const state: RouterState = router.routerState;
+ *     const snapshot: RouterStateSnapshot = state.snapshot;
+ *     const root: ActivatedRouteSnapshot = snapshot.root;
+ *     const child = root.firstChild;
+ *     const id: Observable<string> = child.params.map(p => p.id);
+ *     //...
+ *   }
+ * }
+ * ```
+ *
+ *
+ */
+var RouterStateSnapshot = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RouterStateSnapshot, _super);
+    /** @internal */
+    function RouterStateSnapshot(
+    /** The url from which this snapshot was created */
+    url, root) {
+        var _this = _super.call(this, root) || this;
+        _this.url = url;
+        setRouterState(_this, root);
+        return _this;
+    }
+    RouterStateSnapshot.prototype.toString = function () { return serializeNode(this._root); };
+    return RouterStateSnapshot;
+}(Tree));
+function setRouterState(state, node) {
+    node.value._routerState = state;
+    node.children.forEach(function (c) { return setRouterState(state, c); });
+}
+function serializeNode(node) {
+    var c = node.children.length > 0 ? " { " + node.children.map(serializeNode).join(', ') + " } " : '';
+    return "" + node.value + c;
+}
+/**
+ * The expectation is that the activate route is created with the right set of parameters.
+ * So we push new values into the observables only when they are not the initial values.
+ * And we detect that by checking if the snapshot field is set.
+ */
+function advanceActivatedRoute(route) {
+    if (route.snapshot) {
+        var currentSnapshot = route.snapshot;
+        var nextSnapshot = route._futureSnapshot;
+        route.snapshot = nextSnapshot;
+        if (!shallowEqual(currentSnapshot.queryParams, nextSnapshot.queryParams)) {
+            route.queryParams.next(nextSnapshot.queryParams);
+        }
+        if (currentSnapshot.fragment !== nextSnapshot.fragment) {
+            route.fragment.next(nextSnapshot.fragment);
+        }
+        if (!shallowEqual(currentSnapshot.params, nextSnapshot.params)) {
+            route.params.next(nextSnapshot.params);
+        }
+        if (!shallowEqualArrays(currentSnapshot.url, nextSnapshot.url)) {
+            route.url.next(nextSnapshot.url);
+        }
+        if (!shallowEqual(currentSnapshot.data, nextSnapshot.data)) {
+            route.data.next(nextSnapshot.data);
+        }
+    }
+    else {
+        route.snapshot = route._futureSnapshot;
+        // this is for resolved data
+        route.data.next(route._futureSnapshot.data);
+    }
+}
+function equalParamsAndUrlSegments(a, b) {
+    var equalUrlParams = shallowEqual(a.params, b.params) && equalSegments(a.url, b.url);
+    var parentsMismatch = !a.parent !== !b.parent;
+    return equalUrlParams && !parentsMismatch &&
+        (!a.parent || equalParamsAndUrlSegments(a.parent, b.parent));
+}
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+function createRouterState(routeReuseStrategy, curr, prevState) {
+    var root = createNode(routeReuseStrategy, curr._root, prevState ? prevState._root : undefined);
+    return new RouterState(root, curr);
+}
+function createNode(routeReuseStrategy, curr, prevState) {
+    // reuse an activated route that is currently displayed on the screen
+    if (prevState && routeReuseStrategy.shouldReuseRoute(curr.value, prevState.value.snapshot)) {
+        var value = prevState.value;
+        value._futureSnapshot = curr.value;
+        var children = createOrReuseChildren(routeReuseStrategy, curr, prevState);
+        return new TreeNode(value, children);
+        // retrieve an activated route that is used to be displayed, but is not currently displayed
+    }
+    else {
+        var detachedRouteHandle = routeReuseStrategy.retrieve(curr.value);
+        if (detachedRouteHandle) {
+            var tree = detachedRouteHandle.route;
+            setFutureSnapshotsOfActivatedRoutes(curr, tree);
+            return tree;
+        }
+        else {
+            var value = createActivatedRoute(curr.value);
+            var children = curr.children.map(function (c) { return createNode(routeReuseStrategy, c); });
+            return new TreeNode(value, children);
+        }
+    }
+}
+function setFutureSnapshotsOfActivatedRoutes(curr, result) {
+    if (curr.value.routeConfig !== result.value.routeConfig) {
+        throw new Error('Cannot reattach ActivatedRouteSnapshot created from a different route');
+    }
+    if (curr.children.length !== result.children.length) {
+        throw new Error('Cannot reattach ActivatedRouteSnapshot with a different number of children');
+    }
+    result.value._futureSnapshot = curr.value;
+    for (var i = 0; i < curr.children.length; ++i) {
+        setFutureSnapshotsOfActivatedRoutes(curr.children[i], result.children[i]);
+    }
+}
+function createOrReuseChildren(routeReuseStrategy, curr, prevState) {
+    return curr.children.map(function (child) {
+        var e_1, _a;
+        try {
+            for (var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(prevState.children), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var p = _c.value;
+                if (routeReuseStrategy.shouldReuseRoute(p.value.snapshot, child.value)) {
+                    return createNode(routeReuseStrategy, child, p);
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return createNode(routeReuseStrategy, child);
+    });
+}
+function createActivatedRoute(c) {
+    return new ActivatedRoute(new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](c.url), new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](c.params), new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](c.queryParams), new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](c.fragment), new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](c.data), c.outlet, c.component, c);
+}
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+function createUrlTree(route, urlTree, commands, queryParams, fragment) {
+    if (commands.length === 0) {
+        return tree(urlTree.root, urlTree.root, urlTree, queryParams, fragment);
+    }
+    var nav = computeNavigation(commands);
+    if (nav.toRoot()) {
+        return tree(urlTree.root, new UrlSegmentGroup([], {}), urlTree, queryParams, fragment);
+    }
+    var startingPosition = findStartingPosition(nav, urlTree, route);
+    var segmentGroup = startingPosition.processChildren ?
+        updateSegmentGroupChildren(startingPosition.segmentGroup, startingPosition.index, nav.commands) :
+        updateSegmentGroup(startingPosition.segmentGroup, startingPosition.index, nav.commands);
+    return tree(startingPosition.segmentGroup, segmentGroup, urlTree, queryParams, fragment);
+}
+function isMatrixParams(command) {
+    return typeof command === 'object' && command != null && !command.outlets && !command.segmentPath;
+}
+function tree(oldSegmentGroup, newSegmentGroup, urlTree, queryParams, fragment) {
+    var qp = {};
+    if (queryParams) {
+        forEach(queryParams, function (value, name) {
+            qp[name] = Array.isArray(value) ? value.map(function (v) { return "" + v; }) : "" + value;
+        });
+    }
+    if (urlTree.root === oldSegmentGroup) {
+        return new UrlTree(newSegmentGroup, qp, fragment);
+    }
+    return new UrlTree(replaceSegment(urlTree.root, oldSegmentGroup, newSegmentGroup), qp, fragment);
+}
+function replaceSegment(current, oldSegment, newSegment) {
+    var children = {};
+    forEach(current.children, function (c, outletName) {
+        if (c === oldSegment) {
+            children[outletName] = newSegment;
+        }
+        else {
+            children[outletName] = replaceSegment(c, oldSegment, newSegment);
+        }
+    });
+    return new UrlSegmentGroup(current.segments, children);
+}
+var Navigation = /** @class */ (function () {
+    function Navigation(isAbsolute, numberOfDoubleDots, commands) {
+        this.isAbsolute = isAbsolute;
+        this.numberOfDoubleDots = numberOfDoubleDots;
+        this.commands = commands;
+        if (isAbsolute && commands.length > 0 && isMatrixParams(commands[0])) {
+            throw new Error('Root segment cannot have matrix parameters');
+        }
+        var cmdWithOutlet = commands.find(function (c) { return typeof c === 'object' && c != null && c.outlets; });
+        if (cmdWithOutlet && cmdWithOutlet !== last$1(commands)) {
+            throw new Error('{outlets:{}} has to be the last command');
+        }
+    }
+    Navigation.prototype.toRoot = function () {
+        return this.isAbsolute && this.commands.length === 1 && this.commands[0] == '/';
+    };
+    return Navigation;
+}());
+/** Transforms commands to a normalized `Navigation` */
+function computeNavigation(commands) {
+    if ((typeof commands[0] === 'string') && commands.length === 1 && commands[0] === '/') {
+        return new Navigation(true, 0, commands);
+    }
+    var numberOfDoubleDots = 0;
+    var isAbsolute = false;
+    var res = commands.reduce(function (res, cmd, cmdIdx) {
+        if (typeof cmd === 'object' && cmd != null) {
+            if (cmd.outlets) {
+                var outlets_1 = {};
+                forEach(cmd.outlets, function (commands, name) {
+                    outlets_1[name] = typeof commands === 'string' ? commands.split('/') : commands;
+                });
+                return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(res, [{ outlets: outlets_1 }]);
+            }
+            if (cmd.segmentPath) {
+                return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(res, [cmd.segmentPath]);
+            }
+        }
+        if (!(typeof cmd === 'string')) {
+            return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(res, [cmd]);
+        }
+        if (cmdIdx === 0) {
+            cmd.split('/').forEach(function (urlPart, partIndex) {
+                if (partIndex == 0 && urlPart === '.') ;
+                else if (partIndex == 0 && urlPart === '') { //  '/a'
+                    isAbsolute = true;
+                }
+                else if (urlPart === '..') { //  '../a'
+                    numberOfDoubleDots++;
+                }
+                else if (urlPart != '') {
+                    res.push(urlPart);
+                }
+            });
+            return res;
+        }
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(res, [cmd]);
+    }, []);
+    return new Navigation(isAbsolute, numberOfDoubleDots, res);
+}
+var Position = /** @class */ (function () {
+    function Position(segmentGroup, processChildren, index) {
+        this.segmentGroup = segmentGroup;
+        this.processChildren = processChildren;
+        this.index = index;
+    }
+    return Position;
+}());
+function findStartingPosition(nav, tree, route) {
+    if (nav.isAbsolute) {
+        return new Position(tree.root, true, 0);
+    }
+    if (route.snapshot._lastPathIndex === -1) {
+        return new Position(route.snapshot._urlSegment, true, 0);
+    }
+    var modifier = isMatrixParams(nav.commands[0]) ? 0 : 1;
+    var index = route.snapshot._lastPathIndex + modifier;
+    return createPositionApplyingDoubleDots(route.snapshot._urlSegment, index, nav.numberOfDoubleDots);
+}
+function createPositionApplyingDoubleDots(group, index, numberOfDoubleDots) {
+    var g = group;
+    var ci = index;
+    var dd = numberOfDoubleDots;
+    while (dd > ci) {
+        dd -= ci;
+        g = g.parent;
+        if (!g) {
+            throw new Error('Invalid number of \'../\'');
+        }
+        ci = g.segments.length;
+    }
+    return new Position(g, false, ci - dd);
+}
+function getPath(command) {
+    if (typeof command === 'object' && command != null && command.outlets) {
+        return command.outlets[PRIMARY_OUTLET];
+    }
+    return "" + command;
+}
+function getOutlets(commands) {
+    var _a, _b;
+    if (!(typeof commands[0] === 'object'))
+        return _a = {}, _a[PRIMARY_OUTLET] = commands, _a;
+    if (commands[0].outlets === undefined)
+        return _b = {}, _b[PRIMARY_OUTLET] = commands, _b;
+    return commands[0].outlets;
+}
+function updateSegmentGroup(segmentGroup, startIndex, commands) {
+    if (!segmentGroup) {
+        segmentGroup = new UrlSegmentGroup([], {});
+    }
+    if (segmentGroup.segments.length === 0 && segmentGroup.hasChildren()) {
+        return updateSegmentGroupChildren(segmentGroup, startIndex, commands);
+    }
+    var m = prefixedWith(segmentGroup, startIndex, commands);
+    var slicedCommands = commands.slice(m.commandIndex);
+    if (m.match && m.pathIndex < segmentGroup.segments.length) {
+        var g = new UrlSegmentGroup(segmentGroup.segments.slice(0, m.pathIndex), {});
+        g.children[PRIMARY_OUTLET] =
+            new UrlSegmentGroup(segmentGroup.segments.slice(m.pathIndex), segmentGroup.children);
+        return updateSegmentGroupChildren(g, 0, slicedCommands);
+    }
+    else if (m.match && slicedCommands.length === 0) {
+        return new UrlSegmentGroup(segmentGroup.segments, {});
+    }
+    else if (m.match && !segmentGroup.hasChildren()) {
+        return createNewSegmentGroup(segmentGroup, startIndex, commands);
+    }
+    else if (m.match) {
+        return updateSegmentGroupChildren(segmentGroup, 0, slicedCommands);
+    }
+    else {
+        return createNewSegmentGroup(segmentGroup, startIndex, commands);
+    }
+}
+function updateSegmentGroupChildren(segmentGroup, startIndex, commands) {
+    if (commands.length === 0) {
+        return new UrlSegmentGroup(segmentGroup.segments, {});
+    }
+    else {
+        var outlets_2 = getOutlets(commands);
+        var children_1 = {};
+        forEach(outlets_2, function (commands, outlet) {
+            if (commands !== null) {
+                children_1[outlet] = updateSegmentGroup(segmentGroup.children[outlet], startIndex, commands);
+            }
+        });
+        forEach(segmentGroup.children, function (child, childOutlet) {
+            if (outlets_2[childOutlet] === undefined) {
+                children_1[childOutlet] = child;
+            }
+        });
+        return new UrlSegmentGroup(segmentGroup.segments, children_1);
+    }
+}
+function prefixedWith(segmentGroup, startIndex, commands) {
+    var currentCommandIndex = 0;
+    var currentPathIndex = startIndex;
+    var noMatch = { match: false, pathIndex: 0, commandIndex: 0 };
+    while (currentPathIndex < segmentGroup.segments.length) {
+        if (currentCommandIndex >= commands.length)
+            return noMatch;
+        var path = segmentGroup.segments[currentPathIndex];
+        var curr = getPath(commands[currentCommandIndex]);
+        var next = currentCommandIndex < commands.length - 1 ? commands[currentCommandIndex + 1] : null;
+        if (currentPathIndex > 0 && curr === undefined)
+            break;
+        if (curr && next && (typeof next === 'object') && next.outlets === undefined) {
+            if (!compare(curr, next, path))
+                return noMatch;
+            currentCommandIndex += 2;
+        }
+        else {
+            if (!compare(curr, {}, path))
+                return noMatch;
+            currentCommandIndex++;
+        }
+        currentPathIndex++;
+    }
+    return { match: true, pathIndex: currentPathIndex, commandIndex: currentCommandIndex };
+}
+function createNewSegmentGroup(segmentGroup, startIndex, commands) {
+    var paths = segmentGroup.segments.slice(0, startIndex);
+    var i = 0;
+    while (i < commands.length) {
+        if (typeof commands[i] === 'object' && commands[i].outlets !== undefined) {
+            var children = createNewSegmentChildren(commands[i].outlets);
+            return new UrlSegmentGroup(paths, children);
+        }
+        // if we start with an object literal, we need to reuse the path part from the segment
+        if (i === 0 && isMatrixParams(commands[0])) {
+            var p = segmentGroup.segments[startIndex];
+            paths.push(new UrlSegment(p.path, commands[0]));
+            i++;
+            continue;
+        }
+        var curr = getPath(commands[i]);
+        var next = (i < commands.length - 1) ? commands[i + 1] : null;
+        if (curr && next && isMatrixParams(next)) {
+            paths.push(new UrlSegment(curr, stringify(next)));
+            i += 2;
+        }
+        else {
+            paths.push(new UrlSegment(curr, {}));
+            i++;
+        }
+    }
+    return new UrlSegmentGroup(paths, {});
+}
+function createNewSegmentChildren(outlets) {
+    var children = {};
+    forEach(outlets, function (commands, outlet) {
+        if (commands !== null) {
+            children[outlet] = createNewSegmentGroup(new UrlSegmentGroup([], {}), 0, commands);
+        }
+    });
+    return children;
+}
+function stringify(params) {
+    var res = {};
+    forEach(params, function (v, k) { return res[k] = "" + v; });
+    return res;
+}
+function compare(path, params, segment) {
+    return path == segment.path && shallowEqual(params, segment.parameters);
+}
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+var CanActivate = /** @class */ (function () {
+    function CanActivate(path) {
+        this.path = path;
+        this.route = this.path[this.path.length - 1];
+    }
+    return CanActivate;
+}());
+var CanDeactivate = /** @class */ (function () {
+    function CanDeactivate(component, route) {
+        this.component = component;
+        this.route = route;
+    }
+    return CanDeactivate;
+}());
+/**
+ * This class bundles the actions involved in preactivation of a route.
+ */
+var PreActivation = /** @class */ (function () {
+    function PreActivation(future, curr, moduleInjector, forwardEvent) {
+        this.future = future;
+        this.curr = curr;
+        this.moduleInjector = moduleInjector;
+        this.forwardEvent = forwardEvent;
+        this.canActivateChecks = [];
+        this.canDeactivateChecks = [];
+    }
+    PreActivation.prototype.initialize = function (parentContexts) {
+        var futureRoot = this.future._root;
+        var currRoot = this.curr ? this.curr._root : null;
+        this.setupChildRouteGuards(futureRoot, currRoot, parentContexts, [futureRoot.value]);
+    };
+    PreActivation.prototype.checkGuards = function () {
+        var _this = this;
+        if (!this.isDeactivating() && !this.isActivating()) {
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(true);
+        }
+        var canDeactivate$ = this.runCanDeactivateChecks();
+        return canDeactivate$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (canDeactivate) { return canDeactivate ? _this.runCanActivateChecks() : Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(false); }));
+    };
+    PreActivation.prototype.resolveData = function (paramsInheritanceStrategy) {
+        var _this = this;
+        if (!this.isActivating())
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(null);
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(this.canActivateChecks)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["concatMap"])(function (check) { return _this.runResolve(check.route, paramsInheritanceStrategy); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["reduce"])(function (_, __) { return _; }));
+    };
+    PreActivation.prototype.isDeactivating = function () { return this.canDeactivateChecks.length !== 0; };
+    PreActivation.prototype.isActivating = function () { return this.canActivateChecks.length !== 0; };
+    /**
+     * Iterates over child routes and calls recursive `setupRouteGuards` to get `this` instance in
+     * proper state to run `checkGuards()` method.
+     */
+    PreActivation.prototype.setupChildRouteGuards = function (futureNode, currNode, contexts, futurePath) {
+        var _this = this;
+        var prevChildren = nodeChildrenAsMap(currNode);
+        // Process the children of the future route
+        futureNode.children.forEach(function (c) {
+            _this.setupRouteGuards(c, prevChildren[c.value.outlet], contexts, futurePath.concat([c.value]));
+            delete prevChildren[c.value.outlet];
+        });
+        // Process any children left from the current route (not active for the future route)
+        forEach(prevChildren, function (v, k) {
+            return _this.deactivateRouteAndItsChildren(v, contexts.getContext(k));
+        });
+    };
+    /**
+     * Iterates over child routes and calls recursive `setupRouteGuards` to get `this` instance in
+     * proper state to run `checkGuards()` method.
+     */
+    PreActivation.prototype.setupRouteGuards = function (futureNode, currNode, parentContexts, futurePath) {
+        var future = futureNode.value;
+        var curr = currNode ? currNode.value : null;
+        var context = parentContexts ? parentContexts.getContext(futureNode.value.outlet) : null;
+        // reusing the node
+        if (curr && future.routeConfig === curr.routeConfig) {
+            var shouldRunGuardsAndResolvers = this.shouldRunGuardsAndResolvers(curr, future, future.routeConfig.runGuardsAndResolvers);
+            if (shouldRunGuardsAndResolvers) {
+                this.canActivateChecks.push(new CanActivate(futurePath));
+            }
+            else {
+                // we need to set the data
+                future.data = curr.data;
+                future._resolvedData = curr._resolvedData;
+            }
+            // If we have a component, we need to go through an outlet.
+            if (future.component) {
+                this.setupChildRouteGuards(futureNode, currNode, context ? context.children : null, futurePath);
+                // if we have a componentless route, we recurse but keep the same outlet map.
+            }
+            else {
+                this.setupChildRouteGuards(futureNode, currNode, parentContexts, futurePath);
+            }
+            if (shouldRunGuardsAndResolvers) {
+                var outlet = context.outlet;
+                this.canDeactivateChecks.push(new CanDeactivate(outlet.component, curr));
+            }
+        }
+        else {
+            if (curr) {
+                this.deactivateRouteAndItsChildren(currNode, context);
+            }
+            this.canActivateChecks.push(new CanActivate(futurePath));
+            // If we have a component, we need to go through an outlet.
+            if (future.component) {
+                this.setupChildRouteGuards(futureNode, null, context ? context.children : null, futurePath);
+                // if we have a componentless route, we recurse but keep the same outlet map.
+            }
+            else {
+                this.setupChildRouteGuards(futureNode, null, parentContexts, futurePath);
+            }
+        }
+    };
+    PreActivation.prototype.shouldRunGuardsAndResolvers = function (curr, future, mode) {
+        switch (mode) {
+            case 'always':
+                return true;
+            case 'paramsOrQueryParamsChange':
+                return !equalParamsAndUrlSegments(curr, future) ||
+                    !shallowEqual(curr.queryParams, future.queryParams);
+            case 'paramsChange':
+            default:
+                return !equalParamsAndUrlSegments(curr, future);
+        }
+    };
+    PreActivation.prototype.deactivateRouteAndItsChildren = function (route, context) {
+        var _this = this;
+        var children = nodeChildrenAsMap(route);
+        var r = route.value;
+        forEach(children, function (node, childName) {
+            if (!r.component) {
+                _this.deactivateRouteAndItsChildren(node, context);
+            }
+            else if (context) {
+                _this.deactivateRouteAndItsChildren(node, context.children.getContext(childName));
+            }
+            else {
+                _this.deactivateRouteAndItsChildren(node, null);
+            }
+        });
+        if (!r.component) {
+            this.canDeactivateChecks.push(new CanDeactivate(null, r));
+        }
+        else if (context && context.outlet && context.outlet.isActivated) {
+            this.canDeactivateChecks.push(new CanDeactivate(context.outlet.component, r));
+        }
+        else {
+            this.canDeactivateChecks.push(new CanDeactivate(null, r));
+        }
+    };
+    PreActivation.prototype.runCanDeactivateChecks = function () {
+        var _this = this;
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(this.canDeactivateChecks)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (check) { return _this.runCanDeactivate(check.component, check.route); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["every"])(function (result) { return result === true; }));
+    };
+    PreActivation.prototype.runCanActivateChecks = function () {
+        var _this = this;
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(this.canActivateChecks)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["concatMap"])(function (check) { return andObservables(Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])([
+            _this.fireChildActivationStart(check.route.parent),
+            _this.fireActivationStart(check.route), _this.runCanActivateChild(check.path),
+            _this.runCanActivate(check.route)
+        ])); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["every"])(function (result) { return result === true; }));
+        // this.fireChildActivationStart(check.path),
+    };
+    /**
+     * This should fire off `ActivationStart` events for each route being activated at this
+     * level.
+     * In other words, if you're activating `a` and `b` below, `path` will contain the
+     * `ActivatedRouteSnapshot`s for both and we will fire `ActivationStart` for both. Always
+     * return
+     * `true` so checks continue to run.
+     */
+    PreActivation.prototype.fireActivationStart = function (snapshot) {
+        if (snapshot !== null && this.forwardEvent) {
+            this.forwardEvent(new ActivationStart(snapshot));
+        }
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(true);
+    };
+    /**
+     * This should fire off `ChildActivationStart` events for each route being activated at this
+     * level.
+     * In other words, if you're activating `a` and `b` below, `path` will contain the
+     * `ActivatedRouteSnapshot`s for both and we will fire `ChildActivationStart` for both. Always
+     * return
+     * `true` so checks continue to run.
+     */
+    PreActivation.prototype.fireChildActivationStart = function (snapshot) {
+        if (snapshot !== null && this.forwardEvent) {
+            this.forwardEvent(new ChildActivationStart(snapshot));
+        }
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(true);
+    };
+    PreActivation.prototype.runCanActivate = function (future) {
+        var _this = this;
+        var canActivate = future.routeConfig ? future.routeConfig.canActivate : null;
+        if (!canActivate || canActivate.length === 0)
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(true);
+        var obs = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(canActivate).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (c) {
+            var guard = _this.getToken(c, future);
+            var observable;
+            if (guard.canActivate) {
+                observable = wrapIntoObservable(guard.canActivate(future, _this.future));
+            }
+            else {
+                observable = wrapIntoObservable(guard(future, _this.future));
+            }
+            return observable.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["first"])());
+        }));
+        return andObservables(obs);
+    };
+    PreActivation.prototype.runCanActivateChild = function (path) {
+        var _this = this;
+        var future = path[path.length - 1];
+        var canActivateChildGuards = path.slice(0, path.length - 1)
+            .reverse()
+            .map(function (p) { return _this.extractCanActivateChild(p); })
+            .filter(function (_) { return _ !== null; });
+        return andObservables(Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(canActivateChildGuards).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (d) {
+            var obs = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(d.guards).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (c) {
+                var guard = _this.getToken(c, d.node);
+                var observable;
+                if (guard.canActivateChild) {
+                    observable = wrapIntoObservable(guard.canActivateChild(future, _this.future));
+                }
+                else {
+                    observable = wrapIntoObservable(guard(future, _this.future));
+                }
+                return observable.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["first"])());
+            }));
+            return andObservables(obs);
+        })));
+    };
+    PreActivation.prototype.extractCanActivateChild = function (p) {
+        var canActivateChild = p.routeConfig ? p.routeConfig.canActivateChild : null;
+        if (!canActivateChild || canActivateChild.length === 0)
+            return null;
+        return { node: p, guards: canActivateChild };
+    };
+    PreActivation.prototype.runCanDeactivate = function (component, curr) {
+        var _this = this;
+        var canDeactivate = curr && curr.routeConfig ? curr.routeConfig.canDeactivate : null;
+        if (!canDeactivate || canDeactivate.length === 0)
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(true);
+        var canDeactivate$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(canDeactivate).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (c) {
+            var guard = _this.getToken(c, curr);
+            var observable;
+            if (guard.canDeactivate) {
+                observable =
+                    wrapIntoObservable(guard.canDeactivate(component, curr, _this.curr, _this.future));
+            }
+            else {
+                observable = wrapIntoObservable(guard(component, curr, _this.curr, _this.future));
+            }
+            return observable.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["first"])());
+        }));
+        return canDeactivate$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["every"])(function (result) { return result === true; }));
+    };
+    PreActivation.prototype.runResolve = function (future, paramsInheritanceStrategy) {
+        var resolve = future._resolve;
+        return this.resolveNode(resolve, future).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (resolvedData) {
+            future._resolvedData = resolvedData;
+            future.data = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, future.data, inheritedParamsDataResolve(future, paramsInheritanceStrategy).resolve);
+            return null;
+        }));
+    };
+    PreActivation.prototype.resolveNode = function (resolve, future) {
+        var _this = this;
+        var keys = Object.keys(resolve);
+        if (keys.length === 0) {
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])({});
+        }
+        if (keys.length === 1) {
+            var key_1 = keys[0];
+            return this.getResolver(resolve[key_1], future).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (value) {
+                var _a;
+                return _a = {}, _a[key_1] = value, _a;
+            }));
+        }
+        var data = {};
+        var runningResolvers$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(keys).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (key) {
+            return _this.getResolver(resolve[key], future).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (value) {
+                data[key] = value;
+                return value;
+            }));
+        }));
+        return runningResolvers$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["last"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function () { return data; }));
+    };
+    PreActivation.prototype.getResolver = function (injectionToken, future) {
+        var resolver = this.getToken(injectionToken, future);
+        return resolver.resolve ? wrapIntoObservable(resolver.resolve(future, this.future)) :
+            wrapIntoObservable(resolver(future, this.future));
+    };
+    PreActivation.prototype.getToken = function (token, snapshot) {
+        var config = closestLoadedConfig(snapshot);
+        var injector = config ? config.module.injector : this.moduleInjector;
+        return injector.get(token);
+    };
+    return PreActivation;
+}());
+function closestLoadedConfig(snapshot) {
+    if (!snapshot)
+        return null;
+    for (var s = snapshot.parent; s; s = s.parent) {
+        var route = s.routeConfig;
+        if (route && route._loadedConfig)
+            return route._loadedConfig;
+    }
+    return null;
+}
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+var NoMatch$1 = /** @class */ (function () {
+    function NoMatch() {
+    }
+    return NoMatch;
+}());
+function recognize(rootComponentType, config, urlTree, url, paramsInheritanceStrategy, relativeLinkResolution) {
+    if (paramsInheritanceStrategy === void 0) { paramsInheritanceStrategy = 'emptyOnly'; }
+    if (relativeLinkResolution === void 0) { relativeLinkResolution = 'legacy'; }
+    return new Recognizer(rootComponentType, config, urlTree, url, paramsInheritanceStrategy, relativeLinkResolution)
+        .recognize();
+}
+var Recognizer = /** @class */ (function () {
+    function Recognizer(rootComponentType, config, urlTree, url, paramsInheritanceStrategy, relativeLinkResolution) {
+        this.rootComponentType = rootComponentType;
+        this.config = config;
+        this.urlTree = urlTree;
+        this.url = url;
+        this.paramsInheritanceStrategy = paramsInheritanceStrategy;
+        this.relativeLinkResolution = relativeLinkResolution;
+    }
+    Recognizer.prototype.recognize = function () {
+        try {
+            var rootSegmentGroup = split$1(this.urlTree.root, [], [], this.config, this.relativeLinkResolution).segmentGroup;
+            var children = this.processSegmentGroup(this.config, rootSegmentGroup, PRIMARY_OUTLET);
+            var root = new ActivatedRouteSnapshot([], Object.freeze({}), Object.freeze(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, this.urlTree.queryParams)), this.urlTree.fragment, {}, PRIMARY_OUTLET, this.rootComponentType, null, this.urlTree.root, -1, {});
+            var rootNode = new TreeNode(root, children);
+            var routeState = new RouterStateSnapshot(this.url, rootNode);
+            this.inheritParamsAndData(routeState._root);
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(routeState);
+        }
+        catch (e) {
+            return new rxjs__WEBPACK_IMPORTED_MODULE_2__["Observable"](function (obs) { return obs.error(e); });
+        }
+    };
+    Recognizer.prototype.inheritParamsAndData = function (routeNode) {
+        var _this = this;
+        var route = routeNode.value;
+        var i = inheritedParamsDataResolve(route, this.paramsInheritanceStrategy);
+        route.params = Object.freeze(i.params);
+        route.data = Object.freeze(i.data);
+        routeNode.children.forEach(function (n) { return _this.inheritParamsAndData(n); });
+    };
+    Recognizer.prototype.processSegmentGroup = function (config, segmentGroup, outlet) {
+        if (segmentGroup.segments.length === 0 && segmentGroup.hasChildren()) {
+            return this.processChildren(config, segmentGroup);
+        }
+        return this.processSegment(config, segmentGroup, segmentGroup.segments, outlet);
+    };
+    Recognizer.prototype.processChildren = function (config, segmentGroup) {
+        var _this = this;
+        var children = mapChildrenIntoArray(segmentGroup, function (child, childOutlet) { return _this.processSegmentGroup(config, child, childOutlet); });
+        checkOutletNameUniqueness(children);
+        sortActivatedRouteSnapshots(children);
+        return children;
+    };
+    Recognizer.prototype.processSegment = function (config, segmentGroup, segments, outlet) {
+        var e_1, _a;
+        try {
+            for (var config_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(config), config_1_1 = config_1.next(); !config_1_1.done; config_1_1 = config_1.next()) {
+                var r = config_1_1.value;
+                try {
+                    return this.processSegmentAgainstRoute(r, segmentGroup, segments, outlet);
+                }
+                catch (e) {
+                    if (!(e instanceof NoMatch$1))
+                        throw e;
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (config_1_1 && !config_1_1.done && (_a = config_1.return)) _a.call(config_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        if (this.noLeftoversInUrl(segmentGroup, segments, outlet)) {
+            return [];
+        }
+        throw new NoMatch$1();
+    };
+    Recognizer.prototype.noLeftoversInUrl = function (segmentGroup, segments, outlet) {
+        return segments.length === 0 && !segmentGroup.children[outlet];
+    };
+    Recognizer.prototype.processSegmentAgainstRoute = function (route, rawSegment, segments, outlet) {
+        if (route.redirectTo)
+            throw new NoMatch$1();
+        if ((route.outlet || PRIMARY_OUTLET) !== outlet)
+            throw new NoMatch$1();
+        var snapshot;
+        var consumedSegments = [];
+        var rawSlicedSegments = [];
+        if (route.path === '**') {
+            var params = segments.length > 0 ? last$1(segments).parameters : {};
+            snapshot = new ActivatedRouteSnapshot(segments, params, Object.freeze(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, this.urlTree.queryParams)), this.urlTree.fragment, getData(route), outlet, route.component, route, getSourceSegmentGroup(rawSegment), getPathIndexShift(rawSegment) + segments.length, getResolve(route));
+        }
+        else {
+            var result = match$1(rawSegment, route, segments);
+            consumedSegments = result.consumedSegments;
+            rawSlicedSegments = segments.slice(result.lastChild);
+            snapshot = new ActivatedRouteSnapshot(consumedSegments, result.parameters, Object.freeze(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, this.urlTree.queryParams)), this.urlTree.fragment, getData(route), outlet, route.component, route, getSourceSegmentGroup(rawSegment), getPathIndexShift(rawSegment) + consumedSegments.length, getResolve(route));
+        }
+        var childConfig = getChildConfig(route);
+        var _a = split$1(rawSegment, consumedSegments, rawSlicedSegments, childConfig, this.relativeLinkResolution), segmentGroup = _a.segmentGroup, slicedSegments = _a.slicedSegments;
+        if (slicedSegments.length === 0 && segmentGroup.hasChildren()) {
+            var children_1 = this.processChildren(childConfig, segmentGroup);
+            return [new TreeNode(snapshot, children_1)];
+        }
+        if (childConfig.length === 0 && slicedSegments.length === 0) {
+            return [new TreeNode(snapshot, [])];
+        }
+        var children = this.processSegment(childConfig, segmentGroup, slicedSegments, PRIMARY_OUTLET);
+        return [new TreeNode(snapshot, children)];
+    };
+    return Recognizer;
+}());
+function sortActivatedRouteSnapshots(nodes) {
+    nodes.sort(function (a, b) {
+        if (a.value.outlet === PRIMARY_OUTLET)
+            return -1;
+        if (b.value.outlet === PRIMARY_OUTLET)
+            return 1;
+        return a.value.outlet.localeCompare(b.value.outlet);
+    });
+}
+function getChildConfig(route) {
+    if (route.children) {
+        return route.children;
+    }
+    if (route.loadChildren) {
+        return route._loadedConfig.routes;
+    }
+    return [];
+}
+function match$1(segmentGroup, route, segments) {
+    if (route.path === '') {
+        if (route.pathMatch === 'full' && (segmentGroup.hasChildren() || segments.length > 0)) {
+            throw new NoMatch$1();
+        }
+        return { consumedSegments: [], lastChild: 0, parameters: {} };
+    }
+    var matcher = route.matcher || defaultUrlMatcher;
+    var res = matcher(segments, segmentGroup, route);
+    if (!res)
+        throw new NoMatch$1();
+    var posParams = {};
+    forEach(res.posParams, function (v, k) { posParams[k] = v.path; });
+    var parameters = res.consumed.length > 0 ? Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, posParams, res.consumed[res.consumed.length - 1].parameters) :
+        posParams;
+    return { consumedSegments: res.consumed, lastChild: res.consumed.length, parameters: parameters };
+}
+function checkOutletNameUniqueness(nodes) {
+    var names = {};
+    nodes.forEach(function (n) {
+        var routeWithSameOutletName = names[n.value.outlet];
+        if (routeWithSameOutletName) {
+            var p = routeWithSameOutletName.url.map(function (s) { return s.toString(); }).join('/');
+            var c = n.value.url.map(function (s) { return s.toString(); }).join('/');
+            throw new Error("Two segments cannot have the same outlet name: '" + p + "' and '" + c + "'.");
+        }
+        names[n.value.outlet] = n.value;
+    });
+}
+function getSourceSegmentGroup(segmentGroup) {
+    var s = segmentGroup;
+    while (s._sourceSegment) {
+        s = s._sourceSegment;
+    }
+    return s;
+}
+function getPathIndexShift(segmentGroup) {
+    var s = segmentGroup;
+    var res = (s._segmentIndexShift ? s._segmentIndexShift : 0);
+    while (s._sourceSegment) {
+        s = s._sourceSegment;
+        res += (s._segmentIndexShift ? s._segmentIndexShift : 0);
+    }
+    return res - 1;
+}
+function split$1(segmentGroup, consumedSegments, slicedSegments, config, relativeLinkResolution) {
+    if (slicedSegments.length > 0 &&
+        containsEmptyPathMatchesWithNamedOutlets(segmentGroup, slicedSegments, config)) {
+        var s_1 = new UrlSegmentGroup(consumedSegments, createChildrenForEmptyPaths(segmentGroup, consumedSegments, config, new UrlSegmentGroup(slicedSegments, segmentGroup.children)));
+        s_1._sourceSegment = segmentGroup;
+        s_1._segmentIndexShift = consumedSegments.length;
+        return { segmentGroup: s_1, slicedSegments: [] };
+    }
+    if (slicedSegments.length === 0 &&
+        containsEmptyPathMatches(segmentGroup, slicedSegments, config)) {
+        var s_2 = new UrlSegmentGroup(segmentGroup.segments, addEmptyPathsToChildrenIfNeeded(segmentGroup, consumedSegments, slicedSegments, config, segmentGroup.children, relativeLinkResolution));
+        s_2._sourceSegment = segmentGroup;
+        s_2._segmentIndexShift = consumedSegments.length;
+        return { segmentGroup: s_2, slicedSegments: slicedSegments };
+    }
+    var s = new UrlSegmentGroup(segmentGroup.segments, segmentGroup.children);
+    s._sourceSegment = segmentGroup;
+    s._segmentIndexShift = consumedSegments.length;
+    return { segmentGroup: s, slicedSegments: slicedSegments };
+}
+function addEmptyPathsToChildrenIfNeeded(segmentGroup, consumedSegments, slicedSegments, routes, children, relativeLinkResolution) {
+    var e_2, _a;
+    var res = {};
+    try {
+        for (var routes_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(routes), routes_1_1 = routes_1.next(); !routes_1_1.done; routes_1_1 = routes_1.next()) {
+            var r = routes_1_1.value;
+            if (emptyPathMatch(segmentGroup, slicedSegments, r) && !children[getOutlet$1(r)]) {
+                var s = new UrlSegmentGroup([], {});
+                s._sourceSegment = segmentGroup;
+                if (relativeLinkResolution === 'legacy') {
+                    s._segmentIndexShift = segmentGroup.segments.length;
+                }
+                else {
+                    s._segmentIndexShift = consumedSegments.length;
+                }
+                res[getOutlet$1(r)] = s;
+            }
+        }
+    }
+    catch (e_2_1) { e_2 = { error: e_2_1 }; }
+    finally {
+        try {
+            if (routes_1_1 && !routes_1_1.done && (_a = routes_1.return)) _a.call(routes_1);
+        }
+        finally { if (e_2) throw e_2.error; }
+    }
+    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, children, res);
+}
+function createChildrenForEmptyPaths(segmentGroup, consumedSegments, routes, primarySegment) {
+    var e_3, _a;
+    var res = {};
+    res[PRIMARY_OUTLET] = primarySegment;
+    primarySegment._sourceSegment = segmentGroup;
+    primarySegment._segmentIndexShift = consumedSegments.length;
+    try {
+        for (var routes_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(routes), routes_2_1 = routes_2.next(); !routes_2_1.done; routes_2_1 = routes_2.next()) {
+            var r = routes_2_1.value;
+            if (r.path === '' && getOutlet$1(r) !== PRIMARY_OUTLET) {
+                var s = new UrlSegmentGroup([], {});
+                s._sourceSegment = segmentGroup;
+                s._segmentIndexShift = consumedSegments.length;
+                res[getOutlet$1(r)] = s;
+            }
+        }
+    }
+    catch (e_3_1) { e_3 = { error: e_3_1 }; }
+    finally {
+        try {
+            if (routes_2_1 && !routes_2_1.done && (_a = routes_2.return)) _a.call(routes_2);
+        }
+        finally { if (e_3) throw e_3.error; }
+    }
+    return res;
+}
+function containsEmptyPathMatchesWithNamedOutlets(segmentGroup, slicedSegments, routes) {
+    return routes.some(function (r) { return emptyPathMatch(segmentGroup, slicedSegments, r) && getOutlet$1(r) !== PRIMARY_OUTLET; });
+}
+function containsEmptyPathMatches(segmentGroup, slicedSegments, routes) {
+    return routes.some(function (r) { return emptyPathMatch(segmentGroup, slicedSegments, r); });
+}
+function emptyPathMatch(segmentGroup, slicedSegments, r) {
+    if ((segmentGroup.hasChildren() || slicedSegments.length > 0) && r.pathMatch === 'full') {
+        return false;
+    }
+    return r.path === '' && r.redirectTo === undefined;
+}
+function getOutlet$1(route) {
+    return route.outlet || PRIMARY_OUTLET;
+}
+function getData(route) {
+    return route.data || {};
+}
+function getResolve(route) {
+    return route.resolve || {};
+}
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * @description
+ *
+ * Provides a way to customize when activated routes get reused.
+ *
+ * @experimental
+ */
+var RouteReuseStrategy = /** @class */ (function () {
+    function RouteReuseStrategy() {
+    }
+    return RouteReuseStrategy;
+}());
+/**
+ * Does not detach any subtrees. Reuses routes as long as their route config is the same.
+ */
+var DefaultRouteReuseStrategy = /** @class */ (function () {
+    function DefaultRouteReuseStrategy() {
+    }
+    DefaultRouteReuseStrategy.prototype.shouldDetach = function (route) { return false; };
+    DefaultRouteReuseStrategy.prototype.store = function (route, detachedTree) { };
+    DefaultRouteReuseStrategy.prototype.shouldAttach = function (route) { return false; };
+    DefaultRouteReuseStrategy.prototype.retrieve = function (route) { return null; };
+    DefaultRouteReuseStrategy.prototype.shouldReuseRoute = function (future, curr) {
+        return future.routeConfig === curr.routeConfig;
+    };
+    return DefaultRouteReuseStrategy;
+}());
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * @docsNotRequired
+ * @experimental
+ */
+var ROUTES = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["InjectionToken"]('ROUTES');
+var RouterConfigLoader = /** @class */ (function () {
+    function RouterConfigLoader(loader, compiler, onLoadStartListener, onLoadEndListener) {
+        this.loader = loader;
+        this.compiler = compiler;
+        this.onLoadStartListener = onLoadStartListener;
+        this.onLoadEndListener = onLoadEndListener;
+    }
+    RouterConfigLoader.prototype.load = function (parentInjector, route) {
+        var _this = this;
+        if (this.onLoadStartListener) {
+            this.onLoadStartListener(route);
+        }
+        var moduleFactory$ = this.loadModuleFactory(route.loadChildren);
+        return moduleFactory$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (factory) {
+            if (_this.onLoadEndListener) {
+                _this.onLoadEndListener(route);
+            }
+            var module = factory.create(parentInjector);
+            return new LoadedRouterConfig(flatten(module.injector.get(ROUTES)).map(standardizeConfig), module);
+        }));
+    };
+    RouterConfigLoader.prototype.loadModuleFactory = function (loadChildren) {
+        var _this = this;
+        if (typeof loadChildren === 'string') {
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(this.loader.load(loadChildren));
+        }
+        else {
+            return wrapIntoObservable(loadChildren()).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (t) {
+                if (t instanceof _angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModuleFactory"]) {
+                    return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(t);
+                }
+                else {
+                    return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(_this.compiler.compileModuleAsync(t));
+                }
+            }));
+        }
+    };
+    return RouterConfigLoader;
+}());
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * @description
+ *
+ * Provides a way to migrate AngularJS applications to Angular.
+ *
+ * @experimental
+ */
+var UrlHandlingStrategy = /** @class */ (function () {
+    function UrlHandlingStrategy() {
+    }
+    return UrlHandlingStrategy;
+}());
+/**
+ * @experimental
+ */
+var DefaultUrlHandlingStrategy = /** @class */ (function () {
+    function DefaultUrlHandlingStrategy() {
+    }
+    DefaultUrlHandlingStrategy.prototype.shouldProcessUrl = function (url) { return true; };
+    DefaultUrlHandlingStrategy.prototype.extract = function (url) { return url; };
+    DefaultUrlHandlingStrategy.prototype.merge = function (newUrlPart, wholeUrl) { return newUrlPart; };
+    return DefaultUrlHandlingStrategy;
+}());
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+function defaultErrorHandler(error) {
+    throw error;
+}
+function defaultMalformedUriErrorHandler(error, urlSerializer, url) {
+    return urlSerializer.parse('/');
+}
+/**
+ * @internal
+ */
+function defaultRouterHook(snapshot, runExtras) {
+    return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(null);
+}
+/**
+ * @description
+ *
+ * Provides the navigation and url manipulation capabilities.
+ *
+ * See `Routes` for more details and examples.
+ *
+ * @ngModule RouterModule
+ *
+ *
+ */
+var Router = /** @class */ (function () {
+    /**
+     * Creates the router service.
+     */
+    // TODO: vsavkin make internal after the final is out.
+    function Router(rootComponentType, urlSerializer, rootContexts, location, injector, loader, compiler, config) {
+        var _this = this;
+        this.rootComponentType = rootComponentType;
+        this.urlSerializer = urlSerializer;
+        this.rootContexts = rootContexts;
+        this.location = location;
+        this.config = config;
+        this.navigations = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](null);
+        this.navigationId = 0;
+        this.isNgZoneEnabled = false;
+        this.events = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
+        /**
+         * Error handler that is invoked when a navigation errors.
+         *
+         * See `ErrorHandler` for more information.
+         */
+        this.errorHandler = defaultErrorHandler;
+        /**
+         * Malformed uri error handler is invoked when `Router.parseUrl(url)` throws an
+         * error due to containing an invalid character. The most common case would be a `%` sign
+         * that's not encoded and is not part of a percent encoded sequence.
+         */
+        this.malformedUriErrorHandler = defaultMalformedUriErrorHandler;
+        /**
+         * Indicates if at least one navigation happened.
+         */
+        this.navigated = false;
+        this.lastSuccessfulId = -1;
+        /**
+         * Used by RouterModule. This allows us to
+         * pause the navigation either before preactivation or after it.
+         * @internal
+         */
+        this.hooks = {
+            beforePreactivation: defaultRouterHook,
+            afterPreactivation: defaultRouterHook
+        };
+        /**
+         * Extracts and merges URLs. Used for AngularJS to Angular migrations.
+         */
+        this.urlHandlingStrategy = new DefaultUrlHandlingStrategy();
+        this.routeReuseStrategy = new DefaultRouteReuseStrategy();
+        /**
+         * Define what the router should do if it receives a navigation request to the current URL.
+         * By default, the router will ignore this navigation. However, this prevents features such
+         * as a "refresh" button. Use this option to configure the behavior when navigating to the
+         * current URL. Default is 'ignore'.
+         */
+        this.onSameUrlNavigation = 'ignore';
+        /**
+         * Defines how the router merges params, data and resolved data from parent to child
+         * routes. Available options are:
+         *
+         * - `'emptyOnly'`, the default, only inherits parent params for path-less or component-less
+         *   routes.
+         * - `'always'`, enables unconditional inheritance of parent params.
+         */
+        this.paramsInheritanceStrategy = 'emptyOnly';
+        /**
+         * Defines when the router updates the browser URL. The default behavior is to update after
+         * successful navigation. However, some applications may prefer a mode where the URL gets
+         * updated at the beginning of navigation. The most common use case would be updating the
+         * URL early so if navigation fails, you can show an error message with the URL that failed.
+         * Available options are:
+         *
+         * - `'deferred'`, the default, updates the browser URL after navigation has finished.
+         * - `'eager'`, updates browser URL at the beginning of navigation.
+         */
+        this.urlUpdateStrategy = 'deferred';
+        /**
+         * See {@link RouterModule} for more information.
+         */
+        this.relativeLinkResolution = 'legacy';
+        var onLoadStart = function (r) { return _this.triggerEvent(new RouteConfigLoadStart(r)); };
+        var onLoadEnd = function (r) { return _this.triggerEvent(new RouteConfigLoadEnd(r)); };
+        this.ngModule = injector.get(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModuleRef"]);
+        this.console = injector.get(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵConsole"]);
+        var ngZone = injector.get(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgZone"]);
+        this.isNgZoneEnabled = ngZone instanceof _angular_core__WEBPACK_IMPORTED_MODULE_1__["NgZone"];
+        this.resetConfig(config);
+        this.currentUrlTree = createEmptyUrlTree();
+        this.rawUrlTree = this.currentUrlTree;
+        this.configLoader = new RouterConfigLoader(loader, compiler, onLoadStart, onLoadEnd);
+        this.routerState = createEmptyState(this.currentUrlTree, this.rootComponentType);
+        this.processNavigations();
+    }
+    /**
+     * @internal
+     * TODO: this should be removed once the constructor of the router made internal
+     */
+    Router.prototype.resetRootComponentType = function (rootComponentType) {
+        this.rootComponentType = rootComponentType;
+        // TODO: vsavkin router 4.0 should make the root component set to null
+        // this will simplify the lifecycle of the router.
+        this.routerState.root.component = this.rootComponentType;
+    };
+    /**
+     * Sets up the location change listener and performs the initial navigation.
+     */
+    Router.prototype.initialNavigation = function () {
+        this.setUpLocationChangeListener();
+        if (this.navigationId === 0) {
+            this.navigateByUrl(this.location.path(true), { replaceUrl: true });
+        }
+    };
+    /**
+     * Sets up the location change listener.
+     */
+    Router.prototype.setUpLocationChangeListener = function () {
+        var _this = this;
+        // Don't need to use Zone.wrap any more, because zone.js
+        // already patch onPopState, so location change callback will
+        // run into ngZone
+        if (!this.locationSubscription) {
+            this.locationSubscription = this.location.subscribe(function (change) {
+                var rawUrlTree = _this.parseUrl(change['url']);
+                var source = change['type'] === 'popstate' ? 'popstate' : 'hashchange';
+                var state = change.state && change.state.navigationId ?
+                    { navigationId: change.state.navigationId } :
+                    null;
+                setTimeout(function () { _this.scheduleNavigation(rawUrlTree, source, state, { replaceUrl: true }); }, 0);
+            });
+        }
+    };
+    Object.defineProperty(Router.prototype, "url", {
+        /** The current url */
+        get: function () { return this.serializeUrl(this.currentUrlTree); },
+        enumerable: true,
+        configurable: true
+    });
+    /** @internal */
+    Router.prototype.triggerEvent = function (event) { this.events.next(event); };
+    /**
+     * Resets the configuration used for navigation and generating links.
+     *
+     * @usageNotes
+     *
+     * ### Example
+     *
+     * ```
+     * router.resetConfig([
+     *  { path: 'team/:id', component: TeamCmp, children: [
+     *    { path: 'simple', component: SimpleCmp },
+     *    { path: 'user/:name', component: UserCmp }
+     *  ]}
+     * ]);
+     * ```
+     */
+    Router.prototype.resetConfig = function (config) {
+        validateConfig(config);
+        this.config = config.map(standardizeConfig);
+        this.navigated = false;
+        this.lastSuccessfulId = -1;
+    };
+    /** @docsNotRequired */
+    Router.prototype.ngOnDestroy = function () { this.dispose(); };
+    /** Disposes of the router */
+    Router.prototype.dispose = function () {
+        if (this.locationSubscription) {
+            this.locationSubscription.unsubscribe();
+            this.locationSubscription = null;
+        }
+    };
+    /**
+     * Applies an array of commands to the current url tree and creates a new url tree.
+     *
+     * When given an activate route, applies the given commands starting from the route.
+     * When not given a route, applies the given command starting from the root.
+     *
+     * @usageNotes
+     *
+     * ### Example
+     *
+     * ```
+     * // create /team/33/user/11
+     * router.createUrlTree(['/team', 33, 'user', 11]);
+     *
+     * // create /team/33;expand=true/user/11
+     * router.createUrlTree(['/team', 33, {expand: true}, 'user', 11]);
+     *
+     * // you can collapse static segments like this (this works only with the first passed-in value):
+     * router.createUrlTree(['/team/33/user', userId]);
+     *
+     * // If the first segment can contain slashes, and you do not want the router to split it, you
+     * // can do the following:
+     *
+     * router.createUrlTree([{segmentPath: '/one/two'}]);
+     *
+     * // create /team/33/(user/11//right:chat)
+     * router.createUrlTree(['/team', 33, {outlets: {primary: 'user/11', right: 'chat'}}]);
+     *
+     * // remove the right secondary node
+     * router.createUrlTree(['/team', 33, {outlets: {primary: 'user/11', right: null}}]);
+     *
+     * // assuming the current url is `/team/33/user/11` and the route points to `user/11`
+     *
+     * // navigate to /team/33/user/11/details
+     * router.createUrlTree(['details'], {relativeTo: route});
+     *
+     * // navigate to /team/33/user/22
+     * router.createUrlTree(['../22'], {relativeTo: route});
+     *
+     * // navigate to /team/44/user/22
+     * router.createUrlTree(['../../team/44/user/22'], {relativeTo: route});
+     * ```
+     */
+    Router.prototype.createUrlTree = function (commands, navigationExtras) {
+        if (navigationExtras === void 0) { navigationExtras = {}; }
+        var relativeTo = navigationExtras.relativeTo, queryParams = navigationExtras.queryParams, fragment = navigationExtras.fragment, preserveQueryParams = navigationExtras.preserveQueryParams, queryParamsHandling = navigationExtras.queryParamsHandling, preserveFragment = navigationExtras.preserveFragment;
+        if (Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["isDevMode"])() && preserveQueryParams && console && console.warn) {
+            console.warn('preserveQueryParams is deprecated, use queryParamsHandling instead.');
+        }
+        var a = relativeTo || this.routerState.root;
+        var f = preserveFragment ? this.currentUrlTree.fragment : fragment;
+        var q = null;
+        if (queryParamsHandling) {
+            switch (queryParamsHandling) {
+                case 'merge':
+                    q = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, this.currentUrlTree.queryParams, queryParams);
+                    break;
+                case 'preserve':
+                    q = this.currentUrlTree.queryParams;
+                    break;
+                default:
+                    q = queryParams || null;
+            }
+        }
+        else {
+            q = preserveQueryParams ? this.currentUrlTree.queryParams : queryParams || null;
+        }
+        if (q !== null) {
+            q = this.removeEmptyProps(q);
+        }
+        return createUrlTree(a, this.currentUrlTree, commands, q, f);
+    };
+    /**
+     * Navigate based on the provided url. This navigation is always absolute.
+     *
+     * Returns a promise that:
+     * - resolves to 'true' when navigation succeeds,
+     * - resolves to 'false' when navigation fails,
+     * - is rejected when an error happens.
+     *
+     * @usageNotes
+     *
+     * ### Example
+     *
+     * ```
+     * router.navigateByUrl("/team/33/user/11");
+     *
+     * // Navigate without updating the URL
+     * router.navigateByUrl("/team/33/user/11", { skipLocationChange: true });
+     * ```
+     *
+     * Since `navigateByUrl()` takes an absolute URL as the first parameter,
+     * it will not apply any delta to the current URL and ignores any properties
+     * in the second parameter (the `NavigationExtras`) that would change the
+     * provided URL.
+     */
+    Router.prototype.navigateByUrl = function (url, extras) {
+        if (extras === void 0) { extras = { skipLocationChange: false }; }
+        if (Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["isDevMode"])() && this.isNgZoneEnabled && !_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgZone"].isInAngularZone()) {
+            this.console.warn("Navigation triggered outside Angular zone, did you forget to call 'ngZone.run()'?");
+        }
+        var urlTree = url instanceof UrlTree ? url : this.parseUrl(url);
+        var mergedTree = this.urlHandlingStrategy.merge(urlTree, this.rawUrlTree);
+        return this.scheduleNavigation(mergedTree, 'imperative', null, extras);
+    };
+    /**
+     * Navigate based on the provided array of commands and a starting point.
+     * If no starting route is provided, the navigation is absolute.
+     *
+     * Returns a promise that:
+     * - resolves to 'true' when navigation succeeds,
+     * - resolves to 'false' when navigation fails,
+     * - is rejected when an error happens.
+     *
+     * @usageNotes
+     *
+     * ### Example
+     *
+     * ```
+     * router.navigate(['team', 33, 'user', 11], {relativeTo: route});
+     *
+     * // Navigate without updating the URL
+     * router.navigate(['team', 33, 'user', 11], {relativeTo: route, skipLocationChange: true});
+     * ```
+     *
+     * The first parameter of `navigate()` is a delta to be applied to the current URL
+     * or the one provided in the `relativeTo` property of the second parameter (the
+     * `NavigationExtras`).
+     */
+    Router.prototype.navigate = function (commands, extras) {
+        if (extras === void 0) { extras = { skipLocationChange: false }; }
+        validateCommands(commands);
+        return this.navigateByUrl(this.createUrlTree(commands, extras), extras);
+    };
+    /** Serializes a `UrlTree` into a string */
+    Router.prototype.serializeUrl = function (url) { return this.urlSerializer.serialize(url); };
+    /** Parses a string into a `UrlTree` */
+    Router.prototype.parseUrl = function (url) {
+        var urlTree;
+        try {
+            urlTree = this.urlSerializer.parse(url);
+        }
+        catch (e) {
+            urlTree = this.malformedUriErrorHandler(e, this.urlSerializer, url);
+        }
+        return urlTree;
+    };
+    /** Returns whether the url is activated */
+    Router.prototype.isActive = function (url, exact) {
+        if (url instanceof UrlTree) {
+            return containsTree(this.currentUrlTree, url, exact);
+        }
+        var urlTree = this.parseUrl(url);
+        return containsTree(this.currentUrlTree, urlTree, exact);
+    };
+    Router.prototype.removeEmptyProps = function (params) {
+        return Object.keys(params).reduce(function (result, key) {
+            var value = params[key];
+            if (value !== null && value !== undefined) {
+                result[key] = value;
+            }
+            return result;
+        }, {});
+    };
+    Router.prototype.processNavigations = function () {
+        var _this = this;
+        this.navigations
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["concatMap"])(function (nav) {
+            if (nav) {
+                _this.executeScheduledNavigation(nav);
+                // a failed navigation should not stop the router from processing
+                // further navigations => the catch
+                return nav.promise.catch(function () { });
+            }
+            else {
+                return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(null);
+            }
+        }))
+            .subscribe(function () { });
+    };
+    Router.prototype.scheduleNavigation = function (rawUrl, source, state, extras) {
+        var lastNavigation = this.navigations.value;
+        // If the user triggers a navigation imperatively (e.g., by using navigateByUrl),
+        // and that navigation results in 'replaceState' that leads to the same URL,
+        // we should skip those.
+        if (lastNavigation && source !== 'imperative' && lastNavigation.source === 'imperative' &&
+            lastNavigation.rawUrl.toString() === rawUrl.toString()) {
+            return Promise.resolve(true); // return value is not used
+        }
+        // Because of a bug in IE and Edge, the location class fires two events (popstate and
+        // hashchange) every single time. The second one should be ignored. Otherwise, the URL will
+        // flicker. Handles the case when a popstate was emitted first.
+        if (lastNavigation && source == 'hashchange' && lastNavigation.source === 'popstate' &&
+            lastNavigation.rawUrl.toString() === rawUrl.toString()) {
+            return Promise.resolve(true); // return value is not used
+        }
+        // Because of a bug in IE and Edge, the location class fires two events (popstate and
+        // hashchange) every single time. The second one should be ignored. Otherwise, the URL will
+        // flicker. Handles the case when a hashchange was emitted first.
+        if (lastNavigation && source == 'popstate' && lastNavigation.source === 'hashchange' &&
+            lastNavigation.rawUrl.toString() === rawUrl.toString()) {
+            return Promise.resolve(true); // return value is not used
+        }
+        var resolve = null;
+        var reject = null;
+        var promise = new Promise(function (res, rej) {
+            resolve = res;
+            reject = rej;
+        });
+        var id = ++this.navigationId;
+        this.navigations.next({ id: id, source: source, state: state, rawUrl: rawUrl, extras: extras, resolve: resolve, reject: reject, promise: promise });
+        // Make sure that the error is propagated even though `processNavigations` catch
+        // handler does not rethrow
+        return promise.catch(function (e) { return Promise.reject(e); });
+    };
+    Router.prototype.executeScheduledNavigation = function (_a) {
+        var _this = this;
+        var id = _a.id, rawUrl = _a.rawUrl, extras = _a.extras, resolve = _a.resolve, reject = _a.reject, source = _a.source, state = _a.state;
+        var url = this.urlHandlingStrategy.extract(rawUrl);
+        var urlTransition = !this.navigated || url.toString() !== this.currentUrlTree.toString();
+        if ((this.onSameUrlNavigation === 'reload' ? true : urlTransition) &&
+            this.urlHandlingStrategy.shouldProcessUrl(rawUrl)) {
+            if (this.urlUpdateStrategy === 'eager' && !extras.skipLocationChange) {
+                this.setBrowserUrl(rawUrl, !!extras.replaceUrl, id);
+            }
+            this.events
+                .next(new NavigationStart(id, this.serializeUrl(url), source, state));
+            Promise.resolve()
+                .then(function (_) { return _this.runNavigate(url, rawUrl, !!extras.skipLocationChange, !!extras.replaceUrl, id, null); })
+                .then(resolve, reject);
+            // we cannot process the current URL, but we could process the previous one =>
+            // we need to do some cleanup
+        }
+        else if (urlTransition && this.rawUrlTree &&
+            this.urlHandlingStrategy.shouldProcessUrl(this.rawUrlTree)) {
+            this.events
+                .next(new NavigationStart(id, this.serializeUrl(url), source, state));
+            Promise.resolve()
+                .then(function (_) { return _this.runNavigate(url, rawUrl, false, false, id, createEmptyState(url, _this.rootComponentType).snapshot); })
+                .then(resolve, reject);
+        }
+        else {
+            this.rawUrlTree = rawUrl;
+            resolve(null);
+        }
+    };
+    Router.prototype.runNavigate = function (url, rawUrl, skipLocationChange, replaceUrl, id, precreatedState) {
+        var _this = this;
+        if (id !== this.navigationId) {
+            this.events
+                .next(new NavigationCancel(id, this.serializeUrl(url), "Navigation ID " + id + " is not equal to the current navigation id " + this.navigationId));
+            return Promise.resolve(false);
+        }
+        return new Promise(function (resolvePromise, rejectPromise) {
+            // create an observable of the url and route state snapshot
+            // this operation do not result in any side effects
+            var urlAndSnapshot$;
+            if (!precreatedState) {
+                var moduleInjector = _this.ngModule.injector;
+                var redirectsApplied$ = applyRedirects(moduleInjector, _this.configLoader, _this.urlSerializer, url, _this.config);
+                urlAndSnapshot$ = redirectsApplied$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (appliedUrl) {
+                    return recognize(_this.rootComponentType, _this.config, appliedUrl, _this.serializeUrl(appliedUrl), _this.paramsInheritanceStrategy, _this.relativeLinkResolution)
+                        .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (snapshot) {
+                        _this.events
+                            .next(new RoutesRecognized(id, _this.serializeUrl(url), _this.serializeUrl(appliedUrl), snapshot));
+                        return { appliedUrl: appliedUrl, snapshot: snapshot };
+                    }));
+                }));
+            }
+            else {
+                urlAndSnapshot$ = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])({ appliedUrl: url, snapshot: precreatedState });
+            }
+            var beforePreactivationDone$ = urlAndSnapshot$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (p) {
+                if (typeof p === 'boolean')
+                    return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(p);
+                return _this.hooks
+                    .beforePreactivation(p.snapshot, {
+                    navigationId: id,
+                    appliedUrlTree: url,
+                    rawUrlTree: rawUrl, skipLocationChange: skipLocationChange, replaceUrl: replaceUrl,
+                })
+                    .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function () { return p; }));
+            }));
+            // run preactivation: guards and data resolvers
+            var preActivation;
+            var preactivationSetup$ = beforePreactivationDone$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (p) {
+                if (typeof p === 'boolean')
+                    return p;
+                var appliedUrl = p.appliedUrl, snapshot = p.snapshot;
+                var moduleInjector = _this.ngModule.injector;
+                preActivation = new PreActivation(snapshot, _this.routerState.snapshot, moduleInjector, function (evt) { return _this.triggerEvent(evt); });
+                preActivation.initialize(_this.rootContexts);
+                return { appliedUrl: appliedUrl, snapshot: snapshot };
+            }));
+            var preactivationCheckGuards$ = preactivationSetup$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (p) {
+                if (typeof p === 'boolean' || _this.navigationId !== id)
+                    return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(false);
+                var appliedUrl = p.appliedUrl, snapshot = p.snapshot;
+                _this.triggerEvent(new GuardsCheckStart(id, _this.serializeUrl(url), _this.serializeUrl(appliedUrl), snapshot));
+                return preActivation.checkGuards().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (shouldActivate) {
+                    _this.triggerEvent(new GuardsCheckEnd(id, _this.serializeUrl(url), _this.serializeUrl(appliedUrl), snapshot, shouldActivate));
+                    return { appliedUrl: appliedUrl, snapshot: snapshot, shouldActivate: shouldActivate };
+                }));
+            }));
+            var preactivationResolveData$ = preactivationCheckGuards$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (p) {
+                if (typeof p === 'boolean' || _this.navigationId !== id)
+                    return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(false);
+                if (p.shouldActivate && preActivation.isActivating()) {
+                    _this.triggerEvent(new ResolveStart(id, _this.serializeUrl(url), _this.serializeUrl(p.appliedUrl), p.snapshot));
+                    return preActivation.resolveData(_this.paramsInheritanceStrategy).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function () {
+                        _this.triggerEvent(new ResolveEnd(id, _this.serializeUrl(url), _this.serializeUrl(p.appliedUrl), p.snapshot));
+                        return p;
+                    }));
+                }
+                else {
+                    return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(p);
+                }
+            }));
+            var preactivationDone$ = preactivationResolveData$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (p) {
+                if (typeof p === 'boolean' || _this.navigationId !== id)
+                    return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(false);
+                return _this.hooks
+                    .afterPreactivation(p.snapshot, {
+                    navigationId: id,
+                    appliedUrlTree: url,
+                    rawUrlTree: rawUrl, skipLocationChange: skipLocationChange, replaceUrl: replaceUrl,
+                })
+                    .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function () { return p; }));
+            }));
+            // create router state
+            // this operation has side effects => route state is being affected
+            var routerState$ = preactivationDone$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (p) {
+                if (typeof p === 'boolean' || _this.navigationId !== id)
+                    return false;
+                var appliedUrl = p.appliedUrl, snapshot = p.snapshot, shouldActivate = p.shouldActivate;
+                if (shouldActivate) {
+                    var state = createRouterState(_this.routeReuseStrategy, snapshot, _this.routerState);
+                    return { appliedUrl: appliedUrl, state: state, shouldActivate: shouldActivate };
+                }
+                else {
+                    return { appliedUrl: appliedUrl, state: null, shouldActivate: shouldActivate };
+                }
+            }));
+            _this.activateRoutes(routerState$, _this.routerState, _this.currentUrlTree, id, url, rawUrl, skipLocationChange, replaceUrl, resolvePromise, rejectPromise);
+        });
+    };
+    /**
+     * Performs the logic of activating routes. This is a synchronous process by default. While this
+     * is a private method, it could be overridden to make activation asynchronous.
+     */
+    Router.prototype.activateRoutes = function (state, storedState, storedUrl, id, url, rawUrl, skipLocationChange, replaceUrl, resolvePromise, rejectPromise) {
+        var _this = this;
+        // applied the new router state
+        // this operation has side effects
+        var navigationIsSuccessful;
+        state
+            .forEach(function (p) {
+            if (typeof p === 'boolean' || !p.shouldActivate || id !== _this.navigationId || !p.state) {
+                navigationIsSuccessful = false;
+                return;
+            }
+            var appliedUrl = p.appliedUrl, state = p.state;
+            _this.currentUrlTree = appliedUrl;
+            _this.rawUrlTree = _this.urlHandlingStrategy.merge(_this.currentUrlTree, rawUrl);
+            _this.routerState = state;
+            if (_this.urlUpdateStrategy === 'deferred' && !skipLocationChange) {
+                _this.setBrowserUrl(_this.rawUrlTree, replaceUrl, id);
+            }
+            new ActivateRoutes(_this.routeReuseStrategy, state, storedState, function (evt) { return _this.triggerEvent(evt); })
+                .activate(_this.rootContexts);
+            navigationIsSuccessful = true;
+        })
+            .then(function () {
+            if (navigationIsSuccessful) {
+                _this.navigated = true;
+                _this.lastSuccessfulId = id;
+                _this.events
+                    .next(new NavigationEnd(id, _this.serializeUrl(url), _this.serializeUrl(_this.currentUrlTree)));
+                resolvePromise(true);
+            }
+            else {
+                _this.resetUrlToCurrentUrlTree();
+                _this.events
+                    .next(new NavigationCancel(id, _this.serializeUrl(url), ''));
+                resolvePromise(false);
+            }
+        }, function (e) {
+            if (isNavigationCancelingError(e)) {
+                _this.navigated = true;
+                _this.resetStateAndUrl(storedState, storedUrl, rawUrl);
+                _this.events
+                    .next(new NavigationCancel(id, _this.serializeUrl(url), e.message));
+                resolvePromise(false);
+            }
+            else {
+                _this.resetStateAndUrl(storedState, storedUrl, rawUrl);
+                _this.events
+                    .next(new NavigationError(id, _this.serializeUrl(url), e));
+                try {
+                    resolvePromise(_this.errorHandler(e));
+                }
+                catch (ee) {
+                    rejectPromise(ee);
+                }
+            }
+        });
+    };
+    Router.prototype.setBrowserUrl = function (url, replaceUrl, id) {
+        var path = this.urlSerializer.serialize(url);
+        if (this.location.isCurrentPathEqualTo(path) || replaceUrl) {
+            this.location.replaceState(path, '', { navigationId: id });
+        }
+        else {
+            this.location.go(path, '', { navigationId: id });
+        }
+    };
+    Router.prototype.resetStateAndUrl = function (storedState, storedUrl, rawUrl) {
+        this.routerState = storedState;
+        this.currentUrlTree = storedUrl;
+        this.rawUrlTree = this.urlHandlingStrategy.merge(this.currentUrlTree, rawUrl);
+        this.resetUrlToCurrentUrlTree();
+    };
+    Router.prototype.resetUrlToCurrentUrlTree = function () {
+        this.location.replaceState(this.urlSerializer.serialize(this.rawUrlTree), '', { navigationId: this.lastSuccessfulId });
+    };
+    return Router;
+}());
+var ActivateRoutes = /** @class */ (function () {
+    function ActivateRoutes(routeReuseStrategy, futureState, currState, forwardEvent) {
+        this.routeReuseStrategy = routeReuseStrategy;
+        this.futureState = futureState;
+        this.currState = currState;
+        this.forwardEvent = forwardEvent;
+    }
+    ActivateRoutes.prototype.activate = function (parentContexts) {
+        var futureRoot = this.futureState._root;
+        var currRoot = this.currState ? this.currState._root : null;
+        this.deactivateChildRoutes(futureRoot, currRoot, parentContexts);
+        advanceActivatedRoute(this.futureState.root);
+        this.activateChildRoutes(futureRoot, currRoot, parentContexts);
+    };
+    // De-activate the child route that are not re-used for the future state
+    ActivateRoutes.prototype.deactivateChildRoutes = function (futureNode, currNode, contexts) {
+        var _this = this;
+        var children = nodeChildrenAsMap(currNode);
+        // Recurse on the routes active in the future state to de-activate deeper children
+        futureNode.children.forEach(function (futureChild) {
+            var childOutletName = futureChild.value.outlet;
+            _this.deactivateRoutes(futureChild, children[childOutletName], contexts);
+            delete children[childOutletName];
+        });
+        // De-activate the routes that will not be re-used
+        forEach(children, function (v, childName) {
+            _this.deactivateRouteAndItsChildren(v, contexts);
+        });
+    };
+    ActivateRoutes.prototype.deactivateRoutes = function (futureNode, currNode, parentContext) {
+        var future = futureNode.value;
+        var curr = currNode ? currNode.value : null;
+        if (future === curr) {
+            // Reusing the node, check to see if the children need to be de-activated
+            if (future.component) {
+                // If we have a normal route, we need to go through an outlet.
+                var context = parentContext.getContext(future.outlet);
+                if (context) {
+                    this.deactivateChildRoutes(futureNode, currNode, context.children);
+                }
+            }
+            else {
+                // if we have a componentless route, we recurse but keep the same outlet map.
+                this.deactivateChildRoutes(futureNode, currNode, parentContext);
+            }
+        }
+        else {
+            if (curr) {
+                // Deactivate the current route which will not be re-used
+                this.deactivateRouteAndItsChildren(currNode, parentContext);
+            }
+        }
+    };
+    ActivateRoutes.prototype.deactivateRouteAndItsChildren = function (route, parentContexts) {
+        if (this.routeReuseStrategy.shouldDetach(route.value.snapshot)) {
+            this.detachAndStoreRouteSubtree(route, parentContexts);
+        }
+        else {
+            this.deactivateRouteAndOutlet(route, parentContexts);
+        }
+    };
+    ActivateRoutes.prototype.detachAndStoreRouteSubtree = function (route, parentContexts) {
+        var context = parentContexts.getContext(route.value.outlet);
+        if (context && context.outlet) {
+            var componentRef = context.outlet.detach();
+            var contexts = context.children.onOutletDeactivated();
+            this.routeReuseStrategy.store(route.value.snapshot, { componentRef: componentRef, route: route, contexts: contexts });
+        }
+    };
+    ActivateRoutes.prototype.deactivateRouteAndOutlet = function (route, parentContexts) {
+        var _this = this;
+        var context = parentContexts.getContext(route.value.outlet);
+        if (context) {
+            var children = nodeChildrenAsMap(route);
+            var contexts_1 = route.value.component ? context.children : parentContexts;
+            forEach(children, function (v, k) { return _this.deactivateRouteAndItsChildren(v, contexts_1); });
+            if (context.outlet) {
+                // Destroy the component
+                context.outlet.deactivate();
+                // Destroy the contexts for all the outlets that were in the component
+                context.children.onOutletDeactivated();
+            }
+        }
+    };
+    ActivateRoutes.prototype.activateChildRoutes = function (futureNode, currNode, contexts) {
+        var _this = this;
+        var children = nodeChildrenAsMap(currNode);
+        futureNode.children.forEach(function (c) {
+            _this.activateRoutes(c, children[c.value.outlet], contexts);
+            _this.forwardEvent(new ActivationEnd(c.value.snapshot));
+        });
+        if (futureNode.children.length) {
+            this.forwardEvent(new ChildActivationEnd(futureNode.value.snapshot));
+        }
+    };
+    ActivateRoutes.prototype.activateRoutes = function (futureNode, currNode, parentContexts) {
+        var future = futureNode.value;
+        var curr = currNode ? currNode.value : null;
+        advanceActivatedRoute(future);
+        // reusing the node
+        if (future === curr) {
+            if (future.component) {
+                // If we have a normal route, we need to go through an outlet.
+                var context = parentContexts.getOrCreateContext(future.outlet);
+                this.activateChildRoutes(futureNode, currNode, context.children);
+            }
+            else {
+                // if we have a componentless route, we recurse but keep the same outlet map.
+                this.activateChildRoutes(futureNode, currNode, parentContexts);
+            }
+        }
+        else {
+            if (future.component) {
+                // if we have a normal route, we need to place the component into the outlet and recurse.
+                var context = parentContexts.getOrCreateContext(future.outlet);
+                if (this.routeReuseStrategy.shouldAttach(future.snapshot)) {
+                    var stored = this.routeReuseStrategy.retrieve(future.snapshot);
+                    this.routeReuseStrategy.store(future.snapshot, null);
+                    context.children.onOutletReAttached(stored.contexts);
+                    context.attachRef = stored.componentRef;
+                    context.route = stored.route.value;
+                    if (context.outlet) {
+                        // Attach right away when the outlet has already been instantiated
+                        // Otherwise attach from `RouterOutlet.ngOnInit` when it is instantiated
+                        context.outlet.attach(stored.componentRef, stored.route.value);
+                    }
+                    advanceActivatedRouteNodeAndItsChildren(stored.route);
+                }
+                else {
+                    var config = parentLoadedConfig(future.snapshot);
+                    var cmpFactoryResolver = config ? config.module.componentFactoryResolver : null;
+                    context.attachRef = null;
+                    context.route = future;
+                    context.resolver = cmpFactoryResolver;
+                    if (context.outlet) {
+                        // Activate the outlet when it has already been instantiated
+                        // Otherwise it will get activated from its `ngOnInit` when instantiated
+                        context.outlet.activateWith(future, cmpFactoryResolver);
+                    }
+                    this.activateChildRoutes(futureNode, null, context.children);
+                }
+            }
+            else {
+                // if we have a componentless route, we recurse but keep the same outlet map.
+                this.activateChildRoutes(futureNode, null, parentContexts);
+            }
+        }
+    };
+    return ActivateRoutes;
+}());
+function advanceActivatedRouteNodeAndItsChildren(node) {
+    advanceActivatedRoute(node.value);
+    node.children.forEach(advanceActivatedRouteNodeAndItsChildren);
+}
+function parentLoadedConfig(snapshot) {
+    for (var s = snapshot.parent; s; s = s.parent) {
+        var route = s.routeConfig;
+        if (route && route._loadedConfig)
+            return route._loadedConfig;
+        if (route && route.component)
+            return null;
+    }
+    return null;
+}
+function validateCommands(commands) {
+    for (var i = 0; i < commands.length; i++) {
+        var cmd = commands[i];
+        if (cmd == null) {
+            throw new Error("The requested path contains " + cmd + " segment at index " + i);
+        }
+    }
+}
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * @description
+ *
+ * Lets you link to specific routes in your app.
+ *
+ * Consider the following route configuration:
+ * `[{ path: 'user/:name', component: UserCmp }]`.
+ * When linking to this `user/:name` route, you use the `RouterLink` directive.
+ *
+ * If the link is static, you can use the directive as follows:
+ * `<a routerLink="/user/bob">link to user component</a>`
+ *
+ * If you use dynamic values to generate the link, you can pass an array of path
+ * segments, followed by the params for each segment.
+ *
+ * For instance `['/team', teamId, 'user', userName, {details: true}]`
+ * means that we want to generate a link to `/team/11/user/bob;details=true`.
+ *
+ * Multiple static segments can be merged into one
+ * (e.g., `['/team/11/user', userName, {details: true}]`).
+ *
+ * The first segment name can be prepended with `/`, `./`, or `../`:
+ * * If the first segment begins with `/`, the router will look up the route from the root of the
+ *   app.
+ * * If the first segment begins with `./`, or doesn't begin with a slash, the router will
+ *   instead look in the children of the current activated route.
+ * * And if the first segment begins with `../`, the router will go up one level.
+ *
+ * You can set query params and fragment as follows:
+ *
+ * ```
+ * <a [routerLink]="['/user/bob']" [queryParams]="{debug: true}" fragment="education">
+ *   link to user component
+ * </a>
+ * ```
+ * RouterLink will use these to generate this link: `/user/bob#education?debug=true`.
+ *
+ * (Deprecated in v4.0.0 use `queryParamsHandling` instead) You can also tell the
+ * directive to preserve the current query params and fragment:
+ *
+ * ```
+ * <a [routerLink]="['/user/bob']" preserveQueryParams preserveFragment>
+ *   link to user component
+ * </a>
+ * ```
+ *
+ * You can tell the directive to how to handle queryParams, available options are:
+ *  - `'merge'`: merge the queryParams into the current queryParams
+ *  - `'preserve'`: preserve the current queryParams
+ *  - default/`''`: use the queryParams only
+ *
+ * Same options for {@link NavigationExtras#queryParamsHandling
+ * NavigationExtras#queryParamsHandling}.
+ *
+ * ```
+ * <a [routerLink]="['/user/bob']" [queryParams]="{debug: true}" queryParamsHandling="merge">
+ *   link to user component
+ * </a>
+ * ```
+ *
+ * The router link directive always treats the provided input as a delta to the current url.
+ *
+ * For instance, if the current url is `/user/(box//aux:team)`.
+ *
+ * Then the following link `<a [routerLink]="['/user/jim']">Jim</a>` will generate the link
+ * `/user/(jim//aux:team)`.
+ *
+ * See {@link Router#createUrlTree createUrlTree} for more information.
+ *
+ * @ngModule RouterModule
+ *
+ *
+ */
+var RouterLink = /** @class */ (function () {
+    function RouterLink(router, route, tabIndex, renderer, el) {
+        this.router = router;
+        this.route = route;
+        this.commands = [];
+        if (tabIndex == null) {
+            renderer.setAttribute(el.nativeElement, 'tabindex', '0');
+        }
+    }
+    Object.defineProperty(RouterLink.prototype, "routerLink", {
+        set: function (commands) {
+            if (commands != null) {
+                this.commands = Array.isArray(commands) ? commands : [commands];
+            }
+            else {
+                this.commands = [];
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(RouterLink.prototype, "preserveQueryParams", {
+        /**
+         * @deprecated 4.0.0 use `queryParamsHandling` instead.
+         */
+        set: function (value) {
+            if (Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["isDevMode"])() && console && console.warn) {
+                console.warn('preserveQueryParams is deprecated!, use queryParamsHandling instead.');
+            }
+            this.preserve = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    RouterLink.prototype.onClick = function () {
+        var extras = {
+            skipLocationChange: attrBoolValue(this.skipLocationChange),
+            replaceUrl: attrBoolValue(this.replaceUrl),
+        };
+        this.router.navigateByUrl(this.urlTree, extras);
+        return true;
+    };
+    Object.defineProperty(RouterLink.prototype, "urlTree", {
+        get: function () {
+            return this.router.createUrlTree(this.commands, {
+                relativeTo: this.route,
+                queryParams: this.queryParams,
+                fragment: this.fragment,
+                preserveQueryParams: attrBoolValue(this.preserve),
+                queryParamsHandling: this.queryParamsHandling,
+                preserveFragment: attrBoolValue(this.preserveFragment),
+            });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Object)
+    ], RouterLink.prototype, "queryParams", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", String)
+    ], RouterLink.prototype, "fragment", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", String)
+    ], RouterLink.prototype, "queryParamsHandling", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Boolean)
+    ], RouterLink.prototype, "preserveFragment", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Boolean)
+    ], RouterLink.prototype, "skipLocationChange", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Boolean)
+    ], RouterLink.prototype, "replaceUrl", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Object),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object])
+    ], RouterLink.prototype, "routerLink", null);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Boolean),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Boolean])
+    ], RouterLink.prototype, "preserveQueryParams", null);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["HostListener"])('click'),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", []),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", Boolean)
+    ], RouterLink.prototype, "onClick", null);
+    RouterLink = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({ selector: ':not(a)[routerLink]' }),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(2, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Attribute"])('tabindex')),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Router, ActivatedRoute, String, _angular_core__WEBPACK_IMPORTED_MODULE_1__["Renderer2"], _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"]])
+    ], RouterLink);
+    return RouterLink;
+}());
+/**
+ * @description
+ *
+ * Lets you link to specific routes in your app.
+ *
+ * See `RouterLink` for more information.
+ *
+ * @ngModule RouterModule
+ *
+ *
+ */
+var RouterLinkWithHref = /** @class */ (function () {
+    function RouterLinkWithHref(router, route, locationStrategy) {
+        var _this = this;
+        this.router = router;
+        this.route = route;
+        this.locationStrategy = locationStrategy;
+        this.commands = [];
+        this.subscription = router.events.subscribe(function (s) {
+            if (s instanceof NavigationEnd) {
+                _this.updateTargetUrlAndHref();
+            }
+        });
+    }
+    Object.defineProperty(RouterLinkWithHref.prototype, "routerLink", {
+        set: function (commands) {
+            if (commands != null) {
+                this.commands = Array.isArray(commands) ? commands : [commands];
+            }
+            else {
+                this.commands = [];
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(RouterLinkWithHref.prototype, "preserveQueryParams", {
+        set: function (value) {
+            if (Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["isDevMode"])() && console && console.warn) {
+                console.warn('preserveQueryParams is deprecated, use queryParamsHandling instead.');
+            }
+            this.preserve = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    RouterLinkWithHref.prototype.ngOnChanges = function (changes) { this.updateTargetUrlAndHref(); };
+    RouterLinkWithHref.prototype.ngOnDestroy = function () { this.subscription.unsubscribe(); };
+    RouterLinkWithHref.prototype.onClick = function (button, ctrlKey, metaKey, shiftKey) {
+        if (button !== 0 || ctrlKey || metaKey || shiftKey) {
+            return true;
+        }
+        if (typeof this.target === 'string' && this.target != '_self') {
+            return true;
+        }
+        var extras = {
+            skipLocationChange: attrBoolValue(this.skipLocationChange),
+            replaceUrl: attrBoolValue(this.replaceUrl),
+        };
+        this.router.navigateByUrl(this.urlTree, extras);
+        return false;
+    };
+    RouterLinkWithHref.prototype.updateTargetUrlAndHref = function () {
+        this.href = this.locationStrategy.prepareExternalUrl(this.router.serializeUrl(this.urlTree));
+    };
+    Object.defineProperty(RouterLinkWithHref.prototype, "urlTree", {
+        get: function () {
+            return this.router.createUrlTree(this.commands, {
+                relativeTo: this.route,
+                queryParams: this.queryParams,
+                fragment: this.fragment,
+                preserveQueryParams: attrBoolValue(this.preserve),
+                queryParamsHandling: this.queryParamsHandling,
+                preserveFragment: attrBoolValue(this.preserveFragment),
+            });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["HostBinding"])('attr.target'), Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", String)
+    ], RouterLinkWithHref.prototype, "target", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Object)
+    ], RouterLinkWithHref.prototype, "queryParams", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", String)
+    ], RouterLinkWithHref.prototype, "fragment", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", String)
+    ], RouterLinkWithHref.prototype, "queryParamsHandling", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Boolean)
+    ], RouterLinkWithHref.prototype, "preserveFragment", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Boolean)
+    ], RouterLinkWithHref.prototype, "skipLocationChange", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Boolean)
+    ], RouterLinkWithHref.prototype, "replaceUrl", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["HostBinding"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", String)
+    ], RouterLinkWithHref.prototype, "href", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Object),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object])
+    ], RouterLinkWithHref.prototype, "routerLink", null);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Boolean),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Boolean])
+    ], RouterLinkWithHref.prototype, "preserveQueryParams", null);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["HostListener"])('click', ['$event.button', '$event.ctrlKey', '$event.metaKey', '$event.shiftKey']),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Number, Boolean, Boolean, Boolean]),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", Boolean)
+    ], RouterLinkWithHref.prototype, "onClick", null);
+    RouterLinkWithHref = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({ selector: 'a[routerLink]' }),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Router, ActivatedRoute,
+            _angular_common__WEBPACK_IMPORTED_MODULE_4__["LocationStrategy"]])
+    ], RouterLinkWithHref);
+    return RouterLinkWithHref;
+}());
+function attrBoolValue(s) {
+    return s === '' || !!s;
+}
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ *
+ * @description
+ *
+ * Lets you add a CSS class to an element when the link's route becomes active.
+ *
+ * This directive lets you add a CSS class to an element when the link's route
+ * becomes active.
+ *
+ * Consider the following example:
+ *
+ * ```
+ * <a routerLink="/user/bob" routerLinkActive="active-link">Bob</a>
+ * ```
+ *
+ * When the url is either '/user' or '/user/bob', the active-link class will
+ * be added to the `a` tag. If the url changes, the class will be removed.
+ *
+ * You can set more than one class, as follows:
+ *
+ * ```
+ * <a routerLink="/user/bob" routerLinkActive="class1 class2">Bob</a>
+ * <a routerLink="/user/bob" [routerLinkActive]="['class1', 'class2']">Bob</a>
+ * ```
+ *
+ * You can configure RouterLinkActive by passing `exact: true`. This will add the classes
+ * only when the url matches the link exactly.
+ *
+ * ```
+ * <a routerLink="/user/bob" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact:
+ * true}">Bob</a>
+ * ```
+ *
+ * You can assign the RouterLinkActive instance to a template variable and directly check
+ * the `isActive` status.
+ * ```
+ * <a routerLink="/user/bob" routerLinkActive #rla="routerLinkActive">
+ *   Bob {{ rla.isActive ? '(already open)' : ''}}
+ * </a>
+ * ```
+ *
+ * Finally, you can apply the RouterLinkActive directive to an ancestor of a RouterLink.
+ *
+ * ```
+ * <div routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
+ *   <a routerLink="/user/jim">Jim</a>
+ *   <a routerLink="/user/bob">Bob</a>
+ * </div>
+ * ```
+ *
+ * This will set the active-link class on the div tag if the url is either '/user/jim' or
+ * '/user/bob'.
+ *
+ * @ngModule RouterModule
+ *
+ *
+ */
+var RouterLinkActive = /** @class */ (function () {
+    function RouterLinkActive(router, element, renderer, cdr) {
+        var _this = this;
+        this.router = router;
+        this.element = element;
+        this.renderer = renderer;
+        this.cdr = cdr;
+        this.classes = [];
+        this.isActive = false;
+        this.routerLinkActiveOptions = { exact: false };
+        this.subscription = router.events.subscribe(function (s) {
+            if (s instanceof NavigationEnd) {
+                _this.update();
+            }
+        });
+    }
+    RouterLinkActive.prototype.ngAfterContentInit = function () {
+        var _this = this;
+        this.links.changes.subscribe(function (_) { return _this.update(); });
+        this.linksWithHrefs.changes.subscribe(function (_) { return _this.update(); });
+        this.update();
+    };
+    Object.defineProperty(RouterLinkActive.prototype, "routerLinkActive", {
+        set: function (data) {
+            var classes = Array.isArray(data) ? data : data.split(' ');
+            this.classes = classes.filter(function (c) { return !!c; });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    RouterLinkActive.prototype.ngOnChanges = function (changes) { this.update(); };
+    RouterLinkActive.prototype.ngOnDestroy = function () { this.subscription.unsubscribe(); };
+    RouterLinkActive.prototype.update = function () {
+        var _this = this;
+        if (!this.links || !this.linksWithHrefs || !this.router.navigated)
+            return;
+        Promise.resolve().then(function () {
+            var hasActiveLinks = _this.hasActiveLinks();
+            if (_this.isActive !== hasActiveLinks) {
+                _this.isActive = hasActiveLinks;
+                _this.classes.forEach(function (c) {
+                    if (hasActiveLinks) {
+                        _this.renderer.addClass(_this.element.nativeElement, c);
+                    }
+                    else {
+                        _this.renderer.removeClass(_this.element.nativeElement, c);
+                    }
+                });
+            }
+        });
+    };
+    RouterLinkActive.prototype.isLinkActive = function (router) {
+        var _this = this;
+        return function (link) {
+            return router.isActive(link.urlTree, _this.routerLinkActiveOptions.exact);
+        };
+    };
+    RouterLinkActive.prototype.hasActiveLinks = function () {
+        return this.links.some(this.isLinkActive(this.router)) ||
+            this.linksWithHrefs.some(this.isLinkActive(this.router));
+    };
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ContentChildren"])(RouterLink, { descendants: true }),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_1__["QueryList"])
+    ], RouterLinkActive.prototype, "links", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ContentChildren"])(RouterLinkWithHref, { descendants: true }),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_1__["QueryList"])
+    ], RouterLinkActive.prototype, "linksWithHrefs", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Object)
+    ], RouterLinkActive.prototype, "routerLinkActiveOptions", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Object),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object])
+    ], RouterLinkActive.prototype, "routerLinkActive", null);
+    RouterLinkActive = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({
+            selector: '[routerLinkActive]',
+            exportAs: 'routerLinkActive',
+        }),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Router, _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"], _angular_core__WEBPACK_IMPORTED_MODULE_1__["Renderer2"],
+            _angular_core__WEBPACK_IMPORTED_MODULE_1__["ChangeDetectorRef"]])
+    ], RouterLinkActive);
+    return RouterLinkActive;
+}());
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * Store contextual information about a `RouterOutlet`
+ *
+ *
+ */
+var OutletContext = /** @class */ (function () {
+    function OutletContext() {
+        this.outlet = null;
+        this.route = null;
+        this.resolver = null;
+        this.children = new ChildrenOutletContexts();
+        this.attachRef = null;
+    }
+    return OutletContext;
+}());
+/**
+ * Store contextual information about the children (= nested) `RouterOutlet`
+ *
+ *
+ */
+var ChildrenOutletContexts = /** @class */ (function () {
+    function ChildrenOutletContexts() {
+        // contexts for child outlets, by name.
+        this.contexts = new Map();
+    }
+    /** Called when a `RouterOutlet` directive is instantiated */
+    ChildrenOutletContexts.prototype.onChildOutletCreated = function (childName, outlet) {
+        var context = this.getOrCreateContext(childName);
+        context.outlet = outlet;
+        this.contexts.set(childName, context);
+    };
+    /**
+     * Called when a `RouterOutlet` directive is destroyed.
+     * We need to keep the context as the outlet could be destroyed inside a NgIf and might be
+     * re-created later.
+     */
+    ChildrenOutletContexts.prototype.onChildOutletDestroyed = function (childName) {
+        var context = this.getContext(childName);
+        if (context) {
+            context.outlet = null;
+        }
+    };
+    /**
+     * Called when the corresponding route is deactivated during navigation.
+     * Because the component get destroyed, all children outlet are destroyed.
+     */
+    ChildrenOutletContexts.prototype.onOutletDeactivated = function () {
+        var contexts = this.contexts;
+        this.contexts = new Map();
+        return contexts;
+    };
+    ChildrenOutletContexts.prototype.onOutletReAttached = function (contexts) { this.contexts = contexts; };
+    ChildrenOutletContexts.prototype.getOrCreateContext = function (childName) {
+        var context = this.getContext(childName);
+        if (!context) {
+            context = new OutletContext();
+            this.contexts.set(childName, context);
+        }
+        return context;
+    };
+    ChildrenOutletContexts.prototype.getContext = function (childName) { return this.contexts.get(childName) || null; };
+    return ChildrenOutletContexts;
+}());
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * @description
+ *
+ * Acts as a placeholder that Angular dynamically fills based on the current router state.
+ *
+ * ```
+ * <router-outlet></router-outlet>
+ * <router-outlet name='left'></router-outlet>
+ * <router-outlet name='right'></router-outlet>
+ * ```
+ *
+ * A router outlet will emit an activate event any time a new component is being instantiated,
+ * and a deactivate event when it is being destroyed.
+ *
+ * ```
+ * <router-outlet
+ *   (activate)='onActivate($event)'
+ *   (deactivate)='onDeactivate($event)'></router-outlet>
+ * ```
+ * @ngModule RouterModule
+ *
+ *
+ */
+var RouterOutlet = /** @class */ (function () {
+    function RouterOutlet(parentContexts, location, resolver, name, changeDetector) {
+        this.parentContexts = parentContexts;
+        this.location = location;
+        this.resolver = resolver;
+        this.changeDetector = changeDetector;
+        this.activated = null;
+        this._activatedRoute = null;
+        this.activateEvents = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+        this.deactivateEvents = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+        this.name = name || PRIMARY_OUTLET;
+        parentContexts.onChildOutletCreated(this.name, this);
+    }
+    RouterOutlet.prototype.ngOnDestroy = function () { this.parentContexts.onChildOutletDestroyed(this.name); };
+    RouterOutlet.prototype.ngOnInit = function () {
+        if (!this.activated) {
+            // If the outlet was not instantiated at the time the route got activated we need to populate
+            // the outlet when it is initialized (ie inside a NgIf)
+            var context = this.parentContexts.getContext(this.name);
+            if (context && context.route) {
+                if (context.attachRef) {
+                    // `attachRef` is populated when there is an existing component to mount
+                    this.attach(context.attachRef, context.route);
+                }
+                else {
+                    // otherwise the component defined in the configuration is created
+                    this.activateWith(context.route, context.resolver || null);
+                }
+            }
+        }
+    };
+    Object.defineProperty(RouterOutlet.prototype, "isActivated", {
+        get: function () { return !!this.activated; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(RouterOutlet.prototype, "component", {
+        get: function () {
+            if (!this.activated)
+                throw new Error('Outlet is not activated');
+            return this.activated.instance;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(RouterOutlet.prototype, "activatedRoute", {
+        get: function () {
+            if (!this.activated)
+                throw new Error('Outlet is not activated');
+            return this._activatedRoute;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(RouterOutlet.prototype, "activatedRouteData", {
+        get: function () {
+            if (this._activatedRoute) {
+                return this._activatedRoute.snapshot.data;
+            }
+            return {};
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Called when the `RouteReuseStrategy` instructs to detach the subtree
+     */
+    RouterOutlet.prototype.detach = function () {
+        if (!this.activated)
+            throw new Error('Outlet is not activated');
+        this.location.detach();
+        var cmp = this.activated;
+        this.activated = null;
+        this._activatedRoute = null;
+        return cmp;
+    };
+    /**
+     * Called when the `RouteReuseStrategy` instructs to re-attach a previously detached subtree
+     */
+    RouterOutlet.prototype.attach = function (ref, activatedRoute) {
+        this.activated = ref;
+        this._activatedRoute = activatedRoute;
+        this.location.insert(ref.hostView);
+    };
+    RouterOutlet.prototype.deactivate = function () {
+        if (this.activated) {
+            var c = this.component;
+            this.activated.destroy();
+            this.activated = null;
+            this._activatedRoute = null;
+            this.deactivateEvents.emit(c);
+        }
+    };
+    RouterOutlet.prototype.activateWith = function (activatedRoute, resolver) {
+        if (this.isActivated) {
+            throw new Error('Cannot activate an already activated outlet');
+        }
+        this._activatedRoute = activatedRoute;
+        var snapshot = activatedRoute._futureSnapshot;
+        var component = snapshot.routeConfig.component;
+        resolver = resolver || this.resolver;
+        var factory = resolver.resolveComponentFactory(component);
+        var childContexts = this.parentContexts.getOrCreateContext(this.name).children;
+        var injector = new OutletInjector(activatedRoute, childContexts, this.location.injector);
+        this.activated = this.location.createComponent(factory, this.location.length, injector);
+        // Calling `markForCheck` to make sure we will run the change detection when the
+        // `RouterOutlet` is inside a `ChangeDetectionStrategy.OnPush` component.
+        this.changeDetector.markForCheck();
+        this.activateEvents.emit(this.activated.instance);
+    };
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Output"])('activate'),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Object)
+    ], RouterOutlet.prototype, "activateEvents", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Output"])('deactivate'),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Object)
+    ], RouterOutlet.prototype, "deactivateEvents", void 0);
+    RouterOutlet = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({ selector: 'router-outlet', exportAs: 'outlet' }),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(3, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Attribute"])('name')),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [ChildrenOutletContexts, _angular_core__WEBPACK_IMPORTED_MODULE_1__["ViewContainerRef"],
+            _angular_core__WEBPACK_IMPORTED_MODULE_1__["ComponentFactoryResolver"], String, _angular_core__WEBPACK_IMPORTED_MODULE_1__["ChangeDetectorRef"]])
+    ], RouterOutlet);
+    return RouterOutlet;
+}());
+var OutletInjector = /** @class */ (function () {
+    function OutletInjector(route, childContexts, parent) {
+        this.route = route;
+        this.childContexts = childContexts;
+        this.parent = parent;
+    }
+    OutletInjector.prototype.get = function (token, notFoundValue) {
+        if (token === ActivatedRoute) {
+            return this.route;
+        }
+        if (token === ChildrenOutletContexts) {
+            return this.childContexts;
+        }
+        return this.parent.get(token, notFoundValue);
+    };
+    return OutletInjector;
+}());
+
+/**
+*@license
+*Copyright Google Inc. All Rights Reserved.
+*
+*Use of this source code is governed by an MIT-style license that can be
+*found in the LICENSE file at https://angular.io/license
+*/
+/**
+ * @description
+ *
+ * Provides a preloading strategy.
+ *
+ * @experimental
+ */
+var PreloadingStrategy = /** @class */ (function () {
+    function PreloadingStrategy() {
+    }
+    return PreloadingStrategy;
+}());
+/**
+ * @description
+ *
+ * Provides a preloading strategy that preloads all modules as quickly as possible.
+ *
+ * ```
+ * RouteModule.forRoot(ROUTES, {preloadingStrategy: PreloadAllModules})
+ * ```
+ *
+ * @experimental
+ */
+var PreloadAllModules = /** @class */ (function () {
+    function PreloadAllModules() {
+    }
+    PreloadAllModules.prototype.preload = function (route, fn) {
+        return fn().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(function () { return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(null); }));
+    };
+    return PreloadAllModules;
+}());
+/**
+ * @description
+ *
+ * Provides a preloading strategy that does not preload any modules.
+ *
+ * This strategy is enabled by default.
+ *
+ * @experimental
+ */
+var NoPreloading = /** @class */ (function () {
+    function NoPreloading() {
+    }
+    NoPreloading.prototype.preload = function (route, fn) { return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(null); };
+    return NoPreloading;
+}());
+/**
+ * The preloader optimistically loads all router configurations to
+ * make navigations into lazily-loaded sections of the application faster.
+ *
+ * The preloader runs in the background. When the router bootstraps, the preloader
+ * starts listening to all navigation events. After every such event, the preloader
+ * will check if any configurations can be loaded lazily.
+ *
+ * If a route is protected by `canLoad` guards, the preloaded will not load it.
+ *
+ *
+ */
+var RouterPreloader = /** @class */ (function () {
+    function RouterPreloader(router, moduleLoader, compiler, injector, preloadingStrategy) {
+        this.router = router;
+        this.injector = injector;
+        this.preloadingStrategy = preloadingStrategy;
+        var onStartLoad = function (r) { return router.triggerEvent(new RouteConfigLoadStart(r)); };
+        var onEndLoad = function (r) { return router.triggerEvent(new RouteConfigLoadEnd(r)); };
+        this.loader = new RouterConfigLoader(moduleLoader, compiler, onStartLoad, onEndLoad);
+    }
+    RouterPreloader.prototype.setUpPreloading = function () {
+        var _this = this;
+        this.subscription =
+            this.router.events
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["filter"])(function (e) { return e instanceof NavigationEnd; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["concatMap"])(function () { return _this.preload(); }))
+                .subscribe(function () { });
+    };
+    RouterPreloader.prototype.preload = function () {
+        var ngModule = this.injector.get(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModuleRef"]);
+        return this.processRoutes(ngModule, this.router.config);
+    };
+    // TODO(jasonaden): This class relies on code external to the class to call setUpPreloading. If
+    // this hasn't been done, ngOnDestroy will fail as this.subscription will be undefined. This
+    // should be refactored.
+    RouterPreloader.prototype.ngOnDestroy = function () { this.subscription.unsubscribe(); };
+    RouterPreloader.prototype.processRoutes = function (ngModule, routes) {
+        var e_1, _a;
+        var res = [];
+        try {
+            for (var routes_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(routes), routes_1_1 = routes_1.next(); !routes_1_1.done; routes_1_1 = routes_1.next()) {
+                var route = routes_1_1.value;
+                // we already have the config loaded, just recurse
+                if (route.loadChildren && !route.canLoad && route._loadedConfig) {
+                    var childConfig = route._loadedConfig;
+                    res.push(this.processRoutes(childConfig.module, childConfig.routes));
+                    // no config loaded, fetch the config
+                }
+                else if (route.loadChildren && !route.canLoad) {
+                    res.push(this.preloadConfig(ngModule, route));
+                    // recurse into children
+                }
+                else if (route.children) {
+                    res.push(this.processRoutes(ngModule, route.children));
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (routes_1_1 && !routes_1_1.done && (_a = routes_1.return)) _a.call(routes_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["from"])(res).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeAll"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (_) { return void 0; }));
+    };
+    RouterPreloader.prototype.preloadConfig = function (ngModule, route) {
+        var _this = this;
+        return this.preloadingStrategy.preload(route, function () {
+            var loaded$ = _this.loader.load(ngModule.injector, route);
+            return loaded$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function (config) {
+                route._loadedConfig = config;
+                return _this.processRoutes(config.module, config.routes);
+            }));
+        });
+    };
+    RouterPreloader = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Router, _angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModuleFactoryLoader"], _angular_core__WEBPACK_IMPORTED_MODULE_1__["Compiler"],
+            _angular_core__WEBPACK_IMPORTED_MODULE_1__["Injector"], PreloadingStrategy])
+    ], RouterPreloader);
+    return RouterPreloader;
+}());
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+var RouterScroller = /** @class */ (function () {
+    function RouterScroller(router, 
+    /** @docsNotRequired */ viewportScroller, options) {
+        if (options === void 0) { options = {}; }
+        this.router = router;
+        this.viewportScroller = viewportScroller;
+        this.options = options;
+        this.lastId = 0;
+        this.lastSource = 'imperative';
+        this.restoredId = 0;
+        this.store = {};
+        // Default both options to 'disabled'
+        options.scrollPositionRestoration = options.scrollPositionRestoration || 'disabled';
+        options.anchorScrolling = options.anchorScrolling || 'disabled';
+    }
+    RouterScroller.prototype.init = function () {
+        // we want to disable the automatic scrolling because having two places
+        // responsible for scrolling results race conditions, especially given
+        // that browser don't implement this behavior consistently
+        if (this.options.scrollPositionRestoration !== 'disabled') {
+            this.viewportScroller.setHistoryScrollRestoration('manual');
+        }
+        this.routerEventsSubscription = this.createScrollEvents();
+        this.scrollEventsSubscription = this.consumeScrollEvents();
+    };
+    RouterScroller.prototype.createScrollEvents = function () {
+        var _this = this;
+        return this.router.events.subscribe(function (e) {
+            if (e instanceof NavigationStart) {
+                // store the scroll position of the current stable navigations.
+                _this.store[_this.lastId] = _this.viewportScroller.getScrollPosition();
+                _this.lastSource = e.navigationTrigger;
+                _this.restoredId = e.restoredState ? e.restoredState.navigationId : 0;
+            }
+            else if (e instanceof NavigationEnd) {
+                _this.lastId = e.id;
+                _this.scheduleScrollEvent(e, _this.router.parseUrl(e.urlAfterRedirects).fragment);
+            }
+        });
+    };
+    RouterScroller.prototype.consumeScrollEvents = function () {
+        var _this = this;
+        return this.router.events.subscribe(function (e) {
+            if (!(e instanceof Scroll))
+                return;
+            // a popstate event. The pop state event will always ignore anchor scrolling.
+            if (e.position) {
+                if (_this.options.scrollPositionRestoration === 'top') {
+                    _this.viewportScroller.scrollToPosition([0, 0]);
+                }
+                else if (_this.options.scrollPositionRestoration === 'enabled') {
+                    _this.viewportScroller.scrollToPosition(e.position);
+                }
+                // imperative navigation "forward"
+            }
+            else {
+                if (e.anchor && _this.options.anchorScrolling === 'enabled') {
+                    _this.viewportScroller.scrollToAnchor(e.anchor);
+                }
+                else if (_this.options.scrollPositionRestoration !== 'disabled') {
+                    _this.viewportScroller.scrollToPosition([0, 0]);
+                }
+            }
+        });
+    };
+    RouterScroller.prototype.scheduleScrollEvent = function (routerEvent, anchor) {
+        this.router.triggerEvent(new Scroll(routerEvent, this.lastSource === 'popstate' ? this.store[this.restoredId] : null, anchor));
+    };
+    RouterScroller.prototype.ngOnDestroy = function () {
+        if (this.routerEventsSubscription) {
+            this.routerEventsSubscription.unsubscribe();
+        }
+        if (this.scrollEventsSubscription) {
+            this.scrollEventsSubscription.unsubscribe();
+        }
+    };
+    return RouterScroller;
+}());
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * @description
+ *
+ * Contains a list of directives
+ *
+ *
+ */
+var ROUTER_DIRECTIVES = [RouterOutlet, RouterLink, RouterLinkWithHref, RouterLinkActive, EmptyOutletComponent];
+/**
+ * @description
+ *
+ * Is used in DI to configure the router.
+ *
+ *
+ */
+var ROUTER_CONFIGURATION = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["InjectionToken"]('ROUTER_CONFIGURATION');
+/**
+ * @docsNotRequired
+ */
+var ROUTER_FORROOT_GUARD = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["InjectionToken"]('ROUTER_FORROOT_GUARD');
+var ROUTER_PROVIDERS = [
+    _angular_common__WEBPACK_IMPORTED_MODULE_4__["Location"],
+    { provide: UrlSerializer, useClass: DefaultUrlSerializer },
+    {
+        provide: Router,
+        useFactory: setupRouter,
+        deps: [
+            _angular_core__WEBPACK_IMPORTED_MODULE_1__["ApplicationRef"], UrlSerializer, ChildrenOutletContexts, _angular_common__WEBPACK_IMPORTED_MODULE_4__["Location"], _angular_core__WEBPACK_IMPORTED_MODULE_1__["Injector"],
+            _angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModuleFactoryLoader"], _angular_core__WEBPACK_IMPORTED_MODULE_1__["Compiler"], ROUTES, ROUTER_CONFIGURATION,
+            [UrlHandlingStrategy, new _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"]()], [RouteReuseStrategy, new _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"]()]
+        ]
+    },
+    ChildrenOutletContexts,
+    { provide: ActivatedRoute, useFactory: rootRoute, deps: [Router] },
+    { provide: _angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModuleFactoryLoader"], useClass: _angular_core__WEBPACK_IMPORTED_MODULE_1__["SystemJsNgModuleLoader"] },
+    RouterPreloader,
+    NoPreloading,
+    PreloadAllModules,
+    { provide: ROUTER_CONFIGURATION, useValue: { enableTracing: false } },
+];
+function routerNgProbeToken() {
+    return new _angular_core__WEBPACK_IMPORTED_MODULE_1__["NgProbeToken"]('Router', Router);
+}
+/**
+ * @usageNotes
+ *
+ * RouterModule can be imported multiple times: once per lazily-loaded bundle.
+ * Since the router deals with a global shared resource--location, we cannot have
+ * more than one router service active.
+ *
+ * That is why there are two ways to create the module: `RouterModule.forRoot` and
+ * `RouterModule.forChild`.
+ *
+ * * `forRoot` creates a module that contains all the directives, the given routes, and the router
+ *   service itself.
+ * * `forChild` creates a module that contains all the directives and the given routes, but does not
+ *   include the router service.
+ *
+ * When registered at the root, the module should be used as follows
+ *
+ * ```
+ * @NgModule({
+ *   imports: [RouterModule.forRoot(ROUTES)]
+ * })
+ * class MyNgModule {}
+ * ```
+ *
+ * For submodules and lazy loaded submodules the module should be used as follows:
+ *
+ * ```
+ * @NgModule({
+ *   imports: [RouterModule.forChild(ROUTES)]
+ * })
+ * class MyNgModule {}
+ * ```
+ *
+ * @description
+ *
+ * Adds router directives and providers.
+ *
+ * Managing state transitions is one of the hardest parts of building applications. This is
+ * especially true on the web, where you also need to ensure that the state is reflected in the URL.
+ * In addition, we often want to split applications into multiple bundles and load them on demand.
+ * Doing this transparently is not trivial.
+ *
+ * The Angular router solves these problems. Using the router, you can declaratively specify
+ * application states, manage state transitions while taking care of the URL, and load bundles on
+ * demand.
+ *
+ * [Read this developer guide](https://angular.io/docs/ts/latest/guide/router.html) to get an
+ * overview of how the router should be used.
+ *
+ *
+ */
+var RouterModule = /** @class */ (function () {
+    // Note: We are injecting the Router so it gets created eagerly...
+    function RouterModule(guard, router) {
+    }
+    RouterModule_1 = RouterModule;
+    /**
+     * Creates a module with all the router providers and directives. It also optionally sets up an
+     * application listener to perform an initial navigation.
+     *
+     * Options (see `ExtraOptions`):
+     * * `enableTracing` makes the router log all its internal events to the console.
+     * * `useHash` enables the location strategy that uses the URL fragment instead of the history
+     * API.
+     * * `initialNavigation` disables the initial navigation.
+     * * `errorHandler` provides a custom error handler.
+     * * `preloadingStrategy` configures a preloading strategy (see `PreloadAllModules`).
+     * * `onSameUrlNavigation` configures how the router handles navigation to the current URL. See
+     * `ExtraOptions` for more details.
+     * * `paramsInheritanceStrategy` defines how the router merges params, data and resolved data
+     * from parent to child routes.
+     */
+    RouterModule.forRoot = function (routes, config) {
+        return {
+            ngModule: RouterModule_1,
+            providers: [
+                ROUTER_PROVIDERS,
+                provideRoutes(routes),
+                {
+                    provide: ROUTER_FORROOT_GUARD,
+                    useFactory: provideForRootGuard,
+                    deps: [[Router, new _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"](), new _angular_core__WEBPACK_IMPORTED_MODULE_1__["SkipSelf"]()]]
+                },
+                { provide: ROUTER_CONFIGURATION, useValue: config ? config : {} },
+                {
+                    provide: _angular_common__WEBPACK_IMPORTED_MODULE_4__["LocationStrategy"],
+                    useFactory: provideLocationStrategy,
+                    deps: [
+                        _angular_common__WEBPACK_IMPORTED_MODULE_4__["PlatformLocation"], [new _angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"](_angular_common__WEBPACK_IMPORTED_MODULE_4__["APP_BASE_HREF"]), new _angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"]()], ROUTER_CONFIGURATION
+                    ]
+                },
+                {
+                    provide: RouterScroller,
+                    useFactory: createRouterScroller,
+                    deps: [Router, _angular_common__WEBPACK_IMPORTED_MODULE_4__["ViewportScroller"], ROUTER_CONFIGURATION]
+                },
+                {
+                    provide: PreloadingStrategy,
+                    useExisting: config && config.preloadingStrategy ? config.preloadingStrategy :
+                        NoPreloading
+                },
+                { provide: _angular_core__WEBPACK_IMPORTED_MODULE_1__["NgProbeToken"], multi: true, useFactory: routerNgProbeToken },
+                provideRouterInitializer(),
+            ],
+        };
+    };
+    /**
+     * Creates a module with all the router directives and a provider registering routes.
+     */
+    RouterModule.forChild = function (routes) {
+        return { ngModule: RouterModule_1, providers: [provideRoutes(routes)] };
+    };
+    var RouterModule_1;
+    RouterModule = RouterModule_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
+            declarations: ROUTER_DIRECTIVES,
+            exports: ROUTER_DIRECTIVES,
+            entryComponents: [EmptyOutletComponent]
+        }),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"])()), Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"])(ROUTER_FORROOT_GUARD)), Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Optional"])()),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object, Router])
+    ], RouterModule);
+    return RouterModule;
+}());
+function createRouterScroller(router, viewportScroller, config) {
+    if (config.scrollOffset) {
+        viewportScroller.setOffset(config.scrollOffset);
+    }
+    return new RouterScroller(router, viewportScroller, config);
+}
+function provideLocationStrategy(platformLocationStrategy, baseHref, options) {
+    if (options === void 0) { options = {}; }
+    return options.useHash ? new _angular_common__WEBPACK_IMPORTED_MODULE_4__["HashLocationStrategy"](platformLocationStrategy, baseHref) :
+        new _angular_common__WEBPACK_IMPORTED_MODULE_4__["PathLocationStrategy"](platformLocationStrategy, baseHref);
+}
+function provideForRootGuard(router) {
+    if (router) {
+        throw new Error("RouterModule.forRoot() called twice. Lazy loaded modules should use RouterModule.forChild() instead.");
+    }
+    return 'guarded';
+}
+/**
+ * @description
+ *
+ * Registers routes.
+ *
+ * @usageNotes
+ * ### Example
+ *
+ * ```
+ * @NgModule({
+ *   imports: [RouterModule.forChild(ROUTES)],
+ *   providers: [provideRoutes(EXTRA_ROUTES)]
+ * })
+ * class MyNgModule {}
+ * ```
+ *
+ *
+ */
+function provideRoutes(routes) {
+    return [
+        { provide: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ANALYZE_FOR_ENTRY_COMPONENTS"], multi: true, useValue: routes },
+        { provide: ROUTES, multi: true, useValue: routes },
+    ];
+}
+function setupRouter(ref, urlSerializer, contexts, location, injector, loader, compiler, config, opts, urlHandlingStrategy, routeReuseStrategy) {
+    if (opts === void 0) { opts = {}; }
+    var router = new Router(null, urlSerializer, contexts, location, injector, loader, compiler, flatten(config));
+    if (urlHandlingStrategy) {
+        router.urlHandlingStrategy = urlHandlingStrategy;
+    }
+    if (routeReuseStrategy) {
+        router.routeReuseStrategy = routeReuseStrategy;
+    }
+    if (opts.errorHandler) {
+        router.errorHandler = opts.errorHandler;
+    }
+    if (opts.malformedUriErrorHandler) {
+        router.malformedUriErrorHandler = opts.malformedUriErrorHandler;
+    }
+    if (opts.enableTracing) {
+        var dom_1 = Object(_angular_platform_browser__WEBPACK_IMPORTED_MODULE_5__["ɵgetDOM"])();
+        router.events.subscribe(function (e) {
+            dom_1.logGroup("Router Event: " + e.constructor.name);
+            dom_1.log(e.toString());
+            dom_1.log(e);
+            dom_1.logGroupEnd();
+        });
+    }
+    if (opts.onSameUrlNavigation) {
+        router.onSameUrlNavigation = opts.onSameUrlNavigation;
+    }
+    if (opts.paramsInheritanceStrategy) {
+        router.paramsInheritanceStrategy = opts.paramsInheritanceStrategy;
+    }
+    if (opts.urlUpdateStrategy) {
+        router.urlUpdateStrategy = opts.urlUpdateStrategy;
+    }
+    if (opts.relativeLinkResolution) {
+        router.relativeLinkResolution = opts.relativeLinkResolution;
+    }
+    return router;
+}
+function rootRoute(router) {
+    return router.routerState.root;
+}
+/**
+ * To initialize the router properly we need to do in two steps:
+ *
+ * We need to start the navigation in a APP_INITIALIZER to block the bootstrap if
+ * a resolver or a guards executes asynchronously. Second, we need to actually run
+ * activation in a BOOTSTRAP_LISTENER. We utilize the afterPreactivation
+ * hook provided by the router to do that.
+ *
+ * The router navigation starts, reaches the point when preactivation is done, and then
+ * pauses. It waits for the hook to be resolved. We then resolve it only in a bootstrap listener.
+ */
+var RouterInitializer = /** @class */ (function () {
+    function RouterInitializer(injector) {
+        this.injector = injector;
+        this.initNavigation = false;
+        this.resultOfPreactivationDone = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
+    }
+    RouterInitializer.prototype.appInitializer = function () {
+        var _this = this;
+        var p = this.injector.get(_angular_common__WEBPACK_IMPORTED_MODULE_4__["LOCATION_INITIALIZED"], Promise.resolve(null));
+        return p.then(function () {
+            var resolve = null;
+            var res = new Promise(function (r) { return resolve = r; });
+            var router = _this.injector.get(Router);
+            var opts = _this.injector.get(ROUTER_CONFIGURATION);
+            if (_this.isLegacyDisabled(opts) || _this.isLegacyEnabled(opts)) {
+                resolve(true);
+            }
+            else if (opts.initialNavigation === 'disabled') {
+                router.setUpLocationChangeListener();
+                resolve(true);
+            }
+            else if (opts.initialNavigation === 'enabled') {
+                router.hooks.afterPreactivation = function () {
+                    // only the initial navigation should be delayed
+                    if (!_this.initNavigation) {
+                        _this.initNavigation = true;
+                        resolve(true);
+                        return _this.resultOfPreactivationDone;
+                        // subsequent navigations should not be delayed
+                    }
+                    else {
+                        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(null);
+                    }
+                };
+                router.initialNavigation();
+            }
+            else {
+                throw new Error("Invalid initialNavigation options: '" + opts.initialNavigation + "'");
+            }
+            return res;
+        });
+    };
+    RouterInitializer.prototype.bootstrapListener = function (bootstrappedComponentRef) {
+        var opts = this.injector.get(ROUTER_CONFIGURATION);
+        var preloader = this.injector.get(RouterPreloader);
+        var routerScroller = this.injector.get(RouterScroller);
+        var router = this.injector.get(Router);
+        var ref = this.injector.get(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ApplicationRef"]);
+        if (bootstrappedComponentRef !== ref.components[0]) {
+            return;
+        }
+        if (this.isLegacyEnabled(opts)) {
+            router.initialNavigation();
+        }
+        else if (this.isLegacyDisabled(opts)) {
+            router.setUpLocationChangeListener();
+        }
+        preloader.setUpPreloading();
+        routerScroller.init();
+        router.resetRootComponentType(ref.componentTypes[0]);
+        this.resultOfPreactivationDone.next(null);
+        this.resultOfPreactivationDone.complete();
+    };
+    RouterInitializer.prototype.isLegacyEnabled = function (opts) {
+        return opts.initialNavigation === 'legacy_enabled' || opts.initialNavigation === true ||
+            opts.initialNavigation === undefined;
+    };
+    RouterInitializer.prototype.isLegacyDisabled = function (opts) {
+        return opts.initialNavigation === 'legacy_disabled' || opts.initialNavigation === false;
+    };
+    RouterInitializer = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])(),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injector"]])
+    ], RouterInitializer);
+    return RouterInitializer;
+}());
+function getAppInitializer(r) {
+    return r.appInitializer.bind(r);
+}
+function getBootstrapListener(r) {
+    return r.bootstrapListener.bind(r);
+}
+/**
+ * A token for the router initializer that will be called after the app is bootstrapped.
+ *
+ * @experimental
+ */
+var ROUTER_INITIALIZER = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["InjectionToken"]('Router Initializer');
+function provideRouterInitializer() {
+    return [
+        RouterInitializer,
+        {
+            provide: _angular_core__WEBPACK_IMPORTED_MODULE_1__["APP_INITIALIZER"],
+            multi: true,
+            useFactory: getAppInitializer,
+            deps: [RouterInitializer]
+        },
+        { provide: ROUTER_INITIALIZER, useFactory: getBootstrapListener, deps: [RouterInitializer] },
+        { provide: _angular_core__WEBPACK_IMPORTED_MODULE_1__["APP_BOOTSTRAP_LISTENER"], multi: true, useExisting: ROUTER_INITIALIZER },
+    ];
+}
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+var VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["Version"]('6.1.9');
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+// This file only reexports content of the `src` folder. Keep it that way.
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+//# sourceMappingURL=router.js.map
 
 
 /***/ }),

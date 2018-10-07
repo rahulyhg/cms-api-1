@@ -1,13 +1,13 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([["styles"],{
 
-/***/ "./node_modules/raw-loader/index.js!./node_modules/postcss-loader/lib/index.js?!./src/styles.css":
-/*!**********************************************************************************************!*\
-  !*** ./node_modules/raw-loader!./node_modules/postcss-loader/lib??embedded!./src/styles.css ***!
-  \**********************************************************************************************/
+/***/ "./node_modules/raw-loader/index.js!./node_modules/postcss-loader/lib/index.js?!./node_modules/sass-loader/lib/loader.js?!./src/styles.scss":
+/*!***************************************************************************************************************************************************!*\
+  !*** ./node_modules/raw-loader!./node_modules/postcss-loader/lib??embedded!./node_modules/sass-loader/lib/loader.js??ref--15-3!./src/styles.scss ***!
+  \***************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "/* You can add global styles to this file, and also import other style files */\n"
+module.exports = "* {\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0; }\n  *:before, *:after {\n    box-sizing: border-box; }\n  html, body {\n  height: 100%; }\n  body {\n  color: #58666e;\n  background-color: #f0f3f4; }\n  input, textarea, button {\n  display: block;\n  width: 100%; }\n  input {\n  height: 34px;\n  padding: 6px 12px;\n  font-size: 0.95em;\n  color: #555;\n  background-color: #fff;\n  background-image: none;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;\n  outline: none; }\n  input::-webkit-input-placeholder {\n    color: #d2d2d2; }\n  input::-ms-input-placeholder {\n    color: #d2d2d2; }\n  input::placeholder {\n    color: #d2d2d2; }\n  .text.center {\n  text-align: center; }\n  .text.muted {\n  color: #98a6ad; }\n  .btn {\n  text-align: center;\n  white-space: nowrap;\n  vertical-align: middle;\n  touch-action: manipulation;\n  cursor: pointer;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  background-image: none;\n  border: 1px solid transparent;\n  font-weight: 500;\n  border-radius: 2px;\n  outline: 0 !important; }\n  .btn.lg {\n    padding: 10px 16px; }\n  .btn.block {\n    display: block;\n    padding-right: 12px;\n    padding-left: 12px; }\n  .btn.default {\n    color: #58666e !important;\n    background-color: #fff;\n    border-color: #dee5e7;\n    border-bottom-color: #d8e1e3;\n    box-shadow: 0 1px 1px rgba(90, 90, 90, 0.1); }\n  .btn.purple {\n    color: #fff !important;\n    background-color: #7266ba;\n    border-color: #7266ba; }\n  .login {\n  height: 100%;\n  padding: 20px;\n  text-align: center;\n  color: #58666e; }\n  .login .panel {\n    width: 350px; }\n  .login .panel h1 {\n      font-size: 1.4em;\n      margin-bottom: 20px; }\n  .login .panel h3 {\n      margin-bottom: 10px;\n      font-weight: normal;\n      font-size: 1.1em; }\n  .login .panel p {\n      margin: 30px 0 6px;\n      display: block; }\n  .login .panel .forgot-password {\n      margin: 10px 0 5px; }\n  .login .panel .field-holder {\n      margin-bottom: 15px; }\n  .login .panel .field-holder input.field {\n        padding: 20px 15px; }\n  .login .panel .field-holder input.field.email {\n          border-radius: 4px 4px 0 0; }\n  .login .panel .field-holder input.field.password {\n          border-radius: 0 0 4px 4px;\n          border-top: 0; }\n  .login .panel .footer {\n      margin-top: 30px; }\n  @media (max-width: 767px) {\n      .login .panel {\n        width: 100%; } }\n"
 
 /***/ }),
 
@@ -502,15 +502,15 @@ module.exports = function (css) {
 
 /***/ }),
 
-/***/ "./src/styles.css":
-/*!************************!*\
-  !*** ./src/styles.css ***!
-  \************************/
+/***/ "./src/styles.scss":
+/*!*************************!*\
+  !*** ./src/styles.scss ***!
+  \*************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(/*! !../node_modules/raw-loader!../node_modules/postcss-loader/lib??embedded!./styles.css */ "./node_modules/raw-loader/index.js!./node_modules/postcss-loader/lib/index.js?!./src/styles.css");
+var content = __webpack_require__(/*! !../node_modules/raw-loader!../node_modules/postcss-loader/lib??embedded!../node_modules/sass-loader/lib/loader.js??ref--15-3!./styles.scss */ "./node_modules/raw-loader/index.js!./node_modules/postcss-loader/lib/index.js?!./node_modules/sass-loader/lib/loader.js?!./src/styles.scss");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -533,13 +533,13 @@ if(false) {}
 /***/ }),
 
 /***/ 2:
-/*!******************************!*\
-  !*** multi ./src/styles.css ***!
-  \******************************/
+/*!*******************************!*\
+  !*** multi ./src/styles.scss ***!
+  \*******************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /angular/src/styles.css */"./src/styles.css");
+module.exports = __webpack_require__(/*! /angular/src/styles.scss */"./src/styles.scss");
 
 
 /***/ })
