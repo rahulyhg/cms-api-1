@@ -1,0 +1,78 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+    &:before, &:after {
+        box-sizing: border-box;
+    }
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    color: #58666e;
+    background-color: #f0f3f4;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    cursor: pointer;
+    color: #337ab7;
+
+    &:hover {
+        outline: 0;
+
+    }
+}
+
+nav, input, textarea, button {
+    display: block;
+    width: 100%;
+}
+
+input {
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 0.95em;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    outline: none;
+
+    &::placeholder {
+        color: #d2d2d2;
+    }
+}
+
+.text {
+    &.center {
+        text-align: center;
+    }
+
+    &.muted {
+        color: #98a6ad;
+    }
+}
+
+.clearfix {
+    display: table;
+    content: " ";
+
+    &:before {
+        display: table;
+        content: " ";
+    }
+
+    &:after {
+        display: table;
+        content: " ";
+        clear: both;
+    }
+}

@@ -1,7 +1,7 @@
 <?= $this->doctype() ?>
 <html lang="en">
 <head>
-    <base href="/">
+    <base href="/admin">
     <meta charset="utf-8">
     <?php
 
@@ -9,26 +9,12 @@
 
     echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
 
-    echo $this->headLink(['rel' => 'icon', 'type' => 'image/png', 'href' => $this->basePath('/img/favicon.png')])
-        ->prependStylesheet($this->basePath('/zf-apigility/css/main.min.css'));
+    echo $this->headLink(['rel' => 'icon', 'type' => 'image/png', 'href' => $this->basePath('/img/favicon.png')]);
     ?>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu|Titillium+Web" rel="stylesheet">
 </head>
 <body>
-<app-root></app-root>
-<div class="container">
-    <?= $this->content ?>
-</div>
-<footer>
-    <hr>
-    <div class="container center-block">
-        <div class="row">
-            <div class="col-sm-12">
-                &copy; Copyright 2013 - <?= date('Y') ?>
-                by <a href="http://www.zend.com">Zend Technologies</a> Ltd.
-            </div>
-        </div>
-    </div>
-</footer>
+<?= $this->content ?>
 <?= $this->headScript()
     ->prependFile($this->basePath('/angular/main.js'))
     ->prependFile($this->basePath('/angular/polyfills.js'))

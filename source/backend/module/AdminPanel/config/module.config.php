@@ -6,18 +6,23 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use AdminPanel\Controller\AdminPanelController;
 use AdminPanel\Factory\AdminPanelControllerFactory;
 use Zend\Router\Http\Literal;
+use Zend\Router\Http\Segment;
 
 return [
     'router' => [
         'routes' => [
             'adminpanel' => [
-                'type' => Literal::class,
+                'type' => Segment::class,
                 'options' => [
-                    'route' => '/admin',
+                    'route' => '/admin[/:pages]',
+                    'constraints' => [
+                        'pages' => '[a-zA-Z0-9-/]*'
+                    ],
                     'defaults' => [
                         'controller' => AdminPanelController::class,
                         'action' => 'index'
-                    ]
+                    ],
+                    'may_terminate' => false,
                 ]
             ]
         ]

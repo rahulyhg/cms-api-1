@@ -1,16 +1,23 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
-import { AppComponent } from './app.component';
+import { AdminRoutesModule } from './admin-route.module';
+
+import { AdminComponent } from './components/admin.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AdminComponent,
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    AdminRoutesModule,
+    FlexLayoutModule,
+
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [ AdminComponent ]
 })
-export class AppModule { }
+export class AdminModule {
+}
