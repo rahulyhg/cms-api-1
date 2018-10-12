@@ -1,11 +1,9 @@
 .login {
     height: 100%;
     padding: 20px;
-    text-align: center;
     color: #58666e;
 
     .panel {
-        width: 350px;
 
         h1 {
             font-size: 1.4em;
@@ -41,15 +39,60 @@
                     border-radius: 0 0 4px 4px;
                     border-top: 0;
                 }
+
+                &.ng-valid {
+                    border-left: 5px solid #42A948;
+                }
+
+                &.ng-invalid.ng-touched,
+                &.ng-dirty.ng-invalid {
+                    border-left: 5px solid #a94442;
+                }
+            }
+        }
+
+        .el-loading-spinner {
+            margin-top: -10px;
+            .circular {
+                width: 20px;
+                height: 20px;
             }
         }
 
         .footer {
             margin-top: 30px;
         }
+    }
+}
 
-        @include mobile {
-            width: 100%
-        }
+.alert {
+    display: block;
+    padding: 10px 20px 10px 10px;
+    text-align: left;
+    margin: 5px 0;
+    border-radius: 3px;
+    position: relative;
+
+    ul {
+        list-style: none;
+        font-size: 16px;
+    }
+
+    &.error {
+        background: #ffebeb;
+        border: 1px solid #ff9090;
+        color: #bd0303;
+        text-shadow: 0 1px 0 white;
+    }
+
+    .close {
+        color: #bd0303;
+        position: absolute;
+        top: 0;
+        right: 3px;
+        text-shadow: 0 2px 0 white;
+        line-height: 30px;
+        font-size: 12px;
+        cursor: pointer;
     }
 }

@@ -31,6 +31,16 @@ return [
                     ],
                 ],
             ],
+            'user-api.rpc.user-login' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/login',
+                    'defaults' => [
+                        'controller' => 'UserApi\\V1\\Rpc\\UserLogin\\Controller',
+                        'action' => 'userLogin',
+                    ],
+                ],
+            ],
         ],
     ],
     'session_containers' => [
@@ -38,6 +48,48 @@ return [
     ],
     'input_filter_specs' => [
         'UserApi\\V1\\Rpc\\UserExist\\Validator' => [],
+        'UserApi\\V1\\Rpc\\UserLogin\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\EmailAddress::class,
+                        'options' => [],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'email',
+                'field_type' => 'string',
+                'continue_if_empty' => false,
+                'error_message' => 'Please enter a valid email address.',
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\StringLength::class,
+                        'options' => [
+                            'max' => '16',
+                            'min' => '6',
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'password',
+                'field_type' => 'string',
+                'error_message' => 'Password is required and it should be a text between 6 and 16 characters.',
+            ],
+        ],
     ],
     'doctrine' => [
         'driver' => [
@@ -58,12 +110,14 @@ return [
     'controllers' => [
         'factories' => [
             'UserApi\\V1\\Rpc\\UserExist\\Controller' => \UserApi\V1\Rpc\UserExist\UserExistControllerFactory::class,
+            'UserApi\\V1\\Rpc\\UserLogin\\Controller' => \UserApi\V1\Rpc\UserLogin\UserLoginControllerFactory::class,
         ],
     ],
     'zf-versioning' => [
         'uri' => [
             0 => 'user-api.rest.users',
             1 => 'user-api.rpc.user-exist',
+            2 => 'user-api.rpc.user-login',
         ],
     ],
     'zf-rest' => [
@@ -94,6 +148,7 @@ return [
         'controllers' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => 'HalJson',
             'UserApi\\V1\\Rpc\\UserExist\\Controller' => 'Json',
+            'UserApi\\V1\\Rpc\\UserLogin\\Controller' => 'Json',
         ],
         'accept_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -106,6 +161,11 @@ return [
                 1 => 'application/json',
                 2 => 'application/*+json',
             ],
+            'UserApi\\V1\\Rpc\\UserLogin\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
         ],
         'content_type_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -113,6 +173,10 @@ return [
                 1 => 'application/json',
             ],
             'UserApi\\V1\\Rpc\\UserExist\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+            ],
+            'UserApi\\V1\\Rpc\\UserLogin\\Controller' => [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
             ],
@@ -148,10 +212,20 @@ return [
             ],
             'route_name' => 'user-api.rpc.user-exist',
         ],
+        'UserApi\\V1\\Rpc\\UserLogin\\Controller' => [
+            'service_name' => 'userLogin',
+            'http_methods' => [
+                0 => 'POST',
+            ],
+            'route_name' => 'user-api.rpc.user-login',
+        ],
     ],
     'zf-content-validation' => [
         'UserApi\\V1\\Rpc\\UserExist\\Controller' => [
             'input_filter' => 'UserApi\\V1\\Rpc\\UserExist\\Validator',
+        ],
+        'UserApi\\V1\\Rpc\\UserLogin\\Controller' => [
+            'input_filter' => 'UserApi\\V1\\Rpc\\UserLogin\\Validator',
         ],
     ],
 ];

@@ -29,6 +29,7 @@ return [
     'ZF\\Versioning',
     'DoctrineModule',
     'DoctrineORMModule',
+    'ZfrCors',
     'Application',
     'UserApi',
 	'AdminPanel',
