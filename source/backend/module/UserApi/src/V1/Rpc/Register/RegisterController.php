@@ -1,15 +1,13 @@
 <?php
-
-namespace UserApi\V1\Rpc\UserLogin;
+namespace UserApi\V1\Rpc\Register;
 
 use UserApi\Entity\User;
 use UserApi\Service\UserService;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Session\Container;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
 
-class UserLoginController extends AbstractActionController
+class RegisterController extends AbstractActionController
 {
     /**
      * @var UserService
@@ -22,14 +20,12 @@ class UserLoginController extends AbstractActionController
         $this->userService = $userService;
     }
 
-    public function userLoginAction()
+    public function registerAction()
     {
         $data = $this->getInputFilter()->getValues();
 
         try {
-            $user = $this->userService->login($data['email'], $data['password']);
-            $container = new Container('user');
-            $container->currentUser = $user;
+            $user = $this->userService->register($data['email'], $data['fullname'], $data['password']);
             $response = [
                 'success' => true,
                 'result' => [

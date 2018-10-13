@@ -15,12 +15,14 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
 import { EmailValidator } from './shared/email-validator.directive';
 import { AuthGuard } from './shared/auth.guard';
 import { AuthenticationService } from './services/authentication.service';
+import { RegisterComponent } from './pages/register/register.component';
 
 @NgModule({
   declarations: [
     AdminComponent,
     LoginComponent,
     LoginFooterComponent,
+    RegisterComponent,
     DashboardComponent,
     PageNotFoundComponent,
     EmailValidator,

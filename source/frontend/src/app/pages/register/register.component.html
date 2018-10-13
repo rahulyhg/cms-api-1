@@ -1,3 +1,28 @@
-<p>
-  register works!
-</p>
+<div class="register" el-row type="flex" justify="center" align="middle">
+    <div class="panel" el-col span="6" [xs]="{span:24}" [sm]="{span:12}" [md]="{span:6}">
+        <h1>Code Matrix Zone</h1>
+        <form (submit)="login($event)">
+            <h3>Sign in to get in touch</h3>
+
+            <div class="alert error" *ngIf="isError">
+                <ul [innerHtml]="errorMessage"></ul>
+                <span class="close glyphicon glyphicon-remove" (click)="closeAlertMessage($event)"></span>
+            </div>
+
+            <div class="field-holder">
+                <input [(ngModel)]="credential.email" appEmailValidator maxlength="128"
+                       type="email" placeholder="Email" class="field email" name="email">
+                <input [(ngModel)]="credential.password" required minlength="6" maxlength="16"
+                       type="password" placeholder="Password" class="field password" name="password">
+            </div>
+
+            <button type="submit" class="btn purple lg" [el-loading]="isLoading">Log in</button>
+
+            <div class="forgot-password"><a routerLink="forgot-password">Forgot password?</a></div>
+            <p><small>Do not have an account?</small></p>
+            <a routerLink="/register" class="btn default block lg">Create an account</a>
+        </form>
+
+        <app-login-footer></app-login-footer>
+    </div>
+</div>

@@ -167,23 +167,37 @@ class UserService implements UserServiceInterface
 
     /**
      * @param string $email
+     * @param string $fullname
      * @param string $password
      *
      * @return User
      */
-    public function addUserByAdmin(string $email, string $password): User
+    public function addUserByAdmin(string $email, string $fullname, string $password): User
     {
-        return $this->create($email, $password, UserStatus::STATUS_ENABLE);
+        return $this->create($email, $fullname, $password, UserStatus::STATUS_ENABLE);
     }
 
     /**
      * @param string $email
+     * @param string $fullname
+     * @param string $password
+     *
+     * @return User
+     */
+    public function register(string $email, string $fullname, string $password): User
+    {
+        return $this->create($email, $fullname, $password, UserStatus::STATUS_DISABLE);
+    }
+
+    /**
+     * @param string $email
+     * @param string $fullname
      * @param string $password
      * @param int    $status
      *
      * @return User
      */
-    private function create(string $email, string $password, int $status): User
+    private function create(string $email, string $fullname, string $password, int $status): User
     {
         $user = $this->getByEmail($email);
 
@@ -194,6 +208,7 @@ class UserService implements UserServiceInterface
         $user = new User([
             'email' => $email,
             'password' => $this->encryptPassword($password),
+            'fullname' => $fullname,
             'status' => $status,
         ]);
         $this->entityManager->persist($user);
@@ -385,10 +400,5 @@ class UserService implements UserServiceInterface
         $this->entityManager->persist($user);
         $this->entityManager->flush();
         return $user;
-    }
-
-    public function register(string $email, string $password): User
-    {
-        return $this->create($email, $password, UserStatus::STATUS_DISABLE);
     }
 }

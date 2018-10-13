@@ -14,6 +14,7 @@ class CheckUserController extends AbstractActionController
             'result' => $container->currentUser ? [
                 'id' => $container->currentUser->getId(),
                 'email' => $container->currentUser->getEmail(),
+                'fullname' => $container->currentUser->getFullname(),
             ] : [],
             'message' => '',
         ];

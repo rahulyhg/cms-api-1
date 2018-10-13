@@ -48,6 +48,12 @@ class User
     protected $email;
 
     /**
+     * @ORM\Column(type="string", length=128)
+     * @var string
+     */
+    protected $fullname;
+
+    /**
      * @ORM\Column(type="string", length=256)
      * @var string
      */
@@ -92,6 +98,7 @@ class User
     public function __construct(array $values)
     {
         $this->setEmail($values['email']);
+        $this->setFullname($values['fullname']);
         $this->setPassword($values['password']);
         $this->setCreatedAt($values['createdAt'] ?? new \DateTime());
         $this->setUpdatedAt($values['updatedAt'] ?? new \DateTime());
@@ -235,5 +242,21 @@ class User
     public function setEmailConfirmToken(?string $emailConfirmToken)
     {
         $this->emailConfirmToken = $emailConfirmToken;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullname(): string
+    {
+        return $this->fullname;
+    }
+
+    /**
+     * @param string $fullname
+     */
+    public function setFullname(string $fullname)
+    {
+        $this->fullname = $fullname;
     }
 }

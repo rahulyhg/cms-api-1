@@ -51,6 +51,16 @@ return [
                     ],
                 ],
             ],
+            'user-api.rpc.register' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/register',
+                    'defaults' => [
+                        'controller' => 'UserApi\\V1\\Rpc\\Register\\Controller',
+                        'action' => 'register',
+                    ],
+                ],
+            ],
         ],
     ],
     'session_containers' => [
@@ -99,6 +109,81 @@ return [
                 'error_message' => 'Password is required and it should be a text between 6 and 16 characters.',
             ],
         ],
+        'UserApi\\V1\\Rpc\\Register\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\EmailAddress::class,
+                        'options' => [],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'email',
+                'field_type' => 'string',
+                'error_message' => 'Please enter a valid email address.',
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\StringLength::class,
+                        'options' => [
+                            'max' => '16',
+                            'min' => '6',
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'password',
+                'field_type' => 'string',
+                'error_message' => 'Password is required and it should be a text between 6 and 16 characters.',
+            ],
+            2 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\Identical::class,
+                        'options' => [
+                            'token' => 'password',
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'confirm_password',
+                'field_type' => 'string',
+                'continue_if_empty' => false,
+                'error_message' => 'Confirm Password should be same as password.',
+            ],
+            3 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'fullname',
+                'field_type' => 'string',
+                'error_message' => 'Each user account should have a name, Please enter a name.',
+            ],
+        ],
     ],
     'doctrine' => [
         'driver' => [
@@ -121,6 +206,7 @@ return [
             'UserApi\\V1\\Rpc\\UserLogin\\Controller' => \UserApi\V1\Rpc\UserLogin\UserLoginControllerFactory::class,
             'UserApi\\V1\\Rpc\\CheckUser\\Controller' => \UserApi\V1\Rpc\CheckUser\CheckUserControllerFactory::class,
             'UserApi\\V1\\Rpc\\UserLogout\\Controller' => \UserApi\V1\Rpc\UserLogout\UserLogoutControllerFactory::class,
+            'UserApi\\V1\\Rpc\\Register\\Controller' => \UserApi\V1\Rpc\Register\RegisterControllerFactory::class,
         ],
     ],
     'zf-versioning' => [
@@ -129,6 +215,7 @@ return [
             2 => 'user-api.rpc.user-login',
             3 => 'user-api.rpc.check-user',
             4 => 'user-api.rpc.user-logout',
+            5 => 'user-api.rpc.register',
         ],
     ],
     'zf-rest' => [
@@ -161,6 +248,7 @@ return [
             'UserApi\\V1\\Rpc\\UserLogin\\Controller' => 'Json',
             'UserApi\\V1\\Rpc\\CheckUser\\Controller' => 'Json',
             'UserApi\\V1\\Rpc\\UserLogout\\Controller' => 'Json',
+            'UserApi\\V1\\Rpc\\Register\\Controller' => 'Json',
         ],
         'accept_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -183,6 +271,11 @@ return [
                 1 => 'application/json',
                 2 => 'application/*+json',
             ],
+            'UserApi\\V1\\Rpc\\Register\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
         ],
         'content_type_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -198,6 +291,10 @@ return [
                 1 => 'application/json',
             ],
             'UserApi\\V1\\Rpc\\UserLogout\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+            ],
+            'UserApi\\V1\\Rpc\\Register\\Controller' => [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
             ],
@@ -247,10 +344,20 @@ return [
             ],
             'route_name' => 'user-api.rpc.user-logout',
         ],
+        'UserApi\\V1\\Rpc\\Register\\Controller' => [
+            'service_name' => 'register',
+            'http_methods' => [
+                0 => 'POST',
+            ],
+            'route_name' => 'user-api.rpc.register',
+        ],
     ],
     'zf-content-validation' => [
         'UserApi\\V1\\Rpc\\UserLogin\\Controller' => [
             'input_filter' => 'UserApi\\V1\\Rpc\\UserLogin\\Validator',
+        ],
+        'UserApi\\V1\\Rpc\\Register\\Controller' => [
+            'input_filter' => 'UserApi\\V1\\Rpc\\Register\\Validator',
         ],
     ],
 ];

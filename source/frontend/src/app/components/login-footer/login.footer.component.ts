@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
           </p>
       </div>
   `,
-  styles: [`.login .footer,.page404 .footer{margin-top: 30px;}`]
+  styles: [`.register .footer,.login .footer,.page404 .footer{margin-top: 30px;}`]
 })
 export class LoginFooterComponent {
 
