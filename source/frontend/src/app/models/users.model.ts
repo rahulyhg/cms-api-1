@@ -1,7 +1,15 @@
 export class User {
   id: number;
-  username: string;
+  email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  confirmPassword: string;
+  fullname: string;
+
+  constructor() {
+    this.id = 0;
+    this.fullname = '';
+    this.email = '';
+    this.confirmPassword = '';
+    this.password = '';
+  }
 }

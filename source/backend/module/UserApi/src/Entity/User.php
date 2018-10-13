@@ -32,6 +32,7 @@ class User
 
     const MSG_USER_SUCCESSFULLY_LOGGED_IN = 'User is successfully logged in';
     const MSG_USER_SUCCESSFULLY_LOGGED_OUT = 'User is successfully logged out';
+    const MSG_USER_SUCCESSFULLY_REGISTERED = 'User is successfully registered';
 
     /**
      * @ORM\Id

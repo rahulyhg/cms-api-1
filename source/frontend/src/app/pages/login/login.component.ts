@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
 import { AppErrorHandler } from '../../services/error-handler';
 import { Router } from '@angular/router';
@@ -12,6 +12,8 @@ import { RpcResponseType } from '../../types/rpc.response.type';
 export class LoginComponent implements OnInit {
   errorMessage: string = '';
   isError: boolean = false;
+  registeredMessage: string = '';
+  isUserRegistered: boolean = false;
   isLoading: boolean = false;
   credential: UserCredentialType = {
     email: '',
@@ -23,6 +25,10 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.registeredMessage = localStorage.getItem('registeredUser')) {
+      localStorage.removeItem('registeredUser');
+      this.isUserRegistered = true;
+    }
   }
 
   login( event ) {

@@ -33,7 +33,7 @@ class RegisterController extends AbstractActionController
                     'email' => $user->getEmail(),
                     'fullname' => $user->getFullname(),
                 ],
-                'message' => User::MSG_USER_SUCCESSFULLY_LOGGED_IN
+                'message' => User::MSG_USER_SUCCESSFULLY_REGISTERED
             ];
         } catch (\RuntimeException $e) {
             return new ApiProblemResponse(

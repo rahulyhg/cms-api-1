@@ -1,8 +1,8 @@
 <div class="register" el-row type="flex" justify="center" align="middle">
-    <div class="panel" el-col span="6" [xs]="{span:24}" [sm]="{span:12}" [md]="{span:6}">
+    <div class="panel" el-col span="6" [xs]="{span:24}" [sm]="{span:14}" [md]="{span:8}">
         <h1>Code Matrix Zone</h1>
-        <form (submit)="login($event)">
-            <h3>Sign in to get in touch</h3>
+        <form (submit)="register($event)">
+            <h3>Register for free</h3>
 
             <div class="alert error" *ngIf="isError">
                 <ul [innerHtml]="errorMessage"></ul>
@@ -10,17 +10,20 @@
             </div>
 
             <div class="field-holder">
-                <input [(ngModel)]="credential.email" appEmailValidator maxlength="128"
+                <input [(ngModel)]="user.email" appEmailValidator maxlength="128"
                        type="email" placeholder="Email" class="field email" name="email">
-                <input [(ngModel)]="credential.password" required minlength="6" maxlength="16"
+                <input [(ngModel)]="user.fullname" required maxlength="128"
+                       type="email" placeholder="Full Name" class="field email" name="fullname">
+                <input [(ngModel)]="user.password" required minlength="6" maxlength="16"
                        type="password" placeholder="Password" class="field password" name="password">
+                <input [(ngModel)]="user.confirmPassword" required minlength="6" maxlength="16"
+                       type="password" placeholder="Confirm Password" class="field password" name="confirm-password">
             </div>
 
-            <button type="submit" class="btn purple lg" [el-loading]="isLoading">Log in</button>
+            <button type="submit" class="btn purple lg" [el-loading]="isLoading">Register</button>
 
-            <div class="forgot-password"><a routerLink="forgot-password">Forgot password?</a></div>
-            <p><small>Do not have an account?</small></p>
-            <a routerLink="/register" class="btn default block lg">Create an account</a>
+            <p><small>Already have an account?</small></p>
+            <a routerLink="/login" class="btn default block lg">Login with your account</a>
         </form>
 
         <app-login-footer></app-login-footer>

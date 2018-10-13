@@ -61,6 +61,16 @@ return [
                     ],
                 ],
             ],
+            'user-api.rpc.confirm-email' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/:email/confirm/:token',
+                    'defaults' => [
+                        'controller' => 'UserApi\\V1\\Rpc\\ConfirmEmail\\Controller',
+                        'action' => 'confirmEmail',
+                    ],
+                ],
+            ],
         ],
     ],
     'session_containers' => [
@@ -151,6 +161,19 @@ return [
             ],
             2 => [
                 'required' => true,
+                'validators' => [],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'fullname',
+                'field_type' => 'string',
+                'error_message' => 'Each user account should have a name, Please enter a name.',
+            ],
+            3 => [
+                'required' => true,
                 'validators' => [
                     0 => [
                         'name' => \Zend\Validator\Identical::class,
@@ -165,23 +188,9 @@ return [
                         'options' => [],
                     ],
                 ],
-                'name' => 'confirm_password',
+                'name' => 'confirmPassword',
                 'field_type' => 'string',
-                'continue_if_empty' => false,
                 'error_message' => 'Confirm Password should be same as password.',
-            ],
-            3 => [
-                'required' => true,
-                'validators' => [],
-                'filters' => [
-                    0 => [
-                        'name' => \Zend\Filter\StringTrim::class,
-                        'options' => [],
-                    ],
-                ],
-                'name' => 'fullname',
-                'field_type' => 'string',
-                'error_message' => 'Each user account should have a name, Please enter a name.',
             ],
         ],
     ],
@@ -207,6 +216,7 @@ return [
             'UserApi\\V1\\Rpc\\CheckUser\\Controller' => \UserApi\V1\Rpc\CheckUser\CheckUserControllerFactory::class,
             'UserApi\\V1\\Rpc\\UserLogout\\Controller' => \UserApi\V1\Rpc\UserLogout\UserLogoutControllerFactory::class,
             'UserApi\\V1\\Rpc\\Register\\Controller' => \UserApi\V1\Rpc\Register\RegisterControllerFactory::class,
+            'UserApi\\V1\\Rpc\\ConfirmEmail\\Controller' => \UserApi\V1\Rpc\ConfirmEmail\ConfirmEmailControllerFactory::class,
         ],
     ],
     'zf-versioning' => [
@@ -216,6 +226,7 @@ return [
             3 => 'user-api.rpc.check-user',
             4 => 'user-api.rpc.user-logout',
             5 => 'user-api.rpc.register',
+            6 => 'user-api.rpc.confirm-email',
         ],
     ],
     'zf-rest' => [
@@ -249,6 +260,7 @@ return [
             'UserApi\\V1\\Rpc\\CheckUser\\Controller' => 'Json',
             'UserApi\\V1\\Rpc\\UserLogout\\Controller' => 'Json',
             'UserApi\\V1\\Rpc\\Register\\Controller' => 'Json',
+            'UserApi\\V1\\Rpc\\ConfirmEmail\\Controller' => 'Json',
         ],
         'accept_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -276,6 +288,11 @@ return [
                 1 => 'application/json',
                 2 => 'application/*+json',
             ],
+            'UserApi\\V1\\Rpc\\ConfirmEmail\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
         ],
         'content_type_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -295,6 +312,10 @@ return [
                 1 => 'application/json',
             ],
             'UserApi\\V1\\Rpc\\Register\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+            ],
+            'UserApi\\V1\\Rpc\\ConfirmEmail\\Controller' => [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
             ],
@@ -350,6 +371,13 @@ return [
                 0 => 'POST',
             ],
             'route_name' => 'user-api.rpc.register',
+        ],
+        'UserApi\\V1\\Rpc\\ConfirmEmail\\Controller' => [
+            'service_name' => 'confirmEmail',
+            'http_methods' => [
+                0 => 'GET',
+            ],
+            'route_name' => 'user-api.rpc.confirm-email',
         ],
     ],
     'zf-content-validation' => [

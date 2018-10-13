@@ -1,11 +1,15 @@
 <div class="login" el-row type="flex" justify="center" align="middle">
-    <div class="panel" el-col span="6" [xs]="{span:24}" [sm]="{span:12}" [md]="{span:6}">
+    <div class="panel" el-col span="6" [xs]="{span:24}" [sm]="{span:14}" [md]="{span:8}">
         <h1>Code Matrix Zone</h1>
         <form (submit)="login($event)">
             <h3>Sign in to get in touch</h3>
 
             <div class="alert error" *ngIf="isError">
                 <ul [innerHtml]="errorMessage"></ul>
+                <span class="close glyphicon glyphicon-remove" (click)="closeAlertMessage($event)"></span>
+            </div>
+            <div class="alert success" *ngIf="isUserRegistered">
+                <ul [innerHtml]="registeredMessage"></ul>
                 <span class="close glyphicon glyphicon-remove" (click)="closeAlertMessage($event)"></span>
             </div>
 

@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs/index';
 import { AppErrorHandler } from './error-handler';
 import { RpcResponseType } from '../types/rpc.response.type';
 import { UserCredentialType } from '../types/user.credential.type';
+import { User } from '../models/users.model';
 
 @Injectable()
 export class AuthenticationService {
@@ -42,6 +43,14 @@ export class AuthenticationService {
       .pipe(
         tap(this.resetCurrentUser),
         catchError(this.handleError('login'))
+      );
+  }
+
+  register( user: User ) {
+    return this.http.post<RpcResponseType>(this.baseUrl + '/api/register', user, this.requestOption)
+      .pipe(
+        tap( res =>  localStorage.setItem('registeredUser', res.message)),
+        catchError(this.handleError('register'))
       );
   }
 
