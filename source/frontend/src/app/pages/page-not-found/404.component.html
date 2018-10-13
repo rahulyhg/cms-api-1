@@ -1,0 +1,14 @@
+<div class="page404" el-row type="flex" justify="center" align="middle">
+    <div class="panel" el-col span="6" [xs]="{span:24}" [sm]="{span:12}" [md]="{span:6}">
+        <h1>404</h1>
+
+        <div class="list">
+            <a *ngFor="let link of links" routerLink="{{link.link}}">
+                <i class="glyphicon glyphicon-chevron-right muted"></i>
+                <i class="glyphicon glyphicon-{{link.icon}} icon"></i> {{link.caption}}
+            </a>
+        </div>
+
+        <app-login-footer></app-login-footer>
+    </div>
+</div>

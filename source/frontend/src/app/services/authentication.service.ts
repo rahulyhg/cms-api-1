@@ -5,16 +5,20 @@ import { Observable, of } from 'rxjs/index';
 
 import { AppErrorHandler } from './error-handler';
 import { RpcResponseType } from '../types/rpc.response.type';
+import { UserCredentialType } from '../types/user.credential.type';
 
 @Injectable()
 export class AuthenticationService {
-  readonly baseUrl: string = 'http://localhost:8080/';
+  readonly baseUrl: string = 'http://localhost:8080';
+  readonly requestOption = {
+    withCredentials: true,
+  };
 
   constructor( private http: HttpClient ) {
   }
 
   logout() {
-    return this.http.get<RpcResponseType>(this.baseUrl + 'api/logout')
+    return this.http.get<RpcResponseType>(this.baseUrl + '/api/logout')
       .pipe(
         tap(( res: RpcResponseType ) => {
           if (res.result) {
@@ -26,24 +30,17 @@ export class AuthenticationService {
   }
 
   isLoggedIn() {
-    return this.http.get<RpcResponseType>(this.baseUrl + 'api/check-user', { withCredentials: true })
+    return this.http.get<RpcResponseType>(this.baseUrl + '/api/user-guard', this.requestOption)
       .pipe(
+        tap(this.resetCurrentUser),
         catchError(this.handleError('isLoggedIn'))
       );
   }
 
-  login( email: string, password: string ) {
-    const body = {
-      email: email,
-      password: password
-    };
-    return this.http.post<any>(this.baseUrl + 'api/login', body, { withCredentials: true })
+  login( credential: UserCredentialType ) {
+    return this.http.post<RpcResponseType>(this.baseUrl + '/api/login', credential, this.requestOption)
       .pipe(
-        tap(res => {
-          if (res.result) {
-            localStorage.setItem('currentUser', res.userId);
-          }
-        }),
+        tap(this.resetCurrentUser),
         catchError(this.handleError('login'))
       );
   }
@@ -53,5 +50,11 @@ export class AuthenticationService {
       const errMessage = new AppErrorHandler(error);
       return of(errMessage as AppErrorHandler);
     };
+  }
+
+  private resetCurrentUser( res: RpcResponseType ) {
+    if (res.success) {
+      localStorage.setItem('currentUser', JSON.stringify(res.result));
+    }
   }
 }

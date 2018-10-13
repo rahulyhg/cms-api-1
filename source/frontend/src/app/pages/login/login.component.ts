@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
 import { AppErrorHandler } from '../../services/error-handler';
 import { Router } from '@angular/router';
+import { UserCredentialType } from '../../types/user.credential.type';
+import { RpcResponseType } from '../../types/rpc.response.type';
 
 @Component({
   selector: 'app-login',
@@ -11,15 +13,13 @@ export class LoginComponent implements OnInit {
   errorMessage: string = '';
   isError: boolean = false;
   isLoading: boolean = false;
-  credential = {
+  credential: UserCredentialType = {
     email: '',
     password: ''
   };
 
-  constructor(
-    private userAuth: AuthenticationService,
-    private router: Router
-  ) {
+  constructor( private userAuth: AuthenticationService,
+               private router: Router ) {
   }
 
   ngOnInit() {
@@ -32,23 +32,21 @@ export class LoginComponent implements OnInit {
     }
     this.isLoading = true;
 
-    this.userAuth.login(
-      this.credential.email,
-      this.credential.password,
-    ).subscribe(
-      (res: AppErrorHandler) => {
-        this.isLoading = false;
-        if (res.result === false) {
-          this.isError = true;
-          this.errorMessage = res.message;
-        } else {
-          this.router.navigate(['dashboard']);
+    this.userAuth.login(this.credential)
+      .subscribe(
+        ( res: AppErrorHandler|RpcResponseType ) => {
+          this.isLoading = false;
+          if (res.result === false) {
+            this.isError = true;
+            this.errorMessage = res.message;
+          } else {
+            this.router.navigate([ 'dashboard' ]);
+          }
         }
-      }
-    );
+      );
   }
 
-  closeAlertMessage(event) {
+  closeAlertMessage( event ) {
     this.isError = false;
   }
 }

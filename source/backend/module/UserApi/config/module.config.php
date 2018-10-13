@@ -34,7 +34,7 @@ return [
             'user-api.rpc.check-user' => [
                 'type' => 'Segment',
                 'options' => [
-                    'route' => '/api/is-loggedin',
+                    'route' => '/api/user-guard',
                     'defaults' => [
                         'controller' => 'UserApi\\V1\\Rpc\\CheckUser\\Controller',
                         'action' => 'checkUser',
@@ -57,7 +57,6 @@ return [
         0 => 'ApplicationSessionContainer',
     ],
     'input_filter_specs' => [
-        'UserApi\\V1\\Rpc\\UserExist\\Validator' => [],
         'UserApi\\V1\\Rpc\\UserLogin\\Validator' => [
             0 => [
                 'required' => true,

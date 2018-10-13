@@ -32,7 +32,10 @@ class UserLoginController extends AbstractActionController
             $container->currentUser = $user;
             $response = [
                 'success' => true,
-                'result' => [$user->getId()],
+                'result' => [
+                    'id' => $user->getId(),
+                    'email' => $user->getEmail(),
+                ],
                 'message' => User::MSG_USER_SUCCESSFULLY_LOGGED_IN
             ];
         } catch (\RuntimeException $e) {

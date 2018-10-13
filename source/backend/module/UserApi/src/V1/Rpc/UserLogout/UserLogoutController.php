@@ -10,7 +10,7 @@ class UserLogoutController extends AbstractActionController
     public function userLogoutAction()
     {
         $container = new Container('user');
-        unset($container->authenticatedUser);
+        unset($container->currentUser);
         return [
             'success' => true,
             'result' => [],

@@ -16,17 +16,13 @@
                        type="password" placeholder="Password" class="field password" name="password">
             </div>
 
-            <button class="btn purple lg" [el-loading]="isLoading">Log in</button>
+            <button type="submit" class="btn purple lg" [el-loading]="isLoading">Log in</button>
 
             <div class="forgot-password"><a routerLink="forgot-password">Forgot password?</a></div>
             <p><small>Do not have an account?</small></p>
-            <a routerLink="/signup" class="btn default block lg">Create an account</a>
+            <a routerLink="/register" class="btn default block lg">Create an account</a>
         </form>
-        <div class="footer">
-            <p>
-                <small class="text muted">NariCMS is powered by Angular6 and Zend Framework<br>&copy; 2014
-                </small>
-            </p>
-        </div>
+
+        <app-login-footer></app-login-footer>
     </div>
 </div>

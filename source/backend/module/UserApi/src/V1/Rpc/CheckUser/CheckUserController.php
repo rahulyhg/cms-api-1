@@ -10,8 +10,11 @@ class CheckUserController extends AbstractActionController
     {
         $container = new Container('user');
         return [
-            'success' => isset($container->currentUser),
-            'result' => [],
+            'success' => (bool) $container->currentUser,
+            'result' => $container->currentUser ? [
+                'id' => $container->currentUser->getId(),
+                'email' => $container->currentUser->getEmail(),
+            ] : [],
             'message' => '',
         ];
     }
