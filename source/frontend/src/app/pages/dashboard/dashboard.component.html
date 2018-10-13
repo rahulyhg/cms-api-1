@@ -1,144 +1,146 @@
-<header class="header-navbar">
-    <div class="navbar">
-        <a href="#/" class="brand">
-            <img src="http://flatfull.com/themes/angulr/html/img/logo.png" alt="."/>
-            <span>Code Matrix Zone</span>
-        </a>
-    </div>
-    <!-- navbar collapse -->
-    <div class="collapse">
-        <ul class="nav">
-            <li class="dropdown">
-                <a href="#">
+<div *ngIf="isAllowed">
+    <header class="header-navbar">
+        <div class="navbar">
+            <a href="#/" class="brand">
+                <img src="http://flatfull.com/themes/angulr/html/img/logo.png" alt="."/>
+                <span>Code Matrix Zone</span>
+            </a>
+        </div>
+        <!-- navbar collapse -->
+        <div class="collapse">
+            <ul class="nav">
+                <li class="dropdown">
+                    <a href="#">
                     <span class="avatar">
                         <img src="http://flatfull.com/themes/angulr/html/img/a0.jpg" alt="...">
                         <i class="on"></i>
                     </span>
-                    <span>John.Smith</span> <b class="caret"></b>
-                </a>
-                <!-- dropdown -->
-                <ul class="dropdown-menu fadeInRight">
-                    <li>
-                        <a href="">
-                            <span class="badge red">30%</span>
-                            <span>Settings</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="app.page.profile">Profile</a>
-                    </li>
-                    <li>
-                        <a href="app.docs">
-                            <span class="label blue">new</span>
-                            Help
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="signout">Logout</a>
-                    </li>
-                </ul>
-                <!-- / dropdown -->
-            </li>
-        </ul>
-    </div>
-    <!-- / navbar collapse -->
-</header>
-
-<div class="dashboard">
-    <div class="side-menu">
-        <nav class="clearfix">
-            <ul class="nav">
-                <li class="menu-section">
-                    <span>Navigation</span>
-                </li>
-                <li>
-                    <a href="">
-                        <span class="menu-arrow">
-                            <i class="glyphicon glyphicon-chevron-right right"></i>
-                            <i class="glyphicon glyphicon-chevron-down down"></i>
-                        </span>
-                        <i class="glyphicon glyphicon-stats icon text-primary-dker"></i>
-                        <span>Dashboard</span>
+                        <span>John.Smith</span> <b class="caret"></b>
                     </a>
-                    <ul class="nav nav-sub">
+                    <!-- dropdown -->
+                    <ul class="dropdown-menu fadeInRight">
                         <li>
-                            <a href="index.html">
-                                <span>Dashboard v1</span>
+                            <a href="">
+                                <span class="badge red">30%</span>
+                                <span>Settings</span>
                             </a>
                         </li>
                         <li>
-                            <a href="dashboard.html">
-                                <b class="label bg-info pull-right">N</b>
-                                <span>Dashboard v2</span>
+                            <a href="app.page.profile">Profile</a>
+                        </li>
+                        <li>
+                            <a href="app.docs">
+                                <span class="label blue">new</span>
+                                Help
                             </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a (click)="onLogout()">Logout</a>
                         </li>
                     </ul>
-                </li>
-                <li class="active">
-                    <a href="">
-                        <span class="menu-arrow">
-                            <i class="glyphicon glyphicon-chevron-right right"></i>
-                            <i class="glyphicon glyphicon-chevron-down down"></i>
-                        </span>
-                        <i class="glyphicon glyphicon-stats icon text-primary-dker"></i>
-                        <span>Dashboard</span>
-                    </a>
-                    <ul class="nav nav-sub">
-                        <li>
-                            <a href="index.html">
-                                <span>Dashboard v1</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="dashboard.html">
-                                <b class="label bg-info pull-right">N</b>
-                                <span>Dashboard v2</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="ui_chart.html">
-                        <i class="glyphicon glyphicon-signal"></i>
-                        <span>Chart</span>
-                    </a>
-                </li>
-                <li class="line"></li>
-                <li class="menu-section">
-                    <span>Other Section</span>
-                </li>
-                <li>
-                    <a href="ui_chart.html">
-                        <i class="glyphicon glyphicon-signal"></i>
-                        <span>Chart</span>
-                    </a>
+                    <!-- / dropdown -->
                 </li>
             </ul>
-        </nav>
-    </div>
-
-    <div class="content">
-        <div class="meta-admin-page">
-            <h1>Dashboard</h1>
-            <small>Welcome to angulr application</small>
         </div>
-        <div class="wrapper">
-            <div class="panel">
-                <div class="panel-heading">
-                    Inline form
-                </div>
-                <div class="panel-body">
-                   <p>contetn</p>
+        <!-- / navbar collapse -->
+    </header>
+
+    <div class="dashboard">
+        <div class="side-menu">
+            <nav class="clearfix">
+                <ul class="nav">
+                    <li class="menu-section">
+                        <span>Navigation</span>
+                    </li>
+                    <li>
+                        <a href="">
+                        <span class="menu-arrow">
+                            <i class="glyphicon glyphicon-chevron-right right"></i>
+                            <i class="glyphicon glyphicon-chevron-down down"></i>
+                        </span>
+                            <i class="glyphicon glyphicon-stats icon text-primary-dker"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <ul class="nav nav-sub">
+                            <li>
+                                <a href="index.html">
+                                    <span>Dashboard v1</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="dashboard.html">
+                                    <b class="label bg-info pull-right">N</b>
+                                    <span>Dashboard v2</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="active">
+                        <a href="">
+                        <span class="menu-arrow">
+                            <i class="glyphicon glyphicon-chevron-right right"></i>
+                            <i class="glyphicon glyphicon-chevron-down down"></i>
+                        </span>
+                            <i class="glyphicon glyphicon-stats icon text-primary-dker"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <ul class="nav nav-sub">
+                            <li>
+                                <a href="index.html">
+                                    <span>Dashboard v1</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="dashboard.html">
+                                    <b class="label bg-info pull-right">N</b>
+                                    <span>Dashboard v2</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="ui_chart.html">
+                            <i class="glyphicon glyphicon-signal"></i>
+                            <span>Chart</span>
+                        </a>
+                    </li>
+                    <li class="line"></li>
+                    <li class="menu-section">
+                        <span>Other Section</span>
+                    </li>
+                    <li>
+                        <a href="ui_chart.html">
+                            <i class="glyphicon glyphicon-signal"></i>
+                            <span>Chart</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="content">
+            <div class="meta-admin-page">
+                <h1>Dashboard</h1>
+                <small>Welcome to angulr application</small>
+            </div>
+            <div class="wrapper">
+                <div class="panel">
+                    <div class="panel-heading">
+                        Inline form
+                    </div>
+                    <div class="panel-body">
+                        <p>contetn</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<footer class="footer">
-    <div class="wrapper">
-        <span>2.2.0 <a href=""><i class="glyphicon glyphicon-arrow-up"></i></a></span>
-        © 2016 Copyright.
-    </div>
-</footer>
+    <footer class="footer">
+        <div class="wrapper">
+            <span>2.2.0 <a href=""><i class="glyphicon glyphicon-arrow-up"></i></a></span>
+            © 2016 Copyright.
+        </div>
+    </footer>
+</div>

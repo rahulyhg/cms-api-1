@@ -1,7 +1,7 @@
 <div class="login" el-row type="flex" justify="center" align="middle">
     <div class="panel" el-col span="6" [xs]="{span:24}" [sm]="{span:12}" [md]="{span:6}">
         <h1>Code Matrix Zone</h1>
-        <div>
+        <form (submit)="login($event)">
             <h3>Sign in to get in touch</h3>
 
             <div class="alert error" *ngIf="isError">
@@ -16,12 +16,12 @@
                        type="password" placeholder="Password" class="field password" name="password">
             </div>
 
-            <button class="btn purple lg" (click)="login($event)" [el-loading]="isLoading">Log in</button>
+            <button class="btn purple lg" [el-loading]="isLoading">Log in</button>
 
             <div class="forgot-password"><a routerLink="forgot-password">Forgot password?</a></div>
             <p><small>Do not have an account?</small></p>
             <a routerLink="/signup" class="btn default block lg">Create an account</a>
-        </div>
+        </form>
         <div class="footer">
             <p>
                 <small class="text muted">NariCMS is powered by Angular6 and Zend Framework<br>&copy; 2014

@@ -30,6 +30,9 @@ class User
     const ERR_CODE_PASSWORD_IS_NOT_CORRECT = 7;
     const ERR_MSG_PASSWORD_IS_NOT_CORRECT = 'Password is not correct.';
 
+    const MSG_USER_SUCCESSFULLY_LOGGED_IN = 'User is successfully logged in';
+    const MSG_USER_SUCCESSFULLY_LOGGED_OUT = 'User is successfully logged out';
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

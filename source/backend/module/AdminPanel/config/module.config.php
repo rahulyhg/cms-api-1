@@ -24,7 +24,7 @@ return [
                     ],
                     'may_terminate' => false,
                 ]
-            ]
+            ],
         ]
     ],
     'controllers' => [

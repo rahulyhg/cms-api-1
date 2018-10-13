@@ -21,16 +21,6 @@ return [
                     ],
                 ],
             ],
-            'user-api.rpc.user-exist' => [
-                'type' => 'Segment',
-                'options' => [
-                    'route' => '/api/user-exist[/:id]',
-                    'defaults' => [
-                        'controller' => 'UserApi\\V1\\Rpc\\UserExist\\Controller',
-                        'action' => 'userExist',
-                    ],
-                ],
-            ],
             'user-api.rpc.user-login' => [
                 'type' => 'Segment',
                 'options' => [
@@ -38,6 +28,26 @@ return [
                     'defaults' => [
                         'controller' => 'UserApi\\V1\\Rpc\\UserLogin\\Controller',
                         'action' => 'userLogin',
+                    ],
+                ],
+            ],
+            'user-api.rpc.check-user' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/is-loggedin',
+                    'defaults' => [
+                        'controller' => 'UserApi\\V1\\Rpc\\CheckUser\\Controller',
+                        'action' => 'checkUser',
+                    ],
+                ],
+            ],
+            'user-api.rpc.user-logout' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/logout',
+                    'defaults' => [
+                        'controller' => 'UserApi\\V1\\Rpc\\UserLogout\\Controller',
+                        'action' => 'userLogout',
                     ],
                 ],
             ],
@@ -109,15 +119,17 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            'UserApi\\V1\\Rpc\\UserExist\\Controller' => \UserApi\V1\Rpc\UserExist\UserExistControllerFactory::class,
             'UserApi\\V1\\Rpc\\UserLogin\\Controller' => \UserApi\V1\Rpc\UserLogin\UserLoginControllerFactory::class,
+            'UserApi\\V1\\Rpc\\CheckUser\\Controller' => \UserApi\V1\Rpc\CheckUser\CheckUserControllerFactory::class,
+            'UserApi\\V1\\Rpc\\UserLogout\\Controller' => \UserApi\V1\Rpc\UserLogout\UserLogoutControllerFactory::class,
         ],
     ],
     'zf-versioning' => [
         'uri' => [
             0 => 'user-api.rest.users',
-            1 => 'user-api.rpc.user-exist',
             2 => 'user-api.rpc.user-login',
+            3 => 'user-api.rpc.check-user',
+            4 => 'user-api.rpc.user-logout',
         ],
     ],
     'zf-rest' => [
@@ -147,8 +159,9 @@ return [
     'zf-content-negotiation' => [
         'controllers' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => 'HalJson',
-            'UserApi\\V1\\Rpc\\UserExist\\Controller' => 'Json',
             'UserApi\\V1\\Rpc\\UserLogin\\Controller' => 'Json',
+            'UserApi\\V1\\Rpc\\CheckUser\\Controller' => 'Json',
+            'UserApi\\V1\\Rpc\\UserLogout\\Controller' => 'Json',
         ],
         'accept_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -156,12 +169,17 @@ return [
                 1 => 'application/hal+json',
                 2 => 'application/json',
             ],
-            'UserApi\\V1\\Rpc\\UserExist\\Controller' => [
+            'UserApi\\V1\\Rpc\\UserLogin\\Controller' => [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
                 2 => 'application/*+json',
             ],
-            'UserApi\\V1\\Rpc\\UserLogin\\Controller' => [
+            'UserApi\\V1\\Rpc\\CheckUser\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
+            'UserApi\\V1\\Rpc\\UserLogout\\Controller' => [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
                 2 => 'application/*+json',
@@ -172,11 +190,15 @@ return [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
             ],
-            'UserApi\\V1\\Rpc\\UserExist\\Controller' => [
+            'UserApi\\V1\\Rpc\\UserLogin\\Controller' => [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
             ],
-            'UserApi\\V1\\Rpc\\UserLogin\\Controller' => [
+            'UserApi\\V1\\Rpc\\CheckUser\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+            ],
+            'UserApi\\V1\\Rpc\\UserLogout\\Controller' => [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
             ],
@@ -205,13 +227,6 @@ return [
         ],
     ],
     'zf-rpc' => [
-        'UserApi\\V1\\Rpc\\UserExist\\Controller' => [
-            'service_name' => 'userExist',
-            'http_methods' => [
-                0 => 'GET',
-            ],
-            'route_name' => 'user-api.rpc.user-exist',
-        ],
         'UserApi\\V1\\Rpc\\UserLogin\\Controller' => [
             'service_name' => 'userLogin',
             'http_methods' => [
@@ -219,11 +234,22 @@ return [
             ],
             'route_name' => 'user-api.rpc.user-login',
         ],
+        'UserApi\\V1\\Rpc\\CheckUser\\Controller' => [
+            'service_name' => 'checkUser',
+            'http_methods' => [
+                0 => 'GET',
+            ],
+            'route_name' => 'user-api.rpc.check-user',
+        ],
+        'UserApi\\V1\\Rpc\\UserLogout\\Controller' => [
+            'service_name' => 'userLogout',
+            'http_methods' => [
+                0 => 'GET',
+            ],
+            'route_name' => 'user-api.rpc.user-logout',
+        ],
     ],
     'zf-content-validation' => [
-        'UserApi\\V1\\Rpc\\UserExist\\Controller' => [
-            'input_filter' => 'UserApi\\V1\\Rpc\\UserExist\\Validator',
-        ],
         'UserApi\\V1\\Rpc\\UserLogin\\Controller' => [
             'input_filter' => 'UserApi\\V1\\Rpc\\UserLogin\\Validator',
         ],

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
 import { AppErrorHandler } from '../../services/error-handler';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,13 +16,17 @@ export class LoginComponent implements OnInit {
     password: ''
   };
 
-  constructor( private userAuth: AuthenticationService ) {
+  constructor(
+    private userAuth: AuthenticationService,
+    private router: Router
+  ) {
   }
 
   ngOnInit() {
   }
 
   login( event ) {
+    event.preventDefault();
     if (this.isLoading) {
       return false;
     }
@@ -31,12 +36,13 @@ export class LoginComponent implements OnInit {
       this.credential.email,
       this.credential.password,
     ).subscribe(
-
       (res: AppErrorHandler) => {
         this.isLoading = false;
         if (res.result === false) {
           this.isError = true;
           this.errorMessage = res.message;
+        } else {
+          this.router.navigate(['dashboard']);
         }
       }
     );

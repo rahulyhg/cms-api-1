@@ -12,8 +12,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 
 import { EmailValidator } from './shared/email-validator.directive';
-
-import { AuthGuard } from './services/auth-guard.service';
+import { AuthGuard } from './services/auth.guard';
 import { AuthenticationService } from './services/authentication.service';
 
 @NgModule({
