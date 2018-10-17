@@ -26,6 +26,7 @@
     "element-angular": "^0.7.6",
     "glyphicons-only-bootstrap": "^1.0.1",
     "rxjs": "~6.2.0",
+    "rxjs-compat": "^6.3.3",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {

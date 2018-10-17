@@ -16,6 +16,8 @@ import { EmailValidator } from './shared/email-validator.directive';
 import { AuthGuard } from './shared/auth.guard';
 import { AuthenticationService } from './services/authentication.service';
 import { RegisterComponent } from './pages/register/register.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { NavigationComponent } from './components/navigation/navigation.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { RegisterComponent } from './pages/register/register.component';
     RegisterComponent,
     DashboardComponent,
     PageNotFoundComponent,
+    FooterComponent,
+    NavigationComponent,
     EmailValidator,
   ],
   imports: [

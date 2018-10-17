@@ -10,8 +10,8 @@ use Zend\Stdlib\ArrayUtils;
 
 error_reporting(E_ALL | E_STRICT);
 
-if (!defined('APPLICATION_ENV')) {
-    define('APPLICATION_ENV', 'test');
+if (!defined('TEST_ENV')) {
+    define('TEST_ENV', true);
 }
 
 if (!defined('APPLICATION_PATH')) {
@@ -53,21 +53,17 @@ class Bootstrap
         }
 
         // use ModuleManager to load this module and it's dependencies
-        $config = [
-            'module_listener_options' => [
-                'config_glob_paths' => [
-                    sprintf(__DIR__ . '/../config/autoload/{,*.}{global,%s,local}.php', APPLICATION_ENV)
-                ],
-                'module_paths' => [
-                    __DIR__.'/../vendor',
-                    __DIR__.'/../module',
+        $app_config = ArrayUtils::merge(
+            $app_config, [
+                'module_listener_options' => [
+                    'config_glob_paths' => [
+                        sprintf(__DIR__ . '/../config/autoload/{,*.}{global,test,local}.php', 'test')
+                    ],
                 ]
-            ],
-            'modules' => $app_config['modules']
-        ];
+        ]);
 
         $serviceManager = new ServiceManager((new ServiceManagerConfig())->toArray());
-        $serviceManager->setService('ApplicationConfig', $config);
+        $serviceManager->setService('ApplicationConfig', $app_config);
         $serviceManager->get('ModuleManager')->loadModules();
         static::$serviceManager = $serviceManager;
     }

@@ -3,6 +3,8 @@
 namespace ModuleTests\UsersTest;
 
 use ModuleTests\Bootstrap;
+use MtMail\Factory\MailServiceFactory;
+use MtMail\Service\Mail;
 use PDO;
 use PHPUnit\DbUnit\Database\Connection;
 use PHPUnit\DbUnit\Database\DefaultConnection;
@@ -12,6 +14,8 @@ use PHPUnit\Framework\TestCase;
 use UserApi\Entity\User;
 use UserApi\Service\UserService;
 use UserApi\Type\UserStatus;
+use Zend\Mvc\View\Http\ViewManager;
+use Zend\View\View;
 
 class UserServiceTest extends TestCase
 {
@@ -68,6 +72,7 @@ class UserServiceTest extends TestCase
         return [
             'id' => $id,
             'email' => $user->getValue($id - 1, 'email'),
+            'fullname' => $user->getValue($id - 1, 'fullname'),
             'password' => $user->getValue($id - 1, 'password'),
             'status' => $user->getValue($id - 1, 'status'),
             'emailConfirmToken' => $user->getValue($id - 1, 'emailConfirmToken') ?: null,
@@ -128,16 +133,18 @@ class UserServiceTest extends TestCase
     {
         $newUser = [
             'email' => 'shahrokh@email.com',
+            'fullname' => 'shahrokh',
             'password' => 'test1234',
         ];
 
         $beforeRows = $this->getDataSet()->getTable("users")->getRowCount();
         $this->assertEquals($beforeRows, $this->getConnection()->getRowCount('users'));
 
-        $user = self::$userService->addUserByAdmin($newUser['email'], $newUser['password']);
+        $user = self::$userService->addUserByAdmin($newUser['email'], $newUser['fullname'], $newUser['password']);
 
         $this->assertEquals($beforeRows + 1, $this->getConnection()->getRowCount('users'));
         $this->assertEquals($newUser['email'], $user->getEmail());
+        $this->assertEquals($newUser['fullname'], $user->getFullname());
         $this->assertEquals(UserStatus::STATUS_ENABLE, $user->getStatus());
 
         $this->assertTrue(self::$userService->isPasswordCorrect($newUser['password'], $user->getPassword()));
@@ -147,10 +154,11 @@ class UserServiceTest extends TestCase
     {
         $newUser = [
             'email' => 'shahrokh@email.com',
+            'fullname' => 'shahrokh',
             'password' => 'test1234',
         ];
 
-        $user = self::$userService->register($newUser['email'], $newUser['password']);
+        $user = self::$userService->register($newUser['email'], $newUser['fullname'], $newUser['password']);
         $this->assertEquals(UserStatus::STATUS_DISABLE, $user->getStatus());
     }
 
@@ -160,7 +168,7 @@ class UserServiceTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionCode(User::ERR_CODE_ALREADY_EXIST);
-        self::$userService->addUserByAdmin($existedUser['email'], $existedUser['password']);
+        self::$userService->addUserByAdmin($existedUser['email'], $existedUser['fullname'], $existedUser['password']);
     }
 
     public function testDeleteUserById()

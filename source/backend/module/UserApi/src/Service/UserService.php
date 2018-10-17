@@ -7,7 +7,6 @@ use Doctrine\ORM\EntityRepository;
 use UserApi\Entity\User;
 use UserApi\Type\UserStatus;
 use Zend\Crypt\Password\Bcrypt;
-use Zend\Session\Container;
 
 class UserService implements UserServiceInterface
 {

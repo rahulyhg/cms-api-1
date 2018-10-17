@@ -9,18 +9,16 @@
 
     echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
 
-    echo $this->headLink(['rel' => 'icon', 'type' => 'image/png', 'href' => $this->basePath('/img/favicon.png')]);
+    echo $this->headLink(['rel' => 'icon', 'type' => 'image/png', 'href' => $this->basePath('/img/favicon.png')])
+        ->prependStylesheet($this->basePath('/angular/styles.css'));
     ?>
     <link href="https://fonts.googleapis.com/css?family=Ubuntu|Titillium+Web" rel="stylesheet">
 </head>
-<body>
 <?= $this->content ?>
 <?= $this->headScript()
     ->prependFile($this->basePath('/angular/main.js'))
     ->prependFile($this->basePath('/angular/polyfills.js'))
-    ->prependFile($this->basePath('/angular/runtime.js'))
-    ->prependFile($this->basePath('/angular/styles.js'))
-    ->prependFile($this->basePath('/angular/vendor.js'));
+    ->prependFile($this->basePath('/angular/runtime.js'));
 ?>
 <?= $this->inlineScript() ?>
 </body>

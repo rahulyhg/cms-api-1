@@ -3,7 +3,8 @@
         "psr-4": {
             "AdminPanel\\": "module\/AdminPanel\/src\/",
             "Application\\": "module\/Application\/src\/",
-            "UserApi\\": "module\/UserApi\/src\/"
+            "UserApi\\": "module\/UserApi\/src\/",
+            "PingApi\\": "module\/PingApi\/src\/"
         }
     },
     "name": "zfcampus\/zf-apigility-skeleton",
@@ -43,7 +44,8 @@
         "doctrine\/doctrine-orm-module": "^1.1",
         "doctrine\/migrations": "^1.8",
         "zendframework\/zend-session": "^2.7",
-        "zfr/zfr-cors": "^1.5"
+        "zfr/zfr-cors": "^1.5",
+        "mtymek/mt-mail": "^1.5"
     },
     "require-dev": {
         "zendframework\/zend-developer-tools": "^1.2.1",

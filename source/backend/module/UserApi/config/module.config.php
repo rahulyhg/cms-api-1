@@ -4,7 +4,7 @@ return [
         'factories' => [
             \UserApi\V1\Rest\Users\UsersResource::class => \UserApi\V1\Rest\Users\UsersResourceFactory::class,
             \UserApi\Service\UserService::class => \UserApi\Factory\UserServiceFactory::class,
-            \UserApi\Service\EmailService::class => \Zend\ServiceManager\Factory\InvokableFactory::class,
+            \UserApi\Service\EmailService::class => \UserApi\Factory\EmailServiceFactory::class,
         ],
     ],
     'router' => [

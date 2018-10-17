@@ -2,19 +2,21 @@
 
 namespace UserApi\Factory;
 
-use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
+use MtMail\Service\Mail;
 use UserApi\Service\EmailService;
-use UserApi\Service\UserService;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
-class UserServiceFactory implements FactoryInterface
+class EmailServiceFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $em = $container->get(EntityManager::class);
-        $email = $container->get(EmailService::class);
+        if (defined('TEST_ENV')) {
+            $email = null;
+        } else {
+            $email = $container->get(Mail::class);
+        }
 
-        return new UserService($em, $email);
+        return new EmailService($email);
     }
 }

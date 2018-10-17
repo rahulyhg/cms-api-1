@@ -1,0 +1,42 @@
+<?php
+
+return [
+
+    'mt_mail' => [
+
+        /*
+         * Transport settings
+         */
+        'transport' => 'Zend\Mail\Transport\Smtp',
+        'transport_options' => [
+            'host' => 'some-host.com',
+            'connection_class' => 'login',
+            'connection_config' => [
+                'username' => 'user',
+                'password' => 'pass',
+                'ssl' => 'tls',
+            ],
+        ],
+        /*
+
+        'transport' => \Zend\Mail\Transport\File::class,
+        'transport_options' => [
+            'path' => 'data/mail'
+        ],
+        */
+
+        'composer_plugins' => [
+            'Layout',
+            'MessageEncoding',
+        ],
+
+        'default_headers' => array(
+            'From' => 'information-no-reply@yourwebsite.com',
+            'Reply-To' => 'Website Admin <admin@yourwebsite.com>',
+        ),
+
+        'layout' => 'application/mail/layout.phtml',
+        'message_encoding' => 'UTF-8',
+    ],
+
+];

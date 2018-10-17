@@ -2,19 +2,46 @@
 
 namespace UserApi\Service;
 
+use MtMail\Service\Mail as MtMail;
 use UserApi\Entity\User;
 
 class EmailService
 {
-    public function __construct()
-    {
-        // initial email
+    /**
+     * @var MtMail
+     */
+    private $mtMail;
+
+    public function __construct(
+        ?MtMail $mtMail
+    ) {
+        $this->mtMail = $mtMail;
     }
 
-    private function send(User $user)
+    private function send(User $user, string $template): bool
     {
-        $mail = __DIR__.'/../../../../data/mail/test.txt';
-        file_put_contents($mail, 'mail');
+        if (defined('TEST_ENV')) {
+            $mail = __DIR__.'/../../../../data/mail/ '.$template.'.txt';
+            file_put_contents($mail, 'mail');
+            return true;
+        }
+        return true;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function sendTestEmail(array $data): bool
+    {
+        $template = 'application/mail/ping.phtml';
+        $headers = [
+            'to' => 'johndoe@domain.com',
+        ];
+        $message = $this->mtMail->compose($headers, $template, $data);
+        $this->mtMail->send($message);
+        return true;
     }
 
     /**
@@ -24,7 +51,7 @@ class EmailService
      */
     public function sendConfirmEmailToken(User $user): bool
     {
-        $this->send($user);
+        $this->send($user, 'application/mail/confirm-email.phtml');
         return true;
     }
 
@@ -35,7 +62,7 @@ class EmailService
      */
     public function sendResetPasswordToken(User $user): bool
     {
-        $this->send($user);
+        $this->send($user, 'application/mail/reset-password.phtml');
         return true;
     }
 }
