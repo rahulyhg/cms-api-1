@@ -22,7 +22,7 @@ class EmailService
     {
         if (defined('TEST_ENV')) {
             $mail = __DIR__.'/../../../../data/mail/ '.$template.'.txt';
-            file_put_contents($mail, 'mail');
+            file_put_contents($mail, 'mail for ' . $user->getFullname());
             return true;
         }
         return true;
@@ -35,7 +35,7 @@ class EmailService
      */
     public function sendTestEmail(array $data): bool
     {
-        $template = 'application/mail/ping.phtml';
+        $template = 'ping-api/mail/ping.phtml';
         $headers = [
             'to' => 'johndoe@domain.com',
         ];
@@ -51,7 +51,7 @@ class EmailService
      */
     public function sendConfirmEmailToken(User $user): bool
     {
-        $this->send($user, 'application/mail/confirm-email.phtml');
+        $this->send($user, 'user-api/mail/confirm-email.phtml');
         return true;
     }
 
@@ -62,7 +62,7 @@ class EmailService
      */
     public function sendResetPasswordToken(User $user): bool
     {
-        $this->send($user, 'application/mail/reset-password.phtml');
+        $this->send($user, 'user-api/mail/reset-password.phtml');
         return true;
     }
 }

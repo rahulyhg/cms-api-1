@@ -28,12 +28,13 @@ return [
         'composer_plugins' => [
             'Layout',
             'MessageEncoding',
+            'DefaultHeaders',
         ],
 
-        'default_headers' => array(
+        'default_headers' => [
             'From' => 'information-no-reply@yourwebsite.com',
             'Reply-To' => 'Website Admin <admin@yourwebsite.com>',
-        ),
+        ],
 
         'layout' => 'application/mail/layout.phtml',
         'message_encoding' => 'UTF-8',

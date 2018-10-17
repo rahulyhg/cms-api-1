@@ -1,8 +1,14 @@
 <?php
+
 return [
     'service_manager' => [
         'factories' => [
             \UserApi\Service\EmailService::class => \UserApi\Factory\EmailServiceFactory::class,
+        ],
+    ],
+    'view_manager' => [
+        'template_path_stack' => [
+            __DIR__.'/../view',
         ],
     ],
     'controllers' => [

@@ -7,6 +7,11 @@ return [
             \UserApi\Service\EmailService::class => \UserApi\Factory\EmailServiceFactory::class,
         ],
     ],
+    'view_manager' => [
+        'template_path_stack' => [
+            __DIR__.'/../view',
+        ],
+    ],
     'router' => [
         'routes' => [
             'user-api.rest.users' => [
