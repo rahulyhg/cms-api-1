@@ -13,9 +13,10 @@ interface UserServiceInterface
 
     /**
      * @param int $id
-     * @return null|User
+     *
+     * @return UserService
      */
-    public function getById(int $id): ?User;
+    public function getById(int $id): UserService;
 
     /**
      * @param int $id

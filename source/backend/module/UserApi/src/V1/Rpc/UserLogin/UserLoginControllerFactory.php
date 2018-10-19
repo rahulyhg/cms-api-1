@@ -10,11 +10,8 @@ class UserLoginControllerFactory implements FactoryInterface
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        /** @var UserService $userService */
-        $userService = $container->get(UserService::class);
-
         return new UserLoginController(
-            $userService
+            $container->get(UserService::class)
         );
     }
 }

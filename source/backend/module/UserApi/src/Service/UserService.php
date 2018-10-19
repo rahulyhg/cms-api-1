@@ -16,6 +16,12 @@ class UserService implements UserServiceInterface
      */
     private $entityManager;
 
+    /** @var User */
+    private $_user;
+
+    /** @var User[] */
+    private $_users;
+
     /**
      * @var AppMail
      */
@@ -35,42 +41,44 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * @return array
-     */
-    public function getAll(): array
-    {
-        $users = $this->getRepository()->findAll();
-        return $users;
-    }
-
-    /**
      * @param int  $id
      * @param bool $exception
      *
-     * @return null|User
+     * @return UserService
      */
-    public function getById(int $id, bool $exception = false): ?User
+    public function getById(int $id, bool $exception = false): UserService
     {
         /** @var User $user */
         $user = $this->getRepository()->find($id);
-        $this->userNotFoundException($exception && empty($user));
-        return $user;
+
+        if (empty($user)) {
+            throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
+        }
+
+        $this->_user = $user;
+        return $this;
     }
 
     /**
      * @param string $email
-     * @param bool   $exception
      *
-     * @return null|User
+     * @return UserService
+     * @internal param bool $exception
+     *
      */
-    public function getByEmail(string $email, bool $exception = false): ?User
+    public function getByEmail(string $email): UserService
     {
         /** @var User $user */
         $user = $this->getRepository()->findOneBy([
             'email' => $email,
         ]);
-        $this->userNotFoundException($exception && empty($user));
-        return $user;
+
+        if (empty($user)) {
+            throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
+        }
+
+        $this->_user = $user;
+        return $this;
     }
 
     /**
@@ -78,9 +86,9 @@ class UserService implements UserServiceInterface
      * @param string $token
      * @param string $type
      *
-     * @return User
+     * @return UserService
      */
-    public function getByToken(string $email, string $token, string $type): User
+    public function getByToken(string $email, string $token, string $type): UserService
     {
         $field = [
             'emailConfirm' => 'emailConfirmToken',
@@ -97,32 +105,41 @@ class UserService implements UserServiceInterface
             $field[$type] => $token,
         ]);
 
-        $this->userNotFoundException(empty($user));
-        return $user;
-    }
 
-    /**
-     * @param bool $condition
-     */
-    private function userNotFoundException(bool $condition)
-    {
-        if ($condition) {
+        if (empty($user)) {
             throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
         }
+
+        $this->_user = $user;
+        return $this;
     }
 
     /**
      * @param int $status
      *
-     * @return User[]
+     * @return UserService
      */
-    public function getByStatus(int $status): array
+    public function getByStatus(int $status): UserService
     {
         /** @var User[] $users */
         $users = $this->getRepository()->findBy([
             'status' => $status,
         ]);
 
+        if (empty($users)) {
+            throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
+        }
+
+        $this->_users = $users;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAll(): array
+    {
+        $users = $this->getRepository()->findAll();
         return $users;
     }
 
@@ -186,7 +203,7 @@ class UserService implements UserServiceInterface
      */
     public function register(string $email, string $fullname, string $password): User
     {
-        $user = $this->create($email, $fullname, $password, UserStatus::STATUS_DISABLE, $this->generateToken());
+        $user = $this->create($email, $fullname, $password, UserStatus::STATUS_DISABLE);
         $this->email->send(
             'user-api/mail/registration.phtml',
             'Registration',
@@ -200,18 +217,21 @@ class UserService implements UserServiceInterface
      * @param string $fullname
      * @param string $password
      * @param int    $status
-     * @param null|string $emailConfirmToken
      *
      * @return User
+     * @internal param null|string $emailConfirmToken
+     *
      */
     private function create(
         string $email,
         string $fullname,
         string $password,
-        int $status,
-        ?string $emailConfirmToken = null
+        int $status
     ): User {
-        $user = $this->getByEmail($email);
+        /** @var User $user */
+        $user = $this->getRepository()->findOneBy([
+            'email' => $email,
+        ]);
 
         if (!empty($user)) {
             throw new \RuntimeException(User::ERR_MSG_ALREADY_EXIST, User::ERR_CODE_ALREADY_EXIST);
@@ -222,7 +242,7 @@ class UserService implements UserServiceInterface
             'password' => $this->encryptPassword($password),
             'fullname' => $fullname,
             'status' => $status,
-            'emailConfirmToken' => $emailConfirmToken,
+            'emailConfirmToken' => UserStatus::STATUS_DISABLE === $status ? $this->generateToken() : null,
         ]);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -250,14 +270,17 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * @param int $id
      * @param int $status
      *
-     * @return User
+     * @return UserService
+     * @internal param int $id
      */
-    public function changeStatus(int $id, int $status): User
+    public function changeStatus(int $status): UserService
     {
-        $user = $this->getById($id, true);
+        if (empty($this->_user)) {
+            $this->userNotFoundException(true);
+        }
+        $user = $this->_user;
 
         if (!in_array($status, UserStatus::toArray())) {
             throw new \RuntimeException(User::ERR_MSG_WRONG_STATUS, User::ERR_CODE_WRONG_STATUS);
@@ -266,7 +289,7 @@ class UserService implements UserServiceInterface
         $user->setStatus($status);
         $this->entityManager->flush();
 
-        return $user;
+        return $this;
     }
 
     /**
@@ -304,7 +327,7 @@ class UserService implements UserServiceInterface
      */
     public function sendResetPassword(string $email)
     {
-        $user = $this->getByEmail($email, true);
+        $user = $this->getByEmail($email);
 
         $user->setResetToken($this->generateToken());
         $user->setUpdatedAt(new \DateTime());
@@ -335,7 +358,7 @@ class UserService implements UserServiceInterface
      */
     public function sendConfirmEmail(string $email)
     {
-        $user = $this->getByEmail($email, true);
+        $user = $this->getByEmail($email);
 
         $user->setEmailConfirmToken($this->generateToken());
         $user->setUpdatedAt(new \DateTime());
@@ -346,18 +369,26 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * @param string $email
-     * @param string $token
+     * @return UserService
+     * @internal param string $email
+     * @internal param string $token
+     *
      */
-    public function confirmEmail(string $email, string $token)
+    public function confirmEmail(): UserService
     {
-        $user = $this->getByToken($email, $token, 'emailConfirm');
+        if (empty($this->_user)) {
+            $this->userNotFoundException(true);
+        }
+        $user = $this->_user;
+
         $user->setUpdatedAt(new \DateTime());
         $user->setIsEmailConfirmed(true);
         $user->setEmailConfirmToken(null);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+
+        return $this;
     }
 
     /**
@@ -373,14 +404,14 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * @param string $email
      * @param string $password
      *
      * @return User
+     * @internal param string $email
      */
-    public function login(string $email, string $password): User
+    public function login(string $password): User
     {
-        $user = $this->getByEmail($email, true);
+        $user = $this->_user;
 
         if ($user->getStatus() !== UserStatus::STATUS_ENABLE) {
             throw new \RuntimeException(User::ERR_MSG_IS_NO_ACTIVE, User::ERR_CODE_IS_NO_ACTIVE);
@@ -412,6 +443,7 @@ class UserService implements UserServiceInterface
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+
         return $user;
     }
 }

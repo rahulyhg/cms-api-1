@@ -27,7 +27,9 @@ class UserLoginController extends AbstractActionController
         $data = $this->getInputFilter()->getValues();
 
         try {
-            $user = $this->userService->login($data['email'], $data['password']);
+            $user = $this->userService
+                ->getByEmail($data['email'])
+                ->login($data['password']);
             $container = new Container('user');
             $container->currentUser = $user;
             $response = [
