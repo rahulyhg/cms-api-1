@@ -2,6 +2,7 @@
 
 namespace UserApi\Service;
 
+use Application\Service\AppMail;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use UserApi\Entity\User;
@@ -16,13 +17,13 @@ class UserService implements UserServiceInterface
     private $entityManager;
 
     /**
-     * @var EmailService
+     * @var AppMail
      */
     private $email;
 
     public function __construct(
         EntityManager $entityManager,
-        EmailService $email
+        AppMail $email
     ) {
         $this->entityManager = $entityManager;
         $this->email = $email;
@@ -185,7 +186,13 @@ class UserService implements UserServiceInterface
      */
     public function register(string $email, string $fullname, string $password): User
     {
-        return $this->create($email, $fullname, $password, UserStatus::STATUS_DISABLE);
+        $user = $this->create($email, $fullname, $password, UserStatus::STATUS_DISABLE, $this->generateToken());
+        $this->email->send(
+            'user-api/mail/registration.phtml',
+            'Registration',
+            $user->getEmail(),
+            $user);
+        return $user;
     }
 
     /**
@@ -193,11 +200,17 @@ class UserService implements UserServiceInterface
      * @param string $fullname
      * @param string $password
      * @param int    $status
+     * @param null|string $emailConfirmToken
      *
      * @return User
      */
-    private function create(string $email, string $fullname, string $password, int $status): User
-    {
+    private function create(
+        string $email,
+        string $fullname,
+        string $password,
+        int $status,
+        ?string $emailConfirmToken = null
+    ): User {
         $user = $this->getByEmail($email);
 
         if (!empty($user)) {
@@ -209,6 +222,7 @@ class UserService implements UserServiceInterface
             'password' => $this->encryptPassword($password),
             'fullname' => $fullname,
             'status' => $status,
+            'emailConfirmToken' => $emailConfirmToken,
         ]);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -297,7 +311,7 @@ class UserService implements UserServiceInterface
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        $this->email->sendResetPasswordToken($user);
+        $this->email->send('user-api/mail/reset-password.phtml', []);
     }
 
     /**
@@ -328,7 +342,7 @@ class UserService implements UserServiceInterface
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        $this->email->sendConfirmEmailToken($user);
+        $this->email->send('user-api/mail/confirm-email.phtml', []);
     }
 
     /**

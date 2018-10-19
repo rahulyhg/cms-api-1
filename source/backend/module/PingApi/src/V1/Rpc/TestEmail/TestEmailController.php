@@ -1,18 +1,18 @@
 <?php
 namespace PingApi\V1\Rpc\TestEmail;
 
-use UserApi\Service\EmailService;
+use Application\Service\AppMail;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class TestEmailController extends AbstractActionController
 {
     /**
-     * @var EmailService
+     * @var AppMail
      */
     private $mail;
 
     public function __construct(
-        EmailService $mail
+        AppMail $mail
     ) {
         $this->mail = $mail;
     }
@@ -22,7 +22,7 @@ class TestEmailController extends AbstractActionController
         $data = $this->params()->fromQuery();
 
         return [
-            'result' => $this->mail->sendTestEmail($data)
+            'result' => $this->mail->send('ping-api/mail/ping.phtml', $data)
         ];
     }
 }

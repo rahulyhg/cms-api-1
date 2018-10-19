@@ -6,6 +6,10 @@
 
 namespace Application;
 
+use Application\Service\AppMail;
+use Application\Service\Factory\AppMailFactory;
+use Application\Service\Factory\MailComposerFactory;
+use Application\Service\MailComposer;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
@@ -44,4 +48,10 @@ return [
             __DIR__ . '/../view',
         ],
     ],
+    'service_manager' => [
+        'factories' => [
+            MailComposer::class => MailComposerFactory::class,
+            AppMail::class => AppMailFactory::class
+        ]
+    ]
 ];

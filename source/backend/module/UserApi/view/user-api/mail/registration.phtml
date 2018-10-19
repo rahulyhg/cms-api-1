@@ -1,0 +1,18 @@
+<?php
+
+$confirmEmailLink = $this->url(
+    'user-api.rpc.confirm-email',
+    [
+        'email' => $email,
+        'token' => $emailConfirmToken,
+    ],
+    ['force_canonical' => true]
+);
+?>
+<h2>Welcome, <?= $fullname ?></h2>
+<p>
+    CodeMatrixZone is very glad that you register in our website to user our services<br>
+    Before you can use our services please activate your email. by click on the following link or copy and paste it in
+    your browser address bar
+    <a href="<?= $confirmEmailLink ?>"><?= $confirmEmailLink; ?></a>
+</p>

@@ -3,13 +3,12 @@ return [
     'service_manager' => [
         'factories' => [
             \UserApi\V1\Rest\Users\UsersResource::class => \UserApi\V1\Rest\Users\UsersResourceFactory::class,
-            \UserApi\Service\UserService::class => \UserApi\Factory\UserServiceFactory::class,
-            \UserApi\Service\EmailService::class => \UserApi\Factory\EmailServiceFactory::class,
+            \UserApi\Service\UserService::class => \UserApi\Service\Factory\UserServiceFactory::class,
         ],
     ],
     'view_manager' => [
         'template_path_stack' => [
-            __DIR__.'/../view',
+            0 => __DIR__ . '/../view',
         ],
     ],
     'router' => [
@@ -69,7 +68,7 @@ return [
             'user-api.rpc.confirm-email' => [
                 'type' => 'Segment',
                 'options' => [
-                    'route' => '/api/:email/confirm/:token',
+                    'route' => '/confirm/:email/:token',
                     'defaults' => [
                         'controller' => 'UserApi\\V1\\Rpc\\ConfirmEmail\\Controller',
                         'action' => 'confirmEmail',
