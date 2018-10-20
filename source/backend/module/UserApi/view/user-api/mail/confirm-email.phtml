@@ -1,3 +1,17 @@
 <?php
+
+$confirmEmailLink = $this->url(
+    'user-api.rpc.confirm-email',
+    [
+        'email' => $email,
+        'token' => $emailConfirmToken,
+    ],
+    ['force_canonical' => true]
+);
 ?>
-confirm email
+<h2>Welcome back CodeMatrixZone</h2>
+<p>
+    Please confirm your email. by click on the following link or copy and paste it in
+    your browser address bar
+    <a href="<?= $confirmEmailLink ?>"><?= $confirmEmailLink; ?></a>
+</p>

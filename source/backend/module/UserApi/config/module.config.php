@@ -75,6 +75,26 @@ return [
                     ],
                 ],
             ],
+            'user-api.rpc.send-confirm-email' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/send-confirm-email',
+                    'defaults' => [
+                        'controller' => 'UserApi\\V1\\Rpc\\SendConfirmEmail\\Controller',
+                        'action' => 'sendConfirmEmail',
+                    ],
+                ],
+            ],
+            'user-api.rpc.activate-account' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/activate/:email/:token',
+                    'defaults' => [
+                        'controller' => 'UserApi\\V1\\Rpc\\ActivateAccount\\Controller',
+                        'action' => 'activateAccount',
+                    ],
+                ],
+            ],
         ],
     ],
     'session_containers' => [
@@ -197,6 +217,62 @@ return [
                 'error_message' => 'Confirm Password should be same as password.',
             ],
         ],
+        'UserApi\\V1\\Rest\\Users\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\EmailAddress::class,
+                        'options' => [],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'email',
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\StringLength::class,
+                        'options' => [
+                            'min' => '5',
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'fullname',
+                'field_type' => 'string',
+            ],
+        ],
+        'UserApi\\V1\\Rpc\\SendConfirmEmail\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\EmailAddress::class,
+                        'options' => [],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'email',
+                'field_type' => 'string',
+            ],
+        ],
     ],
     'doctrine' => [
         'driver' => [
@@ -221,6 +297,8 @@ return [
             'UserApi\\V1\\Rpc\\UserLogout\\Controller' => \UserApi\V1\Rpc\UserLogout\UserLogoutControllerFactory::class,
             'UserApi\\V1\\Rpc\\Register\\Controller' => \UserApi\V1\Rpc\Register\RegisterControllerFactory::class,
             'UserApi\\V1\\Rpc\\ConfirmEmail\\Controller' => \UserApi\V1\Rpc\ConfirmEmail\ConfirmEmailControllerFactory::class,
+            'UserApi\\V1\\Rpc\\SendConfirmEmail\\Controller' => \UserApi\V1\Rpc\SendConfirmEmail\SendConfirmEmailControllerFactory::class,
+            'UserApi\\V1\\Rpc\\ActivateAccount\\Controller' => \UserApi\V1\Rpc\ActivateAccount\ActivateAccountControllerFactory::class,
         ],
     ],
     'zf-versioning' => [
@@ -231,6 +309,8 @@ return [
             4 => 'user-api.rpc.user-logout',
             5 => 'user-api.rpc.register',
             6 => 'user-api.rpc.confirm-email',
+            7 => 'user-api.rpc.send-confirm-email',
+            8 => 'user-api.rpc.activate-account',
         ],
     ],
     'zf-rest' => [
@@ -265,6 +345,8 @@ return [
             'UserApi\\V1\\Rpc\\UserLogout\\Controller' => 'Json',
             'UserApi\\V1\\Rpc\\Register\\Controller' => 'Json',
             'UserApi\\V1\\Rpc\\ConfirmEmail\\Controller' => 'Json',
+            'UserApi\\V1\\Rpc\\SendConfirmEmail\\Controller' => 'Json',
+            'UserApi\\V1\\Rpc\\ActivateAccount\\Controller' => 'Json',
         ],
         'accept_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -297,6 +379,16 @@ return [
                 1 => 'application/json',
                 2 => 'application/*+json',
             ],
+            'UserApi\\V1\\Rpc\\SendConfirmEmail\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
+            'UserApi\\V1\\Rpc\\ActivateAccount\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
         ],
         'content_type_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -320,6 +412,14 @@ return [
                 1 => 'application/json',
             ],
             'UserApi\\V1\\Rpc\\ConfirmEmail\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+            ],
+            'UserApi\\V1\\Rpc\\SendConfirmEmail\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+            ],
+            'UserApi\\V1\\Rpc\\ActivateAccount\\Controller' => [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
             ],
@@ -383,6 +483,20 @@ return [
             ],
             'route_name' => 'user-api.rpc.confirm-email',
         ],
+        'UserApi\\V1\\Rpc\\SendConfirmEmail\\Controller' => [
+            'service_name' => 'sendConfirmEmail',
+            'http_methods' => [
+                0 => 'POST',
+            ],
+            'route_name' => 'user-api.rpc.send-confirm-email',
+        ],
+        'UserApi\\V1\\Rpc\\ActivateAccount\\Controller' => [
+            'service_name' => 'activateAccount',
+            'http_methods' => [
+                0 => 'GET',
+            ],
+            'route_name' => 'user-api.rpc.activate-account',
+        ],
     ],
     'zf-content-validation' => [
         'UserApi\\V1\\Rpc\\UserLogin\\Controller' => [
@@ -390,6 +504,12 @@ return [
         ],
         'UserApi\\V1\\Rpc\\Register\\Controller' => [
             'input_filter' => 'UserApi\\V1\\Rpc\\Register\\Validator',
+        ],
+        'UserApi\\V1\\Rest\\Users\\Controller' => [
+            'input_filter' => 'UserApi\\V1\\Rest\\Users\\Validator',
+        ],
+        'UserApi\\V1\\Rpc\\SendConfirmEmail\\Controller' => [
+            'input_filter' => 'UserApi\\V1\\Rpc\\SendConfirmEmail\\Validator',
         ],
     ],
 ];

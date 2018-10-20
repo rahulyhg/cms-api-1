@@ -1,11 +1,10 @@
 <?php
-namespace UserApi\V1\Rpc\ConfirmEmail;
+namespace UserApi\V1\Rpc\SendConfirmEmail;
 
 use UserApi\Service\UserService;
-use UserApi\Type\UserStatus;
 use Zend\Mvc\Controller\AbstractActionController;
 
-class ConfirmEmailController extends AbstractActionController
+class SendConfirmEmailController extends AbstractActionController
 {
     /**
      * @var UserService
@@ -17,15 +16,14 @@ class ConfirmEmailController extends AbstractActionController
         $this->userService = $userService;
     }
 
-    public function confirmEmailAction()
+    public function sendConfirmEmailAction()
     {
-        $email = $this->params()->fromRoute('email', null);
-        $token = $this->params()->fromRoute('token', null);
+        $data = $this->getInputFilter()->getValues();
 
         try {
             $this->userService
-                ->getByToken($email, $token,'emailConfirm')
-                ->confirmEmail();
+                ->getByEmail($data['email'])
+                ->sendConfirmEmail();
             $response = [
                 'success' => true,
                 'result' => [],

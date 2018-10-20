@@ -1,21 +1,20 @@
 <?php
 namespace UserApi\V1\Rest\Users;
 
-use DoctrineModule\Validator\ObjectExists;
-use UserApi\Service\UserServiceInterface;
+use Doctrine\DBAL\DBALException;
+use UserApi\Service\UserService;
 use Zend\Paginator\Adapter\ArrayAdapter;
-use Zend\Validator;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 
 class UsersResource extends AbstractResourceListener
 {
     /**
-     * @var UserServiceInterface
+     * @var UserService
      */
     private $userService;
 
-    public function __construct(UserServiceInterface $userService)
+    public function __construct(UserService $userService)
     {
         $this->userService = $userService;
     }
@@ -39,10 +38,12 @@ class UsersResource extends AbstractResourceListener
      */
     public function delete($id)
     {
-        $result = $this->userService->delete($id);
-
-        if (!$result) {
-            return new ApiProblem(404, 'User not find');
+        try {
+        $result = $this->userService
+            ->getById($id)
+            ->delete();
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
         }
 
         return (bool) $result;
@@ -56,7 +57,17 @@ class UsersResource extends AbstractResourceListener
      */
     public function deleteList($data)
     {
-        die('delete all user');
+        if (!array_key_exists('ids', $data)) {
+            return new ApiProblem(400, 'Bad Request');
+        }
+
+        try {
+            $result = $this->userService->deleteUsers($data['ids']);
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
+
+        return (bool) $result;
     }
 
     /**
@@ -64,7 +75,7 @@ class UsersResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        $user = $this->userService->getById($id);
+        $user = $this->userService->getById($id)->fetch();
         if (!$user) {
             return new ApiProblem(404, 'User not find');
         }
@@ -77,44 +88,8 @@ class UsersResource extends AbstractResourceListener
     public function fetchAll($params = [])
     {
         return new UsersCollection(
-            new ArrayAdapter($this->userService->getAll())
+            new ArrayAdapter($this->userService->fetchAll())
         );
-    }
-
-    /**
-     * Patch (partial in-place update) a resource
-     *
-     * @param  mixed $id
-     * @param  mixed $data
-     * @return ApiProblem|mixed
-     */
-    public function patch($id, $data)
-    {
-        return new ApiProblem(405, 'The PATCH method has not been defined for individual resources');
-    }
-
-    /**
-     * Patch (partial in-place update) a collection or members of a collection
-     *
-     * @param  mixed $data
-     * @return ApiProblem|mixed
-     */
-    public function patchList($data)
-    {
-        return new ApiProblem(405, 'The PATCH method has not been defined for collections');
-    }
-
-    /**
-     * Replace a collection or members of a collection
-     *
-     * @param  mixed $data
-     * @return ApiProblem|mixed
-     */
-    public function replaceList($data)
-    {
-        return [
-            'result' => 'edit all user'
-        ];
     }
 
     /**
@@ -126,8 +101,19 @@ class UsersResource extends AbstractResourceListener
      */
     public function update($id, $data)
     {
-        return [
-            'result' => 'update user'
-        ];
+        try {
+            $user = $this->userService
+                ->getById($id)
+                ->edit([
+                    'fullname' => $data->fullname,
+                    'email' => $data->email,
+                ]);
+            return [
+                'success' => true,
+                'result' => $user
+            ];
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
     }
 }

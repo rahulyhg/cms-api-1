@@ -10,6 +10,7 @@ use Application\Service\AppMail;
 use Application\Service\Factory\AppMailFactory;
 use Application\Service\Factory\MailComposerFactory;
 use Application\Service\MailComposer;
+use Application\Service\Utility;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
@@ -51,7 +52,8 @@ return [
     'service_manager' => [
         'factories' => [
             MailComposer::class => MailComposerFactory::class,
-            AppMail::class => AppMailFactory::class
+            AppMail::class => AppMailFactory::class,
+            Utility::class => InvokableFactory::class,
         ]
     ]
 ];

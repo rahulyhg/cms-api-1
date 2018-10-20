@@ -3,6 +3,7 @@
 namespace UserApi\Service;
 
 use Application\Service\AppMail;
+use Application\Service\Utility;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use UserApi\Entity\User;
@@ -17,10 +18,10 @@ class UserService implements UserServiceInterface
     private $entityManager;
 
     /** @var User */
-    private $_user;
+    private $user;
 
     /** @var User[] */
-    private $_users;
+    private $users;
 
     /**
      * @var AppMail
@@ -55,7 +56,7 @@ class UserService implements UserServiceInterface
             throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
         }
 
-        $this->_user = $user;
+        $this->user = $user;
         return $this;
     }
 
@@ -77,7 +78,7 @@ class UserService implements UserServiceInterface
             throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
         }
 
-        $this->_user = $user;
+        $this->user = $user;
         return $this;
     }
 
@@ -110,7 +111,7 @@ class UserService implements UserServiceInterface
             throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
         }
 
-        $this->_user = $user;
+        $this->user = $user;
         return $this;
     }
 
@@ -130,33 +131,125 @@ class UserService implements UserServiceInterface
             throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
         }
 
-        $this->_users = $users;
+        $this->users = $users;
         return $this;
     }
 
+    /******************************************************
+     ******************** Repository **********************
+     ******************************************************/
     /**
      * @return array
      */
-    public function getAll(): array
+    public function fetchAll(): array
     {
         $users = $this->getRepository()->findAll();
         return $users;
     }
 
     /**
-     * @param int $id
-     *
-     * @return null|User
+     * @return User
      */
-    public function delete(int $id): ?User
+    public function fetch(): User
     {
-        if (!$this->getById($id)) {
-            return null;
+        return $this->user;
+    }
+
+    /**
+     * @return User
+     * @internal param int $id
+     *
+     */
+    public function delete(): User
+    {
+        $user = $this->user;
+
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+
+        return $user;
+    }
+
+    /**
+     * Delete a list of ids and return number of successfully deleted records
+     * @param int[] $ids
+     *
+     * @return int
+     */
+    public function deleteUsers(array $ids): int
+    {
+        Utility::isArrayOfIds($ids);
+
+        $qb = $this->entityManager->createQueryBuilder();
+
+        /** @var int $result */
+        $result = $qb->delete(User::class, 'u')
+            ->where($qb->expr()->in('u.id', $ids))
+            ->getQuery()
+            ->execute();
+
+        return $result;
+    }
+
+    /**
+     * @param string $email
+     * @param string $fullname
+     * @param string $password
+     * @param int    $status
+     *
+     * @return User
+     * @internal param null|string $emailConfirmToken
+     *
+     */
+    private function create(
+        string $email,
+        string $fullname,
+        string $password,
+        int $status
+    ): User {
+        /** @var User $user */
+        $user = $this->getRepository()->findOneBy([
+            'email' => $email,
+        ]);
+
+        if (!empty($user)) {
+            throw new \RuntimeException(User::ERR_MSG_ALREADY_EXIST, User::ERR_CODE_ALREADY_EXIST);
         }
 
-        /** @var User $user */
-        $user = $this->getRepository()->find($id);
-        $this->entityManager->remove($user);
+        $user = new User([
+            'email' => $email,
+            'password' => $this->encryptPassword($password),
+            'fullname' => $fullname,
+            'status' => $status,
+            'emailConfirmToken' => UserStatus::STATUS_DISABLE === $status ? $this->generateToken() : null,
+        ]);
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $user;
+    }
+
+    /**
+     * @param array $info
+     *
+     * @return User
+     */
+    public function edit(array $info): User
+    {
+        $user = $this->user;
+
+        if ($info['email'] !== $user->getEmail()) {
+            if ($this->getRepository()->count(['email'=>$info['email']])) {
+                throw new \RuntimeException(User::ERR_MSG_ALREADY_EXIST, User::ERR_CODE_ALREADY_EXIST);
+            }
+            $user->setEmail($info['email']);
+            $user->setIsEmailConfirmed(false);
+        }
+
+        $user->setFullname($info['fullname']);
+        $user->setUpdatedAt(new \DateTime());
+
+        $this->entityManager->persist($user);
         $this->entityManager->flush();
 
         return $user;
@@ -171,6 +264,10 @@ class UserService implements UserServiceInterface
         return bin2hex($token);
     }
 
+
+    /******************************************************
+     ******************** UserService *********************
+     ******************************************************/
     /**
      * @param string $password
      *
@@ -213,63 +310,6 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * @param string $email
-     * @param string $fullname
-     * @param string $password
-     * @param int    $status
-     *
-     * @return User
-     * @internal param null|string $emailConfirmToken
-     *
-     */
-    private function create(
-        string $email,
-        string $fullname,
-        string $password,
-        int $status
-    ): User {
-        /** @var User $user */
-        $user = $this->getRepository()->findOneBy([
-            'email' => $email,
-        ]);
-
-        if (!empty($user)) {
-            throw new \RuntimeException(User::ERR_MSG_ALREADY_EXIST, User::ERR_CODE_ALREADY_EXIST);
-        }
-
-        $user = new User([
-            'email' => $email,
-            'password' => $this->encryptPassword($password),
-            'fullname' => $fullname,
-            'status' => $status,
-            'emailConfirmToken' => UserStatus::STATUS_DISABLE === $status ? $this->generateToken() : null,
-        ]);
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        return $user;
-    }
-
-    /**
-     * @param int[] $ids
-     *
-     * @return User[]
-     */
-    public function deleteUsers(array $ids): array
-    {
-        $this->isArrayOfNumber($ids);
-
-        $users = [];
-        foreach ($ids as $id) {
-            if ($user = $this->delete($id)) {
-                $users[] = $user;
-            };
-        }
-
-        return $users;
-    }
-
-    /**
      * @param int $status
      *
      * @return UserService
@@ -277,10 +317,10 @@ class UserService implements UserServiceInterface
      */
     public function changeStatus(int $status): UserService
     {
-        if (empty($this->_user)) {
+        if (empty($this->user)) {
             $this->userNotFoundException(true);
         }
-        $user = $this->_user;
+        $user = $this->user;
 
         if (!in_array($status, UserStatus::toArray())) {
             throw new \RuntimeException(User::ERR_MSG_WRONG_STATUS, User::ERR_CODE_WRONG_STATUS);
@@ -300,7 +340,7 @@ class UserService implements UserServiceInterface
      */
     public function changeStatusUsers(array $ids, int $status): array
     {
-        $this->isArrayOfNumber($ids);
+        Utility::isArrayOfIds($ids);
 
         $users = [];
         foreach ($ids as $id) {
@@ -310,16 +350,6 @@ class UserService implements UserServiceInterface
         }
 
         return $users;
-    }
-
-    /**
-     * @param int[] $items
-     */
-    private function isArrayOfNumber(array $items)
-    {
-        if ($items !== array_filter($items, 'is_numeric')) {
-            throw new \RuntimeException(User::ERR_MSG_INVALID_PARAMETER, User::ERR_CODE_INVALID_PARAMETER);
-        }
     }
 
     /**
@@ -354,18 +384,24 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * @param string $email
+     * @internal param string $email
      */
-    public function sendConfirmEmail(string $email)
+    public function sendConfirmEmail(): void
     {
-        $user = $this->getByEmail($email);
+        $user = $this->user;
 
         $user->setEmailConfirmToken($this->generateToken());
+        $user->setIsEmailConfirmed(false);
         $user->setUpdatedAt(new \DateTime());
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        $this->email->send('user-api/mail/confirm-email.phtml', []);
+        $this->email->send(
+            'user-api/mail/confirm-email.phtml',
+            'Confirm Your Email',
+            $user->getEmail(),
+            $user
+        );
     }
 
     /**
@@ -376,10 +412,7 @@ class UserService implements UserServiceInterface
      */
     public function confirmEmail(): UserService
     {
-        if (empty($this->_user)) {
-            $this->userNotFoundException(true);
-        }
-        $user = $this->_user;
+        $user = $this->user;
 
         $user->setUpdatedAt(new \DateTime());
         $user->setIsEmailConfirmed(true);
@@ -411,7 +444,7 @@ class UserService implements UserServiceInterface
      */
     public function login(string $password): User
     {
-        $user = $this->_user;
+        $user = $this->user;
 
         if ($user->getStatus() !== UserStatus::STATUS_ENABLE) {
             throw new \RuntimeException(User::ERR_MSG_IS_NO_ACTIVE, User::ERR_CODE_IS_NO_ACTIVE);
@@ -424,25 +457,6 @@ class UserService implements UserServiceInterface
         if (!$this->isPasswordCorrect($password, $user->getPassword())) {
             throw new \RuntimeException(User::ERR_MSG_PASSWORD_IS_NOT_CORRECT, User::ERR_CODE_PASSWORD_IS_NOT_CORRECT);
         }
-
-        return $user;
-    }
-
-    public function edit(int $id, array $info): User
-    {
-        $user = $this->getById($id);
-
-        if (!empty($info['email'])) {
-            $user->setEmail($info['email']);
-        }
-
-        if (!empty($info['password'])) {
-            $user->setPassword($this->encryptPassword($info['password']));
-        }
-        $user->setUpdatedAt(new \DateTime());
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
 
         return $user;
     }

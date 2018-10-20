@@ -7,6 +7,10 @@
 use Zend\Stdlib\ArrayUtils;
 use ZF\Apigility\Application;
 
+function dd($var, $die = true) {
+    \Application\Service\Utility::D($var, $die);
+}
+
 /**
  * This makes our life easier when dealing with paths. Everything is relative
  * to the application root now.

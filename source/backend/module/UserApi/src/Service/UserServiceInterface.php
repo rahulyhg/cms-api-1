@@ -9,7 +9,7 @@ interface UserServiceInterface
     /**
      * @return User[]
      */
-    public function getAll(): array;
+    public function fetchAll(): array;
 
     /**
      * @param int $id
@@ -19,8 +19,8 @@ interface UserServiceInterface
     public function getById(int $id): UserService;
 
     /**
-     * @param int $id
-     * @return null|User
+     * @return User
+     * @internal param int $id
      */
-    public function delete(int $id): ?User;
+    public function delete(): User;
 }

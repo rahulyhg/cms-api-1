@@ -86,7 +86,7 @@ class UserServiceTest extends TestCase
     public function testGetAllUsers()
     {
         $expectedRows = $this->getDataSet()->getTable("users")->getRowCount();
-        $users = self::$userService->getAll();
+        $users = self::$userService->fetchAll();
         $this->assertCount($expectedRows, $users);
     }
 
