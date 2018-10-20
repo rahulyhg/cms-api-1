@@ -16,6 +16,11 @@ return [
                 ],
             ],
         ],
+        'configuration' => [
+            'orm_default' => [
+                'proxy_dir' => 'data/cache/Proxy',
+            ],
+        ],
         'migrations_configuration' => [
             'orm_default' => [
                 'directory' => 'data/Migrations',

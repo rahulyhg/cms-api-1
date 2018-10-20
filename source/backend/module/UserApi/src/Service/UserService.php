@@ -106,7 +106,6 @@ class UserService implements UserServiceInterface
             $field[$type] => $token,
         ]);
 
-
         if (empty($user)) {
             throw new \RuntimeException(User::ERR_MSG_NOT_FOUND, User::ERR_CODE_NOT_FOUND);
         }
@@ -172,6 +171,7 @@ class UserService implements UserServiceInterface
 
     /**
      * Delete a list of ids and return number of successfully deleted records
+     *
      * @param int[] $ids
      *
      * @return int
@@ -221,7 +221,7 @@ class UserService implements UserServiceInterface
             'password' => $this->encryptPassword($password),
             'fullname' => $fullname,
             'status' => $status,
-            'emailConfirmToken' => UserStatus::STATUS_DISABLE === $status ? $this->generateToken() : null,
+            'emailConfirmToken' => Utility::generateToken(),
         ]);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -239,7 +239,7 @@ class UserService implements UserServiceInterface
         $user = $this->user;
 
         if ($info['email'] !== $user->getEmail()) {
-            if ($this->getRepository()->count(['email'=>$info['email']])) {
+            if ($this->getRepository()->count(['email' => $info['email']])) {
                 throw new \RuntimeException(User::ERR_MSG_ALREADY_EXIST, User::ERR_CODE_ALREADY_EXIST);
             }
             $user->setEmail($info['email']);
@@ -254,16 +254,6 @@ class UserService implements UserServiceInterface
 
         return $user;
     }
-
-    /**
-     * @return string
-     */
-    private function generateToken(): string
-    {
-        $token = openssl_random_pseudo_bytes(16);
-        return bin2hex($token);
-    }
-
 
     /******************************************************
      ******************** UserService *********************
@@ -288,7 +278,17 @@ class UserService implements UserServiceInterface
      */
     public function addUserByAdmin(string $email, string $fullname, string $password): User
     {
-        return $this->create($email, $fullname, $password, UserStatus::STATUS_ENABLE);
+        $user = $this->create($email, $fullname, $password, UserStatus::STATUS_ENABLE);
+        $this->email->send(
+            'user-api/mail/new-account.phtml',
+            'New Account',
+            $user->getEmail(), [
+                'email' => $user->getEmail(),
+                'emailConfirmToken' => $user->getEmailConfirmToken(),
+                'fullname' => $user->getFullname(),
+                'plainPassword' => $password,
+            ]);
+        return $user;
     }
 
     /**
@@ -307,6 +307,84 @@ class UserService implements UserServiceInterface
             $user->getEmail(),
             $user);
         return $user;
+    }
+
+    /**
+     * @param string $password
+     * @param string $hashedPassword
+     *
+     * @return bool
+     */
+    public function isPasswordCorrect(string $password, string $hashedPassword): bool
+    {
+        $bcrypt = new Bcrypt(['cost' => 14]);
+        return $bcrypt->verify($password, $hashedPassword);
+    }
+
+    /**
+     * @param string $password
+     *
+     * @return User
+     * @internal param string $email
+     */
+    public function login(string $password): User
+    {
+        $user = $this->user;
+
+        if ($user->getStatus() !== UserStatus::STATUS_ENABLE) {
+            throw new \RuntimeException(User::ERR_MSG_IS_NO_ACTIVE, User::ERR_CODE_IS_NO_ACTIVE);
+        }
+
+        if (!$user->isEmailConfirmed()) {
+            throw new \RuntimeException(User::ERR_MSG_EMAIL_IS_NOT_CONFIRMED, User::ERR_CODE_EMAIL_IS_NOT_CONFIRMED);
+        }
+
+        if (!$this->isPasswordCorrect($password, $user->getPassword())) {
+            throw new \RuntimeException(User::ERR_MSG_PASSWORD_IS_NOT_CORRECT, User::ERR_CODE_PASSWORD_IS_NOT_CORRECT);
+        }
+
+        return $user;
+    }
+
+    /**
+     * @internal param string $email
+     */
+    public function sendConfirmEmail(): void
+    {
+        $user = $this->user;
+
+        $user->setEmailConfirmToken(Utility::generateToken());
+        $user->setIsEmailConfirmed(false);
+        $user->setUpdatedAt(new \DateTime());
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        $this->email->send(
+            'user-api/mail/confirm-email.phtml',
+            'Confirm Your Email',
+            $user->getEmail(),
+            $user
+        );
+    }
+
+    /**
+     * @return UserService
+     * @internal param string $email
+     * @internal param string $token
+     *
+     */
+    public function confirmEmail(): UserService
+    {
+        $user = $this->user;
+
+        $user->setUpdatedAt(new \DateTime());
+        $user->setIsEmailConfirmed(true);
+        $user->setEmailConfirmToken(null);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $this;
     }
 
     /**
@@ -359,7 +437,7 @@ class UserService implements UserServiceInterface
     {
         $user = $this->getByEmail($email);
 
-        $user->setResetToken($this->generateToken());
+        $user->setResetToken(Utility::generateToken());
         $user->setUpdatedAt(new \DateTime());
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -381,83 +459,5 @@ class UserService implements UserServiceInterface
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
-    }
-
-    /**
-     * @internal param string $email
-     */
-    public function sendConfirmEmail(): void
-    {
-        $user = $this->user;
-
-        $user->setEmailConfirmToken($this->generateToken());
-        $user->setIsEmailConfirmed(false);
-        $user->setUpdatedAt(new \DateTime());
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        $this->email->send(
-            'user-api/mail/confirm-email.phtml',
-            'Confirm Your Email',
-            $user->getEmail(),
-            $user
-        );
-    }
-
-    /**
-     * @return UserService
-     * @internal param string $email
-     * @internal param string $token
-     *
-     */
-    public function confirmEmail(): UserService
-    {
-        $user = $this->user;
-
-        $user->setUpdatedAt(new \DateTime());
-        $user->setIsEmailConfirmed(true);
-        $user->setEmailConfirmToken(null);
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        return $this;
-    }
-
-    /**
-     * @param string $password
-     * @param string $hashedPassword
-     *
-     * @return bool
-     */
-    public function isPasswordCorrect(string $password, string $hashedPassword): bool
-    {
-        $bcrypt = new Bcrypt(['cost' => 14]);
-        return $bcrypt->verify($password, $hashedPassword);
-    }
-
-    /**
-     * @param string $password
-     *
-     * @return User
-     * @internal param string $email
-     */
-    public function login(string $password): User
-    {
-        $user = $this->user;
-
-        if ($user->getStatus() !== UserStatus::STATUS_ENABLE) {
-            throw new \RuntimeException(User::ERR_MSG_IS_NO_ACTIVE, User::ERR_CODE_IS_NO_ACTIVE);
-        }
-
-        if (!$user->isEmailConfirmed()) {
-            throw new \RuntimeException(User::ERR_MSG_EMAIL_IS_NOT_CONFIRMED, User::ERR_CODE_EMAIL_IS_NOT_CONFIRMED);
-        }
-
-        if (!$this->isPasswordCorrect($password, $user->getPassword())) {
-            throw new \RuntimeException(User::ERR_MSG_PASSWORD_IS_NOT_CORRECT, User::ERR_CODE_PASSWORD_IS_NOT_CORRECT);
-        }
-
-        return $user;
     }
 }

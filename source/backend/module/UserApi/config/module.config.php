@@ -323,11 +323,11 @@ return [
                 0 => 'GET',
                 1 => 'PUT',
                 2 => 'DELETE',
-                3 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
                 1 => 'DELETE',
+                2 => 'POST',
             ],
             'collection_query_whitelist' => [],
             'page_size' => 25,

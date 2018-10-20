@@ -1,0 +1,20 @@
+<?php
+
+$confirmEmailLink = $this->url(
+    'user-api.rpc.confirm-email',
+    [
+        'email' => $email,
+        'token' => $emailConfirmToken,
+    ],
+    ['force_canonical' => true]
+);
+?>
+<h2>Welcome, <?= $fullname ?></h2>
+<p>
+    An account is created in CodeMatrixZo by admin. You can login with your email and following password:<br>
+    <p>Password: <?= $plainPassword ?></p>
+    Before you can use our services please activate your email. by click on the following link or copy and paste it in
+    your browser address bar
+    <a href="<?= $confirmEmailLink ?>"><?= $confirmEmailLink; ?></a>
+
+</p>

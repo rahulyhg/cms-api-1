@@ -1,6 +1,7 @@
 <?php
 namespace UserApi\V1\Rest\Users;
 
+use Application\Service\Utility;
 use Doctrine\DBAL\DBALException;
 use UserApi\Service\UserService;
 use Zend\Paginator\Adapter\ArrayAdapter;
@@ -27,7 +28,20 @@ class UsersResource extends AbstractResourceListener
      */
     public function create($data)
     {
-        die('create user');
+        try {
+            $user = $this->userService
+                ->addUserByAdmin(
+                    $data->email,
+                    $data->fullname,
+                    Utility::randomPassword()
+                );
+            return [
+                'success' => true,
+                'result' => $user
+            ];
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
     }
 
     /**
