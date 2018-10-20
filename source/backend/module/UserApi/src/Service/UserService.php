@@ -283,11 +283,11 @@ class UserService implements UserServiceInterface
             'user-api/mail/new-account.phtml',
             'New Account',
             $user->getEmail(), [
-                'email' => $user->getEmail(),
-                'emailConfirmToken' => $user->getEmailConfirmToken(),
-                'fullname' => $user->getFullname(),
-                'plainPassword' => $password,
-            ]);
+            'email' => $user->getEmail(),
+            'emailConfirmToken' => $user->getEmailConfirmToken(),
+            'fullname' => $user->getFullname(),
+            'plainPassword' => $password,
+        ]);
         return $user;
     }
 
@@ -388,6 +388,50 @@ class UserService implements UserServiceInterface
     }
 
     /**
+     * @internal param string $email
+     */
+    public function sendResetPassword()
+    {
+        $user = $this->user;
+
+        if ($user->getStatus() === UserStatus::STATUS_DISABLE) {
+            throw new \RuntimeException(User::ERR_MSG_IS_NO_ACTIVE, User::ERR_CODE_IS_NO_ACTIVE);
+        }
+
+        $user->setResetToken(Utility::generateToken());
+        $user->setUpdatedAt(new \DateTime());
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        $this->email->send(
+            'user-api/mail/reset-password.phtml',
+            'Reset Password',
+            $user->getEmail(),
+            $user
+        );
+    }
+
+    /**
+     * @param string $password
+     *
+     * @internal param string $email
+     * @internal param string $token
+     */
+    public function resetPassword(string $password)
+    {
+        $user = $this->user;
+        $user->setUpdatedAt(new \DateTime());
+        $user->setPassword($this->encryptPassword($password));
+        $user->setResetToken(null);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+    }
+
+
+
+
+    /**
      * @param int $status
      *
      * @return UserService
@@ -430,34 +474,4 @@ class UserService implements UserServiceInterface
         return $users;
     }
 
-    /**
-     * @param string $email
-     */
-    public function sendResetPassword(string $email)
-    {
-        $user = $this->getByEmail($email);
-
-        $user->setResetToken(Utility::generateToken());
-        $user->setUpdatedAt(new \DateTime());
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        $this->email->send('user-api/mail/reset-password.phtml', []);
-    }
-
-    /**
-     * @param string $email
-     * @param string $token
-     * @param string $password
-     */
-    public function resetPassword(string $email, string $token, string $password)
-    {
-        $user = $this->getByToken($email, $token, 'resetPassword');
-        $user->setUpdatedAt(new \DateTime());
-        $user->setPassword($this->encryptPassword($password));
-        $user->setResetToken(null);
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-    }
 }

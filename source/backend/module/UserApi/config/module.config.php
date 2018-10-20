@@ -95,6 +95,36 @@ return [
                     ],
                 ],
             ],
+            'user-api.rpc.reset-password' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/reset-password',
+                    'defaults' => [
+                        'controller' => 'UserApi\\V1\\Rpc\\ResetPassword\\Controller',
+                        'action' => 'resetPassword',
+                    ],
+                ],
+            ],
+            'user-api.rpc.send-reset-password' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/api/send-reset-password',
+                    'defaults' => [
+                        'controller' => 'UserApi\\V1\\Rpc\\SendResetPassword\\Controller',
+                        'action' => 'sendResetPassword',
+                    ],
+                ],
+            ],
+            'user-api.rpc.reset-paswword-link' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/reset/:email/:token',
+                    'defaults' => [
+                        'controller' => 'UserApi\\V1\\Rpc\\ResetPaswwordLink\\Controller',
+                        'action' => 'resetPaswwordLink',
+                    ],
+                ],
+            ],
         ],
     ],
     'session_containers' => [
@@ -185,7 +215,14 @@ return [
             ],
             2 => [
                 'required' => true,
-                'validators' => [],
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\StringLength::class,
+                        'options' => [
+                            'min' => '5',
+                        ],
+                    ],
+                ],
                 'filters' => [
                     0 => [
                         'name' => \Zend\Filter\StringTrim::class,
@@ -273,6 +310,80 @@ return [
                 'field_type' => 'string',
             ],
         ],
+        'UserApi\\V1\\Rpc\\ResetPassword\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\StringLength::class,
+                        'options' => [
+                            'max' => '16',
+                            'min' => '6',
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'password',
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\Identical::class,
+                        'options' => [
+                            'token' => 'password',
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'confirmPassword',
+            ],
+            2 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\Digits::class,
+                        'options' => [],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'id',
+                'field_type' => 'int',
+            ],
+        ],
+        'UserApi\\V1\\Rpc\\SendResetPassword\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\EmailAddress::class,
+                        'options' => [],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'email',
+            ],
+        ],
     ],
     'doctrine' => [
         'driver' => [
@@ -299,6 +410,9 @@ return [
             'UserApi\\V1\\Rpc\\ConfirmEmail\\Controller' => \UserApi\V1\Rpc\ConfirmEmail\ConfirmEmailControllerFactory::class,
             'UserApi\\V1\\Rpc\\SendConfirmEmail\\Controller' => \UserApi\V1\Rpc\SendConfirmEmail\SendConfirmEmailControllerFactory::class,
             'UserApi\\V1\\Rpc\\ActivateAccount\\Controller' => \UserApi\V1\Rpc\ActivateAccount\ActivateAccountControllerFactory::class,
+            'UserApi\\V1\\Rpc\\ResetPassword\\Controller' => \UserApi\V1\Rpc\ResetPassword\ResetPasswordControllerFactory::class,
+            'UserApi\\V1\\Rpc\\SendResetPassword\\Controller' => \UserApi\V1\Rpc\SendResetPassword\SendResetPasswordControllerFactory::class,
+            'UserApi\\V1\\Rpc\\ResetPaswwordLink\\Controller' => \UserApi\V1\Rpc\ResetPaswwordLink\ResetPaswwordLinkControllerFactory::class,
         ],
     ],
     'zf-versioning' => [
@@ -311,6 +425,9 @@ return [
             6 => 'user-api.rpc.confirm-email',
             7 => 'user-api.rpc.send-confirm-email',
             8 => 'user-api.rpc.activate-account',
+            9 => 'user-api.rpc.reset-password',
+            10 => 'user-api.rpc.send-reset-password',
+            11 => 'user-api.rpc.reset-paswword-link',
         ],
     ],
     'zf-rest' => [
@@ -347,6 +464,9 @@ return [
             'UserApi\\V1\\Rpc\\ConfirmEmail\\Controller' => 'Json',
             'UserApi\\V1\\Rpc\\SendConfirmEmail\\Controller' => 'Json',
             'UserApi\\V1\\Rpc\\ActivateAccount\\Controller' => 'Json',
+            'UserApi\\V1\\Rpc\\ResetPassword\\Controller' => 'Json',
+            'UserApi\\V1\\Rpc\\SendResetPassword\\Controller' => 'Json',
+            'UserApi\\V1\\Rpc\\ResetPaswwordLink\\Controller' => 'Json',
         ],
         'accept_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -389,6 +509,21 @@ return [
                 1 => 'application/json',
                 2 => 'application/*+json',
             ],
+            'UserApi\\V1\\Rpc\\ResetPassword\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
+            'UserApi\\V1\\Rpc\\SendResetPassword\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
+            'UserApi\\V1\\Rpc\\ResetPaswwordLink\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
         ],
         'content_type_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -420,6 +555,18 @@ return [
                 1 => 'application/json',
             ],
             'UserApi\\V1\\Rpc\\ActivateAccount\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+            ],
+            'UserApi\\V1\\Rpc\\ResetPassword\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+            ],
+            'UserApi\\V1\\Rpc\\SendResetPassword\\Controller' => [
+                0 => 'application/vnd.user-api.v1+json',
+                1 => 'application/json',
+            ],
+            'UserApi\\V1\\Rpc\\ResetPaswwordLink\\Controller' => [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
             ],
@@ -497,6 +644,27 @@ return [
             ],
             'route_name' => 'user-api.rpc.activate-account',
         ],
+        'UserApi\\V1\\Rpc\\ResetPassword\\Controller' => [
+            'service_name' => 'resetPassword',
+            'http_methods' => [
+                0 => 'POST',
+            ],
+            'route_name' => 'user-api.rpc.reset-password',
+        ],
+        'UserApi\\V1\\Rpc\\SendResetPassword\\Controller' => [
+            'service_name' => 'sendResetPassword',
+            'http_methods' => [
+                0 => 'POST',
+            ],
+            'route_name' => 'user-api.rpc.send-reset-password',
+        ],
+        'UserApi\\V1\\Rpc\\ResetPaswwordLink\\Controller' => [
+            'service_name' => 'resetPaswwordLink',
+            'http_methods' => [
+                0 => 'GET',
+            ],
+            'route_name' => 'user-api.rpc.reset-paswword-link',
+        ],
     ],
     'zf-content-validation' => [
         'UserApi\\V1\\Rpc\\UserLogin\\Controller' => [
@@ -510,6 +678,12 @@ return [
         ],
         'UserApi\\V1\\Rpc\\SendConfirmEmail\\Controller' => [
             'input_filter' => 'UserApi\\V1\\Rpc\\SendConfirmEmail\\Validator',
+        ],
+        'UserApi\\V1\\Rpc\\ResetPassword\\Controller' => [
+            'input_filter' => 'UserApi\\V1\\Rpc\\ResetPassword\\Validator',
+        ],
+        'UserApi\\V1\\Rpc\\SendResetPassword\\Controller' => [
+            'input_filter' => 'UserApi\\V1\\Rpc\\SendResetPassword\\Validator',
         ],
     ],
 ];
