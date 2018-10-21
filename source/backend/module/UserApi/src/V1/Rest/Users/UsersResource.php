@@ -2,9 +2,9 @@
 namespace UserApi\V1\Rest\Users;
 
 use Application\Service\Utility;
-use Doctrine\DBAL\DBALException;
 use UserApi\Service\UserService;
 use Zend\Paginator\Adapter\ArrayAdapter;
+use ArrayObject;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 
@@ -37,7 +37,7 @@ class UsersResource extends AbstractResourceListener
                 );
             return [
                 'success' => true,
-                'result' => $user
+                'result' => $user,
             ];
         } catch (\RuntimeException $e) {
             return new ApiProblem(422, $e->getMessage());
@@ -85,6 +85,48 @@ class UsersResource extends AbstractResourceListener
     }
 
     /**
+     * Patch (partial in-place update) a resource
+     *
+     * @param  mixed $id
+     * @param  mixed $data
+     * @return ApiProblem|mixed
+     */
+    public function patch($id, $data)
+    {
+        try {
+            $user = $this->userService->getById($id)->changeStatus($data->status)->fetch();
+            return [
+                'success' => true,
+                'result' => $user,
+                'message' => '',
+            ];
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
+    }
+
+    /**
+     * Patch (partial in-place update) a collection or members of a collection
+     *
+     * @param  mixed $data
+     * @return ApiProblem|mixed
+     */
+    public function patchList($data)
+    {
+        /** @var ArrayObject $data */
+        $ids = array_keys((array)$data);
+        $status = $data->getIterator()->current()['status'];
+
+        try {
+            $this->userService->changeStatusUsers($ids ,$status);
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
+
+        return true;
+    }
+
+    /**
      * Get a user
      */
     public function fetch($id)
@@ -124,7 +166,7 @@ class UsersResource extends AbstractResourceListener
                 ]);
             return [
                 'success' => true,
-                'result' => $user
+                'result' => $user,
             ];
         } catch (\RuntimeException $e) {
             return new ApiProblem(422, $e->getMessage());

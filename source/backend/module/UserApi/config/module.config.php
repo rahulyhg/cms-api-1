@@ -254,24 +254,32 @@ return [
                 'error_message' => 'Confirm Password should be same as password.',
             ],
         ],
-        'UserApi\\V1\\Rest\\Users\\Validator' => [
+        'UserApi\\V1\\Rest\\Users\\Validator\\Patch' => [
             0 => [
                 'required' => true,
                 'validators' => [
                     0 => [
-                        'name' => \Zend\Validator\EmailAddress::class,
+                        'name' => \Zend\Validator\Digits::class,
                         'options' => [],
                     ],
                 ],
-                'filters' => [
-                    0 => [
-                        'name' => \Zend\Filter\StringTrim::class,
-                        'options' => [],
-                    ],
-                ],
-                'name' => 'email',
+                'filters' => [],
+                'name' => 'status',
             ],
             1 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\Digits::class,
+                        'options' => [],
+                    ],
+                ],
+                'filters' => [],
+                'name' => 'id',
+            ],
+        ],
+        'UserApi\\V1\\Rest\\Users\\Validator' => [
+            0 => [
                 'required' => true,
                 'validators' => [
                     0 => [
@@ -288,7 +296,22 @@ return [
                     ],
                 ],
                 'name' => 'fullname',
-                'field_type' => 'string',
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\EmailAddress::class,
+                        'options' => [],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'email',
             ],
         ],
         'UserApi\\V1\\Rpc\\SendConfirmEmail\\Validator' => [
@@ -404,9 +427,9 @@ return [
     'controllers' => [
         'factories' => [
             'UserApi\\V1\\Rpc\\UserLogin\\Controller' => \UserApi\V1\Rpc\UserLogin\UserLoginControllerFactory::class,
+            'UserApi\\V1\\Rpc\\Register\\Controller' => \UserApi\V1\Rpc\Register\RegisterControllerFactory::class,
             'UserApi\\V1\\Rpc\\CheckUser\\Controller' => \UserApi\V1\Rpc\CheckUser\CheckUserControllerFactory::class,
             'UserApi\\V1\\Rpc\\UserLogout\\Controller' => \UserApi\V1\Rpc\UserLogout\UserLogoutControllerFactory::class,
-            'UserApi\\V1\\Rpc\\Register\\Controller' => \UserApi\V1\Rpc\Register\RegisterControllerFactory::class,
             'UserApi\\V1\\Rpc\\ConfirmEmail\\Controller' => \UserApi\V1\Rpc\ConfirmEmail\ConfirmEmailControllerFactory::class,
             'UserApi\\V1\\Rpc\\SendConfirmEmail\\Controller' => \UserApi\V1\Rpc\SendConfirmEmail\SendConfirmEmailControllerFactory::class,
             'UserApi\\V1\\Rpc\\ActivateAccount\\Controller' => \UserApi\V1\Rpc\ActivateAccount\ActivateAccountControllerFactory::class,
@@ -440,11 +463,13 @@ return [
                 0 => 'GET',
                 1 => 'PUT',
                 2 => 'DELETE',
+                3 => 'PATCH',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
                 1 => 'DELETE',
                 2 => 'POST',
+                3 => 'PATCH',
             ],
             'collection_query_whitelist' => [],
             'page_size' => 25,
@@ -675,6 +700,7 @@ return [
         ],
         'UserApi\\V1\\Rest\\Users\\Controller' => [
             'input_filter' => 'UserApi\\V1\\Rest\\Users\\Validator',
+            'PATCH' => 'UserApi\\V1\\Rest\\Users\\Validator\\Patch',
         ],
         'UserApi\\V1\\Rpc\\SendConfirmEmail\\Controller' => [
             'input_filter' => 'UserApi\\V1\\Rpc\\SendConfirmEmail\\Validator',

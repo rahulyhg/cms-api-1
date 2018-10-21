@@ -428,9 +428,6 @@ class UserService implements UserServiceInterface
         $this->entityManager->flush();
     }
 
-
-
-
     /**
      * @param int $status
      *
@@ -439,9 +436,6 @@ class UserService implements UserServiceInterface
      */
     public function changeStatus(int $status): UserService
     {
-        if (empty($this->user)) {
-            $this->userNotFoundException(true);
-        }
         $user = $this->user;
 
         if (!in_array($status, UserStatus::toArray())) {
@@ -458,20 +452,26 @@ class UserService implements UserServiceInterface
      * @param int[] $ids
      * @param int   $status
      *
-     * @return User[]
+     * @return UserService
      */
-    public function changeStatusUsers(array $ids, int $status): array
+    public function changeStatusUsers(array $ids, int $status): UserService
     {
         Utility::isArrayOfIds($ids);
 
-        $users = [];
-        foreach ($ids as $id) {
-            if ($user = $this->changeStatus($id, $status)) {
-                $users[] = $user;
-            };
+        if (!in_array($status, UserStatus::toArray())) {
+            throw new \RuntimeException(User::ERR_MSG_WRONG_STATUS, User::ERR_CODE_WRONG_STATUS);
         }
 
-        return $users;
+        $qb = $this->entityManager->createQueryBuilder();
+
+        /** @var int $result */
+        $result = $qb->update(User::class, 'u')
+            ->where($qb->expr()->in('u.id', $ids))
+            ->set('u.status', ':status')
+            ->setParameter('status', $status)
+            ->getQuery()
+            ->execute();
+        return $this;
     }
 
 }
