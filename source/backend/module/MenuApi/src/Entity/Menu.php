@@ -36,8 +36,8 @@ class Menu
     protected $slag;
 
     /**
-     * @ORM\Column(type="string", length=256)
-     * @var string
+     * @ORM\Column(type="string", length=256, nullable=true)
+     * @var null|string
      */
     protected $link;
 
@@ -117,17 +117,17 @@ class Menu
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getLink(): string
+    public function getLink(): ?string
     {
         return $this->link;
     }
 
     /**
-     * @param string $link
+     * @param null|string $link
      */
-    public function setLink(string $link)
+    public function setLink(?string $link)
     {
         $this->link = $link;
     }

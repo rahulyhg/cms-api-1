@@ -44,7 +44,7 @@ return [
         'MenuApi\\V1\\Rest\\Menus\\Controller' => [
             'listener' => \MenuApi\V1\Rest\Menus\MenusResource::class,
             'route_name' => 'menu-api.rest.menus',
-            'route_identifier_name' => 'menus_id',
+            'route_identifier_name' => 'menu_id',
             'collection_name' => 'menus',
             'entity_http_methods' => [
                 0 => 'GET',
@@ -83,7 +83,7 @@ return [
     ],
     'zf-hal' => [
         'metadata_map' => [
-            \MenuApi\V1\Rest\Menus\MenusEntity::class => [
+            'MenuApi\\V1\\Rest\\Menus\\MenusEntity' => [
                 'entity_identifier_name' => 'id',
                 'route_name' => 'menu-api.rest.menus',
                 'route_identifier_name' => 'menus_id',
@@ -92,13 +92,13 @@ return [
             \MenuApi\V1\Rest\Menus\MenusCollection::class => [
                 'entity_identifier_name' => 'id',
                 'route_name' => 'menu-api.rest.menus',
-                'route_identifier_name' => 'menus_id',
+                'route_identifier_name' => 'menu_id',
                 'is_collection' => true,
             ],
             \MenuApi\Entity\Menu::class => [
                 'entity_identifier_name' => 'id',
                 'route_name' => 'menu-api.rest.menus',
-                'route_identifier_name' => 'menus_id',
+                'route_identifier_name' => 'menu_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
             ],
         ],

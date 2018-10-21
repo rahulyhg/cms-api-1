@@ -1,6 +1,7 @@
 <?php
 namespace MenuApi\V1\Rest\Menus;
 
+use MenuApi\Service\MenuService;
 use Zend\Paginator\Adapter\ArrayAdapter;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
@@ -10,11 +11,11 @@ class MenusResource extends AbstractResourceListener
     /**
      * @var MenuService
      */
-    private $userService;
+    private $menuService;
 
     public function __construct(MenuService $userService)
     {
-        $this->userService = $userService;
+        $this->menuService = $userService;
     }
 
     /**
@@ -56,11 +57,13 @@ class MenusResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        $user = $this->userService->getById($id)->fetch();
-        if (!$user) {
-            return new ApiProblem(404, 'User not find');
+        try {
+            $menu = $this->menuService->getById($id)->fetch();
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
         }
-        return $user;
+
+        return $menu;
     }
 
     /**
@@ -69,7 +72,7 @@ class MenusResource extends AbstractResourceListener
     public function fetchAll($params = [])
     {
         return new MenusCollection(
-            new ArrayAdapter($this->userService->fetchAll())
+            new ArrayAdapter($this->menuService->fetchAll())
         );
     }
 
