@@ -1,5 +1,5 @@
 <?php
-namespace MenuApi\V1\Rest\Menus;
+namespace CmsApi\V1\Rest\Menus;
 
 use Zend\Paginator\Paginator;
 

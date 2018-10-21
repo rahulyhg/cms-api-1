@@ -1,7 +1,7 @@
 <?php
-namespace MenuApi\V1\Rest\Menus;
+namespace CmsApi\V1\Rest\Menus;
 
-use MenuApi\Service\MenuService;
+use CmsApi\Service\MenuService;
 use Zend\Paginator\Adapter\ArrayAdapter;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;

@@ -1,12 +1,12 @@
 <?php
 
-namespace MenuApi\Service;
+namespace CmsApi\Service;
 
 use Application\Service\Utility;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use MenuApi\Entity\Menu;
-use MenuApi\Message\MenuMessage;
+use CmsApi\Entity\Menu;
+use CmsApi\Message\MenuMessage;
 
 class MenuService
 {

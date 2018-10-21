@@ -1,8 +1,8 @@
 <?php
-namespace MenuApi\V1\Rest\Menus;
+namespace CmsApi\V1\Rest\Menus;
 
 use Interop\Container\ContainerInterface;
-use MenuApi\Service\MenuService;
+use CmsApi\Service\MenuService;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class MenusResourceFactory implements FactoryInterface

@@ -1,6 +1,6 @@
 <?php
 
-namespace MenuApi\Message;
+namespace CmsApi\Message;
 
 class MenuMessage
 {

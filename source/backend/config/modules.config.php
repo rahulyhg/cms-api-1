@@ -37,5 +37,5 @@ return [
     'UserApi',
     'AdminPanel',
     'PingApi',
-    'MenuApi',
+    'CmsApi',
 ];

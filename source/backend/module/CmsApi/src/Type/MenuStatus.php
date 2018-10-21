@@ -1,6 +1,6 @@
 <?php
 
-namespace MenuApi\Type;
+namespace CmsApi\Type;
 
 class MenuStatus
 {

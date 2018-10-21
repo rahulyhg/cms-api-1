@@ -1,9 +1,9 @@
 <?php
 
-namespace MenuApi\Entity;
+namespace CmsApi\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use MenuApi\Type\MenuStatus;
+use CmsApi\Type\MenuStatus;
 
 /**
  * @ORM\Entity

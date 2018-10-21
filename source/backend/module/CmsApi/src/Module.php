@@ -1,5 +1,5 @@
 <?php
-namespace MenuApi;
+namespace CmsApi;
 
 use ZF\Apigility\Provider\ApigilityProviderInterface;
 

@@ -5,7 +5,7 @@
             "Application\\": "module\/Application\/src\/",
             "UserApi\\": "module\/UserApi\/src\/",
             "PingApi\\": "module\/PingApi\/src\/",
-            "MenuApi\\": "module\/MenuApi\/src\/"
+            "CmsApi\\": "module/CmsApi/src\\/"
         }
     },
     "name": "zfcampus\/zf-apigility-skeleton",
