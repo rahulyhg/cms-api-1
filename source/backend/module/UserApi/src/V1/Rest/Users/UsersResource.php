@@ -76,12 +76,12 @@ class UsersResource extends AbstractResourceListener
         }
 
         try {
-            $result = $this->userService->deleteUsers($data['ids']);
+            $this->userService->deleteUsers($data['ids']);
         } catch (\RuntimeException $e) {
             return new ApiProblem(422, $e->getMessage());
         }
 
-        return (bool) $result;
+        return true;
     }
 
     /**

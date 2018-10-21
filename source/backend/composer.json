@@ -46,7 +46,8 @@
         "doctrine\/migrations": "^1.8",
         "zendframework\/zend-session": "^2.7",
         "zfr/zfr-cors": "^1.5",
-        "mtymek/mt-mail": "^1.5"
+        "mtymek/mt-mail": "^1.5",
+        "zendframework/zend-i18n": "^2.9"
     },
     "require-dev": {
         "zendframework\/zend-developer-tools": "^1.2.1",

@@ -33,7 +33,7 @@ class Menu
      * @ORM\Column(type="string", length=128, unique=true)
      * @var string
      */
-    protected $slag;
+    protected $slug;
 
     /**
      * @ORM\Column(type="string", length=256, nullable=true)
@@ -68,7 +68,7 @@ class Menu
     public function __construct(array $values)
     {
         $this->setName($values['name']);
-        $this->setSlag($values['slag']);
+        $this->setSlug($values['slug']);
         $this->setLink($values['link']);
         $this->setIsEnable($values['isEnable'] ?? MenuStatus::DISABLE);
         $this->setNewWindow($values['newWindow'] ?? false);
@@ -103,17 +103,17 @@ class Menu
     /**
      * @return string
      */
-    public function getSlag(): string
+    public function getSlug(): string
     {
-        return $this->slag;
+        return $this->slug;
     }
 
     /**
-     * @param string $slag
+     * @param string $slug
      */
-    public function setSlag(string $slag)
+    public function setSlug(string $slug)
     {
-        $this->slag = $slag;
+        $this->slug = $slug;
     }
 
     /**

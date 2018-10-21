@@ -26,7 +26,24 @@ class MenusResource extends AbstractResourceListener
      */
     public function create($data)
     {
-        return new ApiProblem(405, 'The POST method has not been defined');
+        $data = $this->getInputFilter()->getValues();
+
+        try {
+            $user = $this->menuService
+                ->create(
+                    $data['name'],
+                    $data['slug'],
+                    $data['link'],
+                    $data['enable'],
+                    $data['newWindow']
+                );
+            return [
+                'success' => true,
+                'result' => $user,
+            ];
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
     }
 
     /**
@@ -37,7 +54,15 @@ class MenusResource extends AbstractResourceListener
      */
     public function delete($id)
     {
-        return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
+        try {
+            $result = $this->menuService
+                ->getById($id)
+                ->delete();
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
+
+        return (bool) $result;
     }
 
     /**
@@ -48,7 +73,17 @@ class MenusResource extends AbstractResourceListener
      */
     public function deleteList($data)
     {
-        return new ApiProblem(405, 'The DELETE method has not been defined for collections');
+        if (!array_key_exists('ids', $data)) {
+            return new ApiProblem(400, 'Bad Request');
+        }
+
+        try {
+            $this->menuService->deleteMenus($data['ids']);
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
+
+        return true;
     }
 
 
@@ -77,40 +112,6 @@ class MenusResource extends AbstractResourceListener
     }
 
     /**
-     * Patch (partial in-place update) a resource
-     *
-     * @param  mixed $id
-     * @param  mixed $data
-     * @return ApiProblem|mixed
-     */
-    public function patch($id, $data)
-    {
-        return new ApiProblem(405, 'The PATCH method has not been defined for individual resources');
-    }
-
-    /**
-     * Patch (partial in-place update) a collection or members of a collection
-     *
-     * @param  mixed $data
-     * @return ApiProblem|mixed
-     */
-    public function patchList($data)
-    {
-        return new ApiProblem(405, 'The PATCH method has not been defined for collections');
-    }
-
-    /**
-     * Replace a collection or members of a collection
-     *
-     * @param  mixed $data
-     * @return ApiProblem|mixed
-     */
-    public function replaceList($data)
-    {
-        return new ApiProblem(405, 'The PUT method has not been defined for collections');
-    }
-
-    /**
      * Update a resource
      *
      * @param  mixed $id
@@ -119,6 +120,22 @@ class MenusResource extends AbstractResourceListener
      */
     public function update($id, $data)
     {
-        return new ApiProblem(405, 'The PUT method has not been defined for individual resources');
+        try {
+            $user = $this->menuService
+                ->getById($id)
+                ->edit([
+                    'name' => $data->name,
+                    'slug' => $data->slug,
+                    'link' => $data->link,
+                    'enable' => $data->enable,
+                    'newWindow' => $data->newWindow,
+                ]);
+            return [
+                'success' => true,
+                'result' => $user,
+            ];
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
     }
 }
