@@ -115,13 +115,13 @@ return [
                     ],
                 ],
             ],
-            'user-api.rpc.reset-paswword-link' => [
+            'user-api.rpc.reset-password-link' => [
                 'type' => 'Segment',
                 'options' => [
                     'route' => '/reset/:email/:token',
                     'defaults' => [
-                        'controller' => 'UserApi\\V1\\Rpc\\ResetPaswwordLink\\Controller',
-                        'action' => 'resetPaswwordLink',
+                        'controller' => 'UserApi\\V1\\Rpc\\ResetPasswordLink\\Controller',
+                        'action' => 'resetPasswordLink',
                     ],
                 ],
             ],
@@ -435,7 +435,7 @@ return [
             'UserApi\\V1\\Rpc\\ActivateAccount\\Controller' => \UserApi\V1\Rpc\ActivateAccount\ActivateAccountControllerFactory::class,
             'UserApi\\V1\\Rpc\\ResetPassword\\Controller' => \UserApi\V1\Rpc\ResetPassword\ResetPasswordControllerFactory::class,
             'UserApi\\V1\\Rpc\\SendResetPassword\\Controller' => \UserApi\V1\Rpc\SendResetPassword\SendResetPasswordControllerFactory::class,
-            'UserApi\\V1\\Rpc\\ResetPaswwordLink\\Controller' => \UserApi\V1\Rpc\ResetPaswwordLink\ResetPaswwordLinkControllerFactory::class,
+            'UserApi\\V1\\Rpc\\ResetPasswordLink\\Controller' => \UserApi\V1\Rpc\ResetPasswordLink\ResetPasswordLinkControllerFactory::class,
         ],
     ],
     'zf-versioning' => [
@@ -450,7 +450,7 @@ return [
             8 => 'user-api.rpc.activate-account',
             9 => 'user-api.rpc.reset-password',
             10 => 'user-api.rpc.send-reset-password',
-            11 => 'user-api.rpc.reset-paswword-link',
+            11 => 'user-api.rpc.reset-password-link',
         ],
     ],
     'zf-rest' => [
@@ -491,7 +491,7 @@ return [
             'UserApi\\V1\\Rpc\\ActivateAccount\\Controller' => 'Json',
             'UserApi\\V1\\Rpc\\ResetPassword\\Controller' => 'Json',
             'UserApi\\V1\\Rpc\\SendResetPassword\\Controller' => 'Json',
-            'UserApi\\V1\\Rpc\\ResetPaswwordLink\\Controller' => 'Json',
+            'UserApi\\V1\\Rpc\\ResetPasswordLink\\Controller' => 'Json',
         ],
         'accept_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -544,7 +544,7 @@ return [
                 1 => 'application/json',
                 2 => 'application/*+json',
             ],
-            'UserApi\\V1\\Rpc\\ResetPaswwordLink\\Controller' => [
+            'UserApi\\V1\\Rpc\\ResetPasswordLink\\Controller' => [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
                 2 => 'application/*+json',
@@ -591,7 +591,7 @@ return [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
             ],
-            'UserApi\\V1\\Rpc\\ResetPaswwordLink\\Controller' => [
+            'UserApi\\V1\\Rpc\\ResetPasswordLink\\Controller' => [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
             ],
@@ -683,12 +683,12 @@ return [
             ],
             'route_name' => 'user-api.rpc.send-reset-password',
         ],
-        'UserApi\\V1\\Rpc\\ResetPaswwordLink\\Controller' => [
-            'service_name' => 'resetPaswwordLink',
+        'UserApi\\V1\\Rpc\\ResetPasswordLink\\Controller' => [
+            'service_name' => 'resetPasswordLink',
             'http_methods' => [
                 0 => 'GET',
             ],
-            'route_name' => 'user-api.rpc.reset-paswword-link',
+            'route_name' => 'user-api.rpc.reset-password-link',
         ],
     ],
     'zf-content-validation' => [

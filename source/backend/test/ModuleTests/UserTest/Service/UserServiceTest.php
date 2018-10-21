@@ -3,8 +3,6 @@
 namespace ModuleTests\UsersTest;
 
 use ModuleTests\Bootstrap;
-use MtMail\Factory\MailServiceFactory;
-use MtMail\Service\Mail;
 use PDO;
 use PHPUnit\DbUnit\Database\Connection;
 use PHPUnit\DbUnit\Database\DefaultConnection;
@@ -14,8 +12,6 @@ use PHPUnit\Framework\TestCase;
 use UserApi\Entity\User;
 use UserApi\Service\UserService;
 use UserApi\Type\UserStatus;
-use Zend\Mvc\View\Http\ViewManager;
-use Zend\View\View;
 
 class UserServiceTest extends TestCase
 {

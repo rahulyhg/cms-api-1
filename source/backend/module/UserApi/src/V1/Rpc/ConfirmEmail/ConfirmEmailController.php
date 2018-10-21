@@ -2,7 +2,6 @@
 namespace UserApi\V1\Rpc\ConfirmEmail;
 
 use UserApi\Service\UserService;
-use UserApi\Type\UserStatus;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class ConfirmEmailController extends AbstractActionController

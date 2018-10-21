@@ -1,12 +1,12 @@
 <?php
-namespace UserApi\V1\Rpc\ResetPaswwordLink;
+namespace UserApi\V1\Rpc\ResetPasswordLink;
 
 use UserApi\Entity\User;
 use UserApi\Service\UserService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 
-class ResetPaswwordLinkController extends AbstractActionController
+class ResetPasswordLinkController extends AbstractActionController
 {
     /**
      * @var UserService
