@@ -4,7 +4,8 @@
             "AdminPanel\\": "module\/AdminPanel\/src\/",
             "Application\\": "module\/Application\/src\/",
             "UserApi\\": "module\/UserApi\/src\/",
-            "PingApi\\": "module\/PingApi\/src\/"
+            "PingApi\\": "module\/PingApi\/src\/",
+            "MenuApi\\": "module\/MenuApi\/src\/"
         }
     },
     "name": "zfcampus\/zf-apigility-skeleton",

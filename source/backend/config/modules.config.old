@@ -35,4 +35,5 @@ return [
     'Application',
     'UserApi',
     'AdminPanel',
+    'PingApi',
 ];
