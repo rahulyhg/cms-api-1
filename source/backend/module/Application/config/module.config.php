@@ -6,6 +6,7 @@
 
 namespace Application;
 
+use Application\Controller\Factory\ImageControllerFactory;
 use Application\Service\AppMail;
 use Application\Service\Factory\AppMailFactory;
 use Application\Service\Factory\MailComposerFactory;
@@ -45,6 +46,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
+            Controller\ImageController::class => ImageControllerFactory::class,
         ],
     ],
     'view_manager' => [
@@ -68,6 +70,7 @@ return [
             MailComposer::class => MailComposerFactory::class,
             AppMail::class => AppMailFactory::class,
             Utility::class => InvokableFactory::class,
+            Service\ImageManager::class => InvokableFactory::class,
         ]
     ]
 ];
