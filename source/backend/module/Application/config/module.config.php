@@ -11,6 +11,7 @@ use Application\Service\Factory\AppMailFactory;
 use Application\Service\Factory\MailComposerFactory;
 use Application\Service\MailComposer;
 use Application\Service\Utility;
+use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
@@ -23,6 +24,19 @@ return [
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
                         'action'     => 'index',
+                    ],
+                ],
+            ],
+            'images' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/images[/:action]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                    ],
+                    'defaults' => [
+                        'controller'    => Controller\ImageController::class,
+                        'action'        => 'index',
                     ],
                 ],
             ],

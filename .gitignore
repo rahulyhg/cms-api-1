@@ -5,3 +5,4 @@ local-data/**
 
 source/backend/data/cache/*
 source/backend/data/mail/*
+source/backend/data/tmp/*
