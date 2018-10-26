@@ -76,12 +76,6 @@ class MenuService
      * @param bool   $newWindow
      *
      * @return Menu
-     * @internal param string $email
-     * @internal param string $fullname
-     * @internal param string $password
-     * @internal param int $status
-     *
-     * @internal param null|string $emailConfirmToken
      */
     public function create(
         string $name,

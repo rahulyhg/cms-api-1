@@ -5,6 +5,7 @@ return [
             \CmsApi\V1\Rest\Menus\MenusResource::class => \CmsApi\V1\Rest\Menus\MenusResourceFactory::class,
             \CmsApi\Service\MenuService::class => \CmsApi\Service\Factory\MenuServiceFactory::class,
             \CmsApi\V1\Rest\Sliders\SlidersResource::class => \CmsApi\V1\Rest\Sliders\SlidersResourceFactory::class,
+            \CmsApi\Service\SliderService::class => \CmsApi\Service\Factory\SliderServiceFactory::class,
         ],
     ],
     'doctrine' => [
@@ -83,7 +84,6 @@ return [
                 0 => 'GET',
                 1 => 'PUT',
                 2 => 'DELETE',
-                3 => 'POST',
             ],
             'collection_http_methods' => [
                 0 => 'GET',
@@ -173,6 +173,7 @@ return [
         ],
         'CmsApi\\V1\\Rest\\Sliders\\Controller' => [
             'input_filter' => 'CmsApi\\V1\\Rest\\Sliders\\Validator',
+            'PUT' => 'CmsApi\\V1\\Rest\\Sliders\\Validator\\PUT',
         ],
     ],
     'input_filter_specs' => [
@@ -263,6 +264,78 @@ return [
                 'allow_empty' => true,
             ],
         ],
+        'CmsApi\\V1\\Rest\\Sliders\\Validator\\PUT' => [
+            0 => [
+                'required' => false,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\File\IsImage::class,
+                        'options' => [
+                            'mimeType' => 'image/jpeg,image/png',
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\File\RenameUpload::class,
+                        'options' => [
+                            'randomize' => true,
+                            'target' => 'data/tmp/slider',
+                            'useUploadExtension' => true,
+                        ],
+                    ],
+                ],
+                'name' => 'file',
+                'type' => \Zend\InputFilter\FileInput::class,
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                    1 => [
+                        'name' => \Zend\Filter\StripTags::class,
+                        'options' => [
+                            'allowTags' => [
+                                0 => 'a',
+                                1 => 'img',
+                                2 => 'div',
+                                3 => 'span',
+                                4 => 'b',
+                                5 => 'u',
+                                6 => 'i',
+                                7 => 'strong',
+                                8 => 'p',
+                            ],
+                            'allowAttribs' => [
+                                0 => 'class',
+                                1 => 'id',
+                                2 => 'src',
+                                3 => 'href',
+                            ],
+                        ],
+                    ],
+                ],
+                'name' => 'text',
+                'allow_empty' => false,
+            ],
+            2 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\Boolean::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'enable',
+                'field_type' => 'bool',
+                'allow_empty' => true,
+            ],
+        ],
         'CmsApi\\V1\\Rest\\Sliders\\Validator' => [
             0 => [
                 'required' => true,
@@ -279,12 +352,60 @@ return [
                         'name' => \Zend\Filter\File\RenameUpload::class,
                         'options' => [
                             'randomize' => true,
-                            'target' => 'data/tmp/',
+                            'target' => 'data/tmp/slider',
+                            'useUploadExtension' => true,
                         ],
                     ],
                 ],
                 'name' => 'file',
                 'type' => \Zend\InputFilter\FileInput::class,
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                    1 => [
+                        'name' => \Zend\Filter\StripTags::class,
+                        'options' => [
+                            'allowTags' => [
+                                0 => 'a',
+                                1 => 'img',
+                                2 => 'div',
+                                3 => 'span',
+                                4 => 'b',
+                                5 => 'u',
+                                6 => 'i',
+                                7 => 'strong',
+                                8 => 'p',
+                            ],
+                            'allowAttribs' => [
+                                0 => 'class',
+                                1 => 'id',
+                                2 => 'src',
+                                3 => 'href',
+                            ],
+                        ],
+                    ],
+                ],
+                'name' => 'text',
+                'allow_empty' => false,
+            ],
+            2 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\Boolean::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'enable',
+                'field_type' => 'bool',
+                'allow_empty' => true,
             ],
         ],
     ],

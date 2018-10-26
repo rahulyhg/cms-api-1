@@ -29,7 +29,7 @@ class MenusResource extends AbstractResourceListener
         $data = $this->getInputFilter()->getValues();
 
         try {
-            $user = $this->menuService
+            $menu = $this->menuService
                 ->create(
                     $data['name'],
                     $data['slug'],
@@ -39,7 +39,7 @@ class MenusResource extends AbstractResourceListener
                 );
             return [
                 'success' => true,
-                'result' => $user,
+                'result' => $menu,
             ];
         } catch (\RuntimeException $e) {
             return new ApiProblem(422, $e->getMessage());
@@ -121,7 +121,7 @@ class MenusResource extends AbstractResourceListener
     public function update($id, $data)
     {
         try {
-            $user = $this->menuService
+            $menu = $this->menuService
                 ->getById($id)
                 ->edit([
                     'name' => $data->name,
@@ -132,7 +132,7 @@ class MenusResource extends AbstractResourceListener
                 ]);
             return [
                 'success' => true,
-                'result' => $user,
+                'result' => $menu,
             ];
         } catch (\RuntimeException $e) {
             return new ApiProblem(422, $e->getMessage());

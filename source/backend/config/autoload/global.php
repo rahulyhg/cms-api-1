@@ -26,4 +26,8 @@ return [
     'session_storage' => [
         'type' => SessionArrayStorage::class,
     ],
+    'upload_dir' => [
+        'tmp' => __DIR__.'/../../data/tmp',
+        'slider' => __DIR__.'/../../data/upload/slider',
+    ]
 ];

@@ -30,6 +30,12 @@ class Slider
     protected $text;
 
     /**
+     * @ORM\Column(type="string", length=64)
+     * @var string
+     */
+    protected $image;
+
+    /**
      * @ORM\Column(type="boolean")
      * @var boolean
      */
@@ -50,6 +56,7 @@ class Slider
     public function __construct(array $values)
     {
         $this->setText($values['text']);
+        $this->setImage($values['image']);
         $this->setIsEnable($values['isEnable'] ?? SliderStatus::PUBLISHED);
         $this->setCreatedAt($values['createdAt'] ?? new \DateTime());
         $this->setUpdatedAt($values['updatedAt'] ?? new \DateTime());
@@ -66,7 +73,7 @@ class Slider
     /**
      * @return null|string
      */
-    public function getText()
+    public function getText(): ?string
     {
         return $this->text;
     }
@@ -74,9 +81,25 @@ class Slider
     /**
      * @param null|string $text
      */
-    public function setText($text)
+    public function setText(?string $text): void
     {
         $this->text = $text;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImage(): string
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param string $image
+     */
+    public function setImage(string $image): void
+    {
+        $this->image = $image;
     }
 
     /**
@@ -90,7 +113,7 @@ class Slider
     /**
      * @param bool $isEnable
      */
-    public function setIsEnable(bool $isEnable)
+    public function setIsEnable(bool $isEnable): void
     {
         $this->isEnable = $isEnable;
     }
@@ -106,7 +129,7 @@ class Slider
     /**
      * @param \DateTime $createdAt
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -122,7 +145,7 @@ class Slider
     /**
      * @param \DateTime $updatedAt
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(\DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }

@@ -1,11 +1,23 @@
 <?php
 namespace CmsApi\V1\Rest\Sliders;
 
+use CmsApi\Service\SliderService;
+use Zend\Paginator\Adapter\ArrayAdapter;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 
 class SlidersResource extends AbstractResourceListener
 {
+    /**
+     * @var SliderService
+     */
+    private $sliderService;
+
+    public function __construct(SliderService $sliderService)
+    {
+        $this->sliderService = $sliderService;
+    }
+
     /**
      * Create a resource
      *
@@ -15,7 +27,21 @@ class SlidersResource extends AbstractResourceListener
     public function create($data)
     {
         $data = $this->getInputFilter()->getValues();
-        dd($data);
+
+        try {
+            $slider = $this->sliderService
+                ->create(
+                    $data['text'],
+                    $data['enable'],
+                    basename($data['file']['tmp_name'])
+                );
+            return [
+                'success' => true,
+                'result' => $slider,
+            ];
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
     }
 
     /**
@@ -26,7 +52,15 @@ class SlidersResource extends AbstractResourceListener
      */
     public function delete($id)
     {
-        return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
+        try {
+            $result = $this->sliderService
+                ->getById($id)
+                ->delete();
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
+
+        return (bool) $result;
     }
 
     /**
@@ -37,7 +71,17 @@ class SlidersResource extends AbstractResourceListener
      */
     public function deleteList($data)
     {
-        return new ApiProblem(405, 'The DELETE method has not been defined for collections');
+        if (!array_key_exists('ids', $data)) {
+            return new ApiProblem(400, 'Bad Request');
+        }
+
+        try {
+            $this->sliderService->deleteSliders($data['ids']);
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
+
+        return true;
     }
 
     /**
@@ -48,7 +92,13 @@ class SlidersResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        try {
+            $slider = $this->sliderService->getById($id)->fetch();
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
+
+        return $slider;
     }
 
     /**
@@ -59,41 +109,9 @@ class SlidersResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
-        return new ApiProblem(405, 'The GET method has not been defined for collections');
-    }
-
-    /**
-     * Patch (partial in-place update) a resource
-     *
-     * @param  mixed $id
-     * @param  mixed $data
-     * @return ApiProblem|mixed
-     */
-    public function patch($id, $data)
-    {
-        return new ApiProblem(405, 'The PATCH method has not been defined for individual resources');
-    }
-
-    /**
-     * Patch (partial in-place update) a collection or members of a collection
-     *
-     * @param  mixed $data
-     * @return ApiProblem|mixed
-     */
-    public function patchList($data)
-    {
-        return new ApiProblem(405, 'The PATCH method has not been defined for collections');
-    }
-
-    /**
-     * Replace a collection or members of a collection
-     *
-     * @param  mixed $data
-     * @return ApiProblem|mixed
-     */
-    public function replaceList($data)
-    {
-        return new ApiProblem(405, 'The PUT method has not been defined for collections');
+        return new SlidersCollection(
+            new ArrayAdapter($this->sliderService->fetchAll())
+        );
     }
 
     /**
@@ -105,6 +123,22 @@ class SlidersResource extends AbstractResourceListener
      */
     public function update($id, $data)
     {
-        return new ApiProblem(405, 'The PUT method has not been defined for individual resources');
+        $data = $this->getInputFilter()->getValues();
+
+        try {
+            $slider = $this->sliderService
+                ->getById($id)
+                ->edit([
+                    'text' => $data['text'],
+                    'image' => basename($data['file']['tmp_name']),
+                    'enable' => $data['enable'],
+                ]);
+            return [
+                'success' => true,
+                'result' => $slider,
+            ];
+        } catch (\RuntimeException $e) {
+            return new ApiProblem(422, $e->getMessage());
+        }
     }
 }
