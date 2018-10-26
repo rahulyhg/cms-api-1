@@ -44,12 +44,23 @@ return [
                     ],
                 ],
             ],
+            'cms-api.rpc.images' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/images/:type/:filename',
+                    'defaults' => [
+                        'controller' => 'CmsApi\\V1\\Rpc\\Images\\Controller',
+                        'action' => 'images',
+                    ],
+                ],
+            ],
         ],
     ],
     'zf-versioning' => [
         'uri' => [
             0 => 'menu-api.rest.menus',
             1 => 'cms-api.rest.sliders',
+            2 => 'cms-api.rpc.images',
         ],
     ],
     'zf-rest' => [
@@ -102,6 +113,7 @@ return [
         'controllers' => [
             'CmsApi\\V1\\Rest\\Menus\\Controller' => 'HalJson',
             'CmsApi\\V1\\Rest\\Sliders\\Controller' => 'HalJson',
+            'CmsApi\\V1\\Rpc\\Images\\Controller' => 'Json',
         ],
         'accept_whitelist' => [
             'CmsApi\\V1\\Rest\\Menus\\Controller' => [
@@ -114,6 +126,11 @@ return [
                 1 => 'application/hal+json',
                 2 => 'application/json',
             ],
+            'CmsApi\\V1\\Rpc\\Images\\Controller' => [
+                0 => 'application/vnd.cms-api.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ],
         ],
         'content_type_whitelist' => [
             'CmsApi\\V1\\Rest\\Menus\\Controller' => [
@@ -124,6 +141,10 @@ return [
                 0 => 'application/vnd.cms-api.v1+json',
                 1 => 'application/json',
                 2 => 'multipart/form-data',
+            ],
+            'CmsApi\\V1\\Rpc\\Images\\Controller' => [
+                0 => 'application/vnd.cms-api.v1+json',
+                1 => 'application/json',
             ],
         ],
     ],
@@ -407,6 +428,20 @@ return [
                 'field_type' => 'bool',
                 'allow_empty' => true,
             ],
+        ],
+    ],
+    'controllers' => [
+        'factories' => [
+            'CmsApi\\V1\\Rpc\\Images\\Controller' => \CmsApi\V1\Rpc\Images\ImagesControllerFactory::class,
+        ],
+    ],
+    'zf-rpc' => [
+        'CmsApi\\V1\\Rpc\\Images\\Controller' => [
+            'service_name' => 'images',
+            'http_methods' => [
+                0 => 'GET',
+            ],
+            'route_name' => 'cms-api.rpc.images',
         ],
     ],
 ];

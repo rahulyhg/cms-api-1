@@ -1,18 +1,13 @@
 <?php
-/**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014-2016 Zend Technologies USA Inc. (http://www.zend.com)
- */
 
 namespace Application;
 
-use Application\Controller\Factory\ImageControllerFactory;
 use Application\Service\AppMail;
 use Application\Service\Factory\AppMailFactory;
+use Application\Service\Factory\ImageManagerFactory;
 use Application\Service\Factory\MailComposerFactory;
 use Application\Service\MailComposer;
 use Application\Service\Utility;
-use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
@@ -21,23 +16,10 @@ return [
             'home' => [
                 'type' => 'Literal',
                 'options' => [
-                    'route'    => '/',
+                    'route' => '/',
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
-                        'action'     => 'index',
-                    ],
-                ],
-            ],
-            'images' => [
-                'type'    => Segment::class,
-                'options' => [
-                    'route'    => '/images[/:action]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
-                    ],
-                    'defaults' => [
-                        'controller'    => Controller\ImageController::class,
-                        'action'        => 'index',
+                        'action' => 'index',
                     ],
                 ],
             ],
@@ -46,23 +28,22 @@ return [
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
-            Controller\ImageController::class => ImageControllerFactory::class,
         ],
     ],
     'view_manager' => [
         'display_not_found_reason' => true,
-        'display_exceptions'       => true,
-        'doctype'                  => 'HTML5',
-        'not_found_template'       => 'error/404',
-        'exception_template'       => 'error/index',
+        'display_exceptions' => true,
+        'doctype' => 'HTML5',
+        'not_found_template' => 'error/404',
+        'exception_template' => 'error/index',
         'template_map' => [
-            'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
-            'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
-            'error/404'               => __DIR__ . '/../view/error/404.phtml',
-            'error/index'             => __DIR__ . '/../view/error/index.phtml',
+            'layout/layout' => __DIR__.'/../view/layout/layout.phtml',
+            'application/index/index' => __DIR__.'/../view/application/index/index.phtml',
+            'error/404' => __DIR__.'/../view/error/404.phtml',
+            'error/index' => __DIR__.'/../view/error/index.phtml',
         ],
         'template_path_stack' => [
-            __DIR__ . '/../view',
+            __DIR__.'/../view',
         ],
     ],
     'service_manager' => [
@@ -70,7 +51,7 @@ return [
             MailComposer::class => MailComposerFactory::class,
             AppMail::class => AppMailFactory::class,
             Utility::class => InvokableFactory::class,
-            Service\ImageManager::class => InvokableFactory::class,
-        ]
-    ]
+            Service\ImageManager::class => ImageManagerFactory::class,
+        ],
+    ],
 ];
