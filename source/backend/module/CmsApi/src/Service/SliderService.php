@@ -107,6 +107,7 @@ class SliderService
     public function delete(): Slider
     {
         $slider = $this->slider;
+        $this->removeImage($slider->getImage());
 
         $this->entityManager->remove($slider);
         $this->entityManager->flush();
@@ -123,10 +124,19 @@ class SliderService
      */
     public function deleteSliders(array $ids): int
     {
-
         Utility::isArrayOfIds($ids);
 
         $qb = $this->entityManager->createQueryBuilder();
+
+        $images = $qb->select('u.image')
+            ->from(Slider::class, 'u')
+            ->where($qb->expr()->in('u.id', $ids))
+            ->getQuery()
+            ->execute();
+
+        foreach ($images as $image) {
+            $this->removeImage($image['image']);
+        }
 
         /** @var int $result */
         $result = $qb->delete(Slider::class, 'u')
@@ -162,15 +172,13 @@ class SliderService
     }
 
     /**
+     * @param string $image
+     *
      * @return bool
      */
-    private function removeImage(): bool
+    private function removeImage(string $image): bool
     {
-        if (empty($this->slider)) {
-            return false;
-        }
-
-        $file = $this->uploadDir['slider'].'/'.$this->slider->getImage();
+        $file = $this->uploadDir['slider'].'/'.$image;
         if (file_exists($file)) {
             return unlink($file);
         }
@@ -185,7 +193,9 @@ class SliderService
      */
     private function moveImage(string $filename): bool
     {
-        $this->removeImage();
+        if ($this->slider) {
+            $this->removeImage($this->slider->getImage());
+        }
 
         $temp = $this->uploadDir['tmp'].'/'.$filename;
         if (file_exists($temp)) {

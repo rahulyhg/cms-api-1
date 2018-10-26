@@ -43,7 +43,6 @@ class ImagesController extends AbstractActionController
         if ($thumbnailSize) {
             $fileName = $this->imageManager->resizeImage($fileName, $thumbnailSize);
         }
-
         // Get image file info (size and MIME type).
         $fileInfo = $this->imageManager->getImageFileInfo($fileName);
         if ($fileInfo === false) {
