@@ -2,7 +2,7 @@
 
 namespace CmsApi\Type;
 
-class BlogStatus
+class PortfolioStatus
 {
     const DRAFT = true;
     const PUBLISHED = false;

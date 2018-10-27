@@ -30,5 +30,6 @@ return [
         'tmp' => __DIR__.'/../../data/tmp',
         'slider' => __DIR__.'/../../data/upload/slider',
         'post' => __DIR__.'/../../data/upload/post',
+        'portfolio' => __DIR__.'/../../data/upload/portfolio',
     ]
 ];

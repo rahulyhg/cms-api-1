@@ -8,6 +8,8 @@ return [
             \CmsApi\Service\SliderService::class => \CmsApi\Service\Factory\SliderServiceFactory::class,
             \CmsApi\Service\PostService::class => \CmsApi\Service\Factory\PostServiceFactory::class,
             \CmsApi\V1\Rest\Posts\PostsResource::class => \CmsApi\V1\Rest\Posts\PostsResourceFactory::class,
+            \CmsApi\Service\PortfolioService::class => \CmsApi\Service\Factory\PortfolioServiceFactory::class,
+            \CmsApi\V1\Rest\Portfolios\PortfoliosResource::class => \CmsApi\V1\Rest\Portfolios\PortfoliosResourceFactory::class,
         ],
     ],
     'doctrine' => [
@@ -65,6 +67,15 @@ return [
                     ],
                 ],
             ],
+            'cms-api.rest.portfolios' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/portfolios[/:portfolios_id]',
+                    'defaults' => [
+                        'controller' => 'CmsApi\\V1\\Rest\\Portfolios\\Controller',
+                    ],
+                ],
+            ],
         ],
     ],
     'zf-versioning' => [
@@ -73,6 +84,7 @@ return [
             1 => 'cms-api.rest.sliders',
             2 => 'cms-api.rpc.images',
             3 => 'cms-api.rest.posts',
+            4 => 'cms-api.rest.portfolios',
         ],
     ],
     'zf-rest' => [
@@ -142,6 +154,28 @@ return [
             'collection_class' => \CmsApi\V1\Rest\Posts\PostsCollection::class,
             'service_name' => 'posts',
         ],
+        'CmsApi\\V1\\Rest\\Portfolios\\Controller' => [
+            'listener' => \CmsApi\V1\Rest\Portfolios\PortfoliosResource::class,
+            'route_name' => 'cms-api.rest.portfolios',
+            'route_identifier_name' => 'portfolios_id',
+            'collection_name' => 'portfolios',
+            'entity_http_methods' => [
+                0 => 'GET',
+                1 => 'PUT',
+                2 => 'DELETE',
+            ],
+            'collection_http_methods' => [
+                0 => 'GET',
+                1 => 'POST',
+                2 => 'DELETE',
+            ],
+            'collection_query_whitelist' => [],
+            'page_size' => 25,
+            'page_size_param' => null,
+            'entity_class' => \CmsApi\Entity\Portfolio::class,
+            'collection_class' => \CmsApi\V1\Rest\Portfolios\PortfoliosCollection::class,
+            'service_name' => 'portfolios',
+        ],
     ],
     'zf-content-negotiation' => [
         'controllers' => [
@@ -149,6 +183,7 @@ return [
             'CmsApi\\V1\\Rest\\Sliders\\Controller' => 'HalJson',
             'CmsApi\\V1\\Rpc\\Images\\Controller' => 'Json',
             'CmsApi\\V1\\Rest\\Posts\\Controller' => 'HalJson',
+            'CmsApi\\V1\\Rest\\Portfolios\\Controller' => 'HalJson',
         ],
         'accept_whitelist' => [
             'CmsApi\\V1\\Rest\\Menus\\Controller' => [
@@ -171,6 +206,11 @@ return [
                 1 => 'application/hal+json',
                 2 => 'application/json',
             ],
+            'CmsApi\\V1\\Rest\\Portfolios\\Controller' => [
+                0 => 'application/vnd.cms-api.v1+json',
+                1 => 'application/hal+json',
+                2 => 'application/json',
+            ],
         ],
         'content_type_whitelist' => [
             'CmsApi\\V1\\Rest\\Menus\\Controller' => [
@@ -187,6 +227,10 @@ return [
                 1 => 'application/json',
             ],
             'CmsApi\\V1\\Rest\\Posts\\Controller' => [
+                0 => 'application/vnd.cms-api.v1+json',
+                1 => 'application/json',
+            ],
+            'CmsApi\\V1\\Rest\\Portfolios\\Controller' => [
                 0 => 'application/vnd.cms-api.v1+json',
                 1 => 'application/json',
             ],
@@ -230,6 +274,18 @@ return [
                 'route_identifier_name' => 'post_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
             ],
+            \CmsApi\V1\Rest\Portfolios\PortfoliosCollection::class => [
+                'entity_identifier_name' => 'id',
+                'route_name' => 'cms-api.rest.portfolios',
+                'route_identifier_name' => 'portfolios_id',
+                'is_collection' => true,
+            ],
+            \CmsApi\Entity\Portfolio::class => [
+                'entity_identifier_name' => 'id',
+                'route_name' => 'cms-api.rest.portfolios',
+                'route_identifier_name' => 'portfolios_id',
+                'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
+            ],
         ],
     ],
     'zf-content-validation' => [
@@ -242,6 +298,9 @@ return [
         ],
         'CmsApi\\V1\\Rest\\Posts\\Controller' => [
             'input_filter' => 'CmsApi\\V1\\Rest\\Posts\\Validator',
+        ],
+        'CmsApi\\V1\\Rest\\Portfolios\\Controller' => [
+            'input_filter' => 'CmsApi\\V1\\Rest\\Portfolios\\Validator',
         ],
     ],
     'input_filter_specs' => [
@@ -566,6 +625,124 @@ return [
                     ],
                 ],
                 'type' => \Zend\InputFilter\FileInput::class,
+                'name' => 'file',
+            ],
+        ],
+        'CmsApi\\V1\\Rest\\Portfolios\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\Regex::class,
+                        'options' => [
+                            'pattern' => '/^[a-zA-Z]+[a-zA-Z0-9-_ )(?!,#$]*$/',
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'title',
+                'field_type' => 'string',
+                'allow_empty' => false,
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\Uri::class,
+                        'options' => [
+                            'allowAbsolute' => true,
+                            'allowRelative' => false,
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                    1 => [
+                        'name' => \Zend\Filter\UriNormalize::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'link',
+                'field_type' => 'string',
+            ],
+            2 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                    1 => [
+                        'name' => \Zend\Filter\StripTags::class,
+                        'options' => [
+                            'allowTags' => [
+                                0 => 'a',
+                                1 => 'img',
+                                2 => 'div',
+                                3 => 'span',
+                                4 => 'b',
+                                5 => 'u',
+                                6 => 'i',
+                                7 => 'strong',
+                                8 => 'p',
+                            ],
+                            'allowAttribs' => [
+                                0 => 'class',
+                                1 => 'id',
+                                2 => 'src',
+                                3 => 'href',
+                            ],
+                        ],
+                    ],
+                ],
+                'name' => 'text',
+                'allow_empty' => true,
+                'field_type' => 'string',
+            ],
+            3 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\Boolean::class,
+                        'options' => [
+                            'casting' => true,
+                        ],
+                    ],
+                ],
+                'name' => 'published',
+                'field_type' => 'bool',
+                'allow_empty' => true,
+            ],
+            4 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\File\IsImage::class,
+                        'options' => [
+                            'mimeType' => 'image/jpeg,image/png',
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\File\RenameUpload::class,
+                        'options' => [
+                            'randomize' => true,
+                            'use_upload_extension' => true,
+                            'target' => 'data/tmp/portfolio',
+                        ],
+                    ],
+                ],
                 'name' => 'file',
             ],
         ],

@@ -2,18 +2,18 @@
 
 namespace CmsApi\Entity;
 
-use CmsApi\Type\PostStatus;
+use CmsApi\Type\PortfolioStatus;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="post")
+ * @ORM\Table(name="portfolio")
  *
  * References for Doctrine ORM Entity:
  * https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/annotations-reference.html#index
  * https://www.doctrine-project.org/projects/doctrine-orm/en/2.4/reference/basic-mapping.html#doctrine-mapping-types
  */
-class Post
+class Portfolio
 {
     /**
      * @ORM\Id
@@ -34,6 +34,12 @@ class Post
      * @var null|string
      */
     protected $text;
+
+    /**
+     * @ORM\Column(type="string", length=256)
+     * @var string
+     */
+    protected $link;
 
     /**
      * @ORM\Column(type="string", length=64)
@@ -63,8 +69,9 @@ class Post
     {
         $this->setTitle($values['title']);
         $this->setText($values['text']);
+        $this->setLink($values['link']);
         $this->setImage($values['image']);
-        $this->setIsPublished($values['isPublished'] ?? PostStatus::PUBLISHED);
+        $this->setIsPublished($values['isPublished'] ?? PortfolioStatus::PUBLISHED);
         $this->setCreatedAt($values['createdAt'] ?? new \DateTime());
         $this->setUpdatedAt($values['updatedAt'] ?? new \DateTime());
     }
@@ -107,6 +114,22 @@ class Post
     public function setText(?string $text): void
     {
         $this->text = $text;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLink(): string
+    {
+        return $this->link;
+    }
+
+    /**
+     * @param string $link
+     */
+    public function setLink(string $link): void
+    {
+        $this->link = $link;
     }
 
     /**
