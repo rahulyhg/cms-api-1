@@ -4,7 +4,6 @@ return [
         'factories' => [
             \UserApi\V1\Rest\Users\UsersResource::class => \UserApi\V1\Rest\Users\UsersResourceFactory::class,
             \UserApi\Service\UserService::class => \UserApi\Service\Factory\UserServiceFactory::class,
-            \UserApi\V1\Rest\Sliders\SlidersResource::class => \UserApi\V1\Rest\Sliders\SlidersResourceFactory::class,
         ],
     ],
     'view_manager' => [
@@ -123,15 +122,6 @@ return [
                     'defaults' => [
                         'controller' => 'UserApi\\V1\\Rpc\\ResetPasswordLink\\Controller',
                         'action' => 'resetPasswordLink',
-                    ],
-                ],
-            ],
-            'user-api.rest.sliders' => [
-                'type' => 'Segment',
-                'options' => [
-                    'route' => '/sliders[/:sliders_id]',
-                    'defaults' => [
-                        'controller' => 'UserApi\\V1\\Rest\\Sliders\\Controller',
                     ],
                 ],
             ],
@@ -461,7 +451,6 @@ return [
             9 => 'user-api.rpc.reset-password',
             10 => 'user-api.rpc.send-reset-password',
             11 => 'user-api.rpc.reset-password-link',
-            12 => 'user-api.rest.sliders',
         ],
     ],
     'zf-rest' => [
@@ -489,28 +478,6 @@ return [
             'collection_class' => \UserApi\V1\Rest\Users\UsersCollection::class,
             'service_name' => 'users',
         ],
-        'UserApi\\V1\\Rest\\Sliders\\Controller' => [
-            'listener' => \UserApi\V1\Rest\Sliders\SlidersResource::class,
-            'route_name' => 'user-api.rest.sliders',
-            'route_identifier_name' => 'sliders_id',
-            'collection_name' => 'sliders',
-            'entity_http_methods' => [
-                0 => 'GET',
-                1 => 'PATCH',
-                2 => 'PUT',
-                3 => 'DELETE',
-            ],
-            'collection_http_methods' => [
-                0 => 'GET',
-                1 => 'POST',
-            ],
-            'collection_query_whitelist' => [],
-            'page_size' => 25,
-            'page_size_param' => null,
-            'entity_class' => \UserApi\V1\Rest\Sliders\SlidersEntity::class,
-            'collection_class' => \UserApi\V1\Rest\Sliders\SlidersCollection::class,
-            'service_name' => 'sliders',
-        ],
     ],
     'zf-content-negotiation' => [
         'controllers' => [
@@ -525,7 +492,6 @@ return [
             'UserApi\\V1\\Rpc\\ResetPassword\\Controller' => 'Json',
             'UserApi\\V1\\Rpc\\SendResetPassword\\Controller' => 'Json',
             'UserApi\\V1\\Rpc\\ResetPasswordLink\\Controller' => 'Json',
-            'UserApi\\V1\\Rest\\Sliders\\Controller' => 'HalJson',
         ],
         'accept_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -583,11 +549,6 @@ return [
                 1 => 'application/json',
                 2 => 'application/*+json',
             ],
-            'UserApi\\V1\\Rest\\Sliders\\Controller' => [
-                0 => 'application/vnd.user-api.v1+json',
-                1 => 'application/hal+json',
-                2 => 'application/json',
-            ],
         ],
         'content_type_whitelist' => [
             'UserApi\\V1\\Rest\\Users\\Controller' => [
@@ -634,10 +595,6 @@ return [
                 0 => 'application/vnd.user-api.v1+json',
                 1 => 'application/json',
             ],
-            'UserApi\\V1\\Rest\\Sliders\\Controller' => [
-                0 => 'application/vnd.user-api.v1+json',
-                1 => 'application/json',
-            ],
         ],
     ],
     'zf-hal' => [
@@ -659,18 +616,6 @@ return [
                 'route_name' => 'user-api.rest.users',
                 'route_identifier_name' => 'users_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
-            ],
-            \UserApi\V1\Rest\Sliders\SlidersEntity::class => [
-                'entity_identifier_name' => 'id',
-                'route_name' => 'user-api.rest.sliders',
-                'route_identifier_name' => 'sliders_id',
-                'hydrator' => \Zend\Hydrator\ArraySerializable::class,
-            ],
-            \UserApi\V1\Rest\Sliders\SlidersCollection::class => [
-                'entity_identifier_name' => 'id',
-                'route_name' => 'user-api.rest.sliders',
-                'route_identifier_name' => 'sliders_id',
-                'is_collection' => true,
             ],
         ],
     ],

@@ -6,6 +6,8 @@ return [
             \CmsApi\Service\MenuService::class => \CmsApi\Service\Factory\MenuServiceFactory::class,
             \CmsApi\V1\Rest\Sliders\SlidersResource::class => \CmsApi\V1\Rest\Sliders\SlidersResourceFactory::class,
             \CmsApi\Service\SliderService::class => \CmsApi\Service\Factory\SliderServiceFactory::class,
+            \CmsApi\Service\PostService::class => \CmsApi\Service\Factory\PostServiceFactory::class,
+            \CmsApi\V1\Rest\Posts\PostsResource::class => \CmsApi\V1\Rest\Posts\PostsResourceFactory::class,
         ],
     ],
     'doctrine' => [
@@ -54,6 +56,15 @@ return [
                     ],
                 ],
             ],
+            'cms-api.rest.posts' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/posts[/:post_id]',
+                    'defaults' => [
+                        'controller' => 'CmsApi\\V1\\Rest\\Posts\\Controller',
+                    ],
+                ],
+            ],
         ],
     ],
     'zf-versioning' => [
@@ -61,6 +72,7 @@ return [
             0 => 'menu-api.rest.menus',
             1 => 'cms-api.rest.sliders',
             2 => 'cms-api.rpc.images',
+            3 => 'cms-api.rest.posts',
         ],
     ],
     'zf-rest' => [
@@ -108,12 +120,35 @@ return [
             'collection_class' => \CmsApi\V1\Rest\Sliders\SlidersCollection::class,
             'service_name' => 'sliders',
         ],
+        'CmsApi\\V1\\Rest\\Posts\\Controller' => [
+            'listener' => \CmsApi\V1\Rest\Posts\PostsResource::class,
+            'route_name' => 'cms-api.rest.posts',
+            'route_identifier_name' => 'post_id',
+            'collection_name' => 'posts',
+            'entity_http_methods' => [
+                0 => 'GET',
+                1 => 'PUT',
+                2 => 'DELETE',
+            ],
+            'collection_http_methods' => [
+                0 => 'GET',
+                1 => 'POST',
+                2 => 'DELETE',
+            ],
+            'collection_query_whitelist' => [],
+            'page_size' => 25,
+            'page_size_param' => null,
+            'entity_class' => \CmsApi\Entity\Post::class,
+            'collection_class' => \CmsApi\V1\Rest\Posts\PostsCollection::class,
+            'service_name' => 'posts',
+        ],
     ],
     'zf-content-negotiation' => [
         'controllers' => [
             'CmsApi\\V1\\Rest\\Menus\\Controller' => 'HalJson',
             'CmsApi\\V1\\Rest\\Sliders\\Controller' => 'HalJson',
             'CmsApi\\V1\\Rpc\\Images\\Controller' => 'Json',
+            'CmsApi\\V1\\Rest\\Posts\\Controller' => 'HalJson',
         ],
         'accept_whitelist' => [
             'CmsApi\\V1\\Rest\\Menus\\Controller' => [
@@ -131,6 +166,11 @@ return [
                 1 => 'application/json',
                 2 => 'application/*+json',
             ],
+            'CmsApi\\V1\\Rest\\Posts\\Controller' => [
+                0 => 'application/vnd.cms-api.v1+json',
+                1 => 'application/hal+json',
+                2 => 'application/json',
+            ],
         ],
         'content_type_whitelist' => [
             'CmsApi\\V1\\Rest\\Menus\\Controller' => [
@@ -146,16 +186,14 @@ return [
                 0 => 'application/vnd.cms-api.v1+json',
                 1 => 'application/json',
             ],
+            'CmsApi\\V1\\Rest\\Posts\\Controller' => [
+                0 => 'application/vnd.cms-api.v1+json',
+                1 => 'application/json',
+            ],
         ],
     ],
     'zf-hal' => [
         'metadata_map' => [
-            'CmsApi\\V1\\Rest\\Menus\\MenusEntity' => [
-                'entity_identifier_name' => 'id',
-                'route_name' => 'menu-api.rest.menus',
-                'route_identifier_name' => 'menus_id',
-                'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
-            ],
             \CmsApi\V1\Rest\Menus\MenusCollection::class => [
                 'entity_identifier_name' => 'id',
                 'route_name' => 'menu-api.rest.menus',
@@ -167,12 +205,6 @@ return [
                 'route_name' => 'menu-api.rest.menus',
                 'route_identifier_name' => 'menu_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
-            ],
-            'CmsApi\\V1\\Rest\\Sliders\\SlidersEntity' => [
-                'entity_identifier_name' => 'id',
-                'route_name' => 'cms-api.rest.sliders',
-                'route_identifier_name' => 'sliders_id',
-                'hydrator' => \Zend\Hydrator\ArraySerializable::class,
             ],
             \CmsApi\V1\Rest\Sliders\SlidersCollection::class => [
                 'entity_identifier_name' => 'id',
@@ -186,6 +218,18 @@ return [
                 'route_identifier_name' => 'sliders_id',
                 'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
             ],
+            \CmsApi\V1\Rest\Posts\PostsCollection::class => [
+                'entity_identifier_name' => 'id',
+                'route_name' => 'cms-api.rest.posts',
+                'route_identifier_name' => 'post_id',
+                'is_collection' => true,
+            ],
+            \CmsApi\Entity\Post::class => [
+                'entity_identifier_name' => 'id',
+                'route_name' => 'cms-api.rest.posts',
+                'route_identifier_name' => 'post_id',
+                'hydrator' => \DoctrineModule\Stdlib\Hydrator\DoctrineObject::class,
+            ],
         ],
     ],
     'zf-content-validation' => [
@@ -195,6 +239,9 @@ return [
         'CmsApi\\V1\\Rest\\Sliders\\Controller' => [
             'input_filter' => 'CmsApi\\V1\\Rest\\Sliders\\Validator',
             'PUT' => 'CmsApi\\V1\\Rest\\Sliders\\Validator\\PUT',
+        ],
+        'CmsApi\\V1\\Rest\\Posts\\Controller' => [
+            'input_filter' => 'CmsApi\\V1\\Rest\\Posts\\Validator',
         ],
     ],
     'input_filter_specs' => [
@@ -427,6 +474,99 @@ return [
                 'name' => 'enable',
                 'field_type' => 'bool',
                 'allow_empty' => true,
+            ],
+        ],
+        'CmsApi\\V1\\Rest\\Posts\\Validator' => [
+            0 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\Regex::class,
+                        'options' => [
+                            'pattern' => '/^[a-zA-Z]+[a-zA-Z0-9-_ )(?!,#$]*$/',
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                ],
+                'name' => 'title',
+                'field_type' => 'string',
+            ],
+            1 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\StringTrim::class,
+                        'options' => [],
+                    ],
+                    1 => [
+                        'name' => \Zend\Filter\StripTags::class,
+                        'options' => [
+                            'allowTags' => [
+                                0 => 'a',
+                                1 => 'img',
+                                2 => 'div',
+                                3 => 'span',
+                                4 => 'b',
+                                5 => 'u',
+                                6 => 'i',
+                                7 => 'strong',
+                                8 => 'p',
+                            ],
+                            'allowAttribs' => [
+                                0 => 'class',
+                                1 => 'id',
+                                2 => 'src',
+                                3 => 'href',
+                            ],
+                        ],
+                    ],
+                ],
+                'name' => 'text',
+                'allow_empty' => true,
+            ],
+            2 => [
+                'required' => true,
+                'validators' => [],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\Boolean::class,
+                        'options' => [
+                            'casting' => true,
+                        ],
+                    ],
+                ],
+                'name' => 'published',
+                'field_type' => 'bool',
+                'allow_empty' => true,
+            ],
+            3 => [
+                'required' => true,
+                'validators' => [
+                    0 => [
+                        'name' => \Zend\Validator\File\IsImage::class,
+                        'options' => [
+                            'mimeType' => 'image/jpeg,image/png',
+                        ],
+                    ],
+                ],
+                'filters' => [
+                    0 => [
+                        'name' => \Zend\Filter\File\RenameUpload::class,
+                        'options' => [
+                            'randomize' => true,
+                            'target' => 'data/tmp/post',
+                            'useUploadExtension' => true,
+                        ],
+                    ],
+                ],
+                'type' => \Zend\InputFilter\FileInput::class,
+                'name' => 'file',
             ],
         ],
     ],

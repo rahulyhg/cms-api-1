@@ -29,5 +29,6 @@ return [
     'upload_dir' => [
         'tmp' => __DIR__.'/../../data/tmp',
         'slider' => __DIR__.'/../../data/upload/slider',
+        'post' => __DIR__.'/../../data/upload/post',
     ]
 ];
