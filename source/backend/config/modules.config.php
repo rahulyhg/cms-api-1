@@ -30,6 +30,7 @@ return [
     'ZF\\Rest',
     'ZF\\Rpc',
     'ZF\\Versioning',
+    'ZF\OAuth2\Doctrine',
     'DoctrineModule',
     'DoctrineORMModule',
     'ZfrCors',

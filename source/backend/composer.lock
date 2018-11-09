@@ -4,8 +4,76 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "67be915d8a19d86eee32b4e196b7e6f4",
+    "content-hash": "123aa7e3fedf9b30ff080e9931361119",
     "packages": [
+        {
+            "name": "api-skeletons/zf-oauth2-doctrine",
+            "version": "3.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/API-Skeletons/zf-oauth2-doctrine.git",
+                "reference": "5c4c6d0098a5b16248cff42968d347c0d41b893c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/API-Skeletons/zf-oauth2-doctrine/zipball/5c4c6d0098a5b16248cff42968d347c0d41b893c",
+                "reference": "5c4c6d0098a5b16248cff42968d347c0d41b893c",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/doctrine-module": "^1.2 || ^2.1",
+                "doctrine/doctrine-orm-module": "^1.1.5 || ^2.1",
+                "doctrine/orm": "^2.5.11",
+                "php": ">=7.1",
+                "zendframework/zend-config": "^2.6 || ^3.0",
+                "zendframework/zend-i18n": "^2.7",
+                "zendframework/zend-modulemanager": "^2.0",
+                "zendframework/zend-mvc": "^3.0",
+                "zendframework/zend-servicemanager": "^3.0",
+                "zfcampus/zf-mvc-auth": "^1.4.3",
+                "zfcampus/zf-oauth2": "^1.4"
+            },
+            "require-dev": {
+                "api-skeletons/coding-standard": "^1.0",
+                "mockery/mockery": "^0.9.5",
+                "phpunit/phpunit": "^6.0",
+                "satooshi/php-coveralls": "^1.0",
+                "zendframework/zend-authentication": "^2.5",
+                "zendframework/zend-eventmanager": "^3.2",
+                "zendframework/zend-form": "^2.10",
+                "zendframework/zend-loader": "^2.4",
+                "zendframework/zend-log": "^2.9",
+                "zendframework/zend-serializer": "^2.7",
+                "zendframework/zend-test": "^3.1"
+            },
+            "suggest": {
+                "api-skeletons/zf-oauth2-doctrine-permissions-acl": "Access Control Lists for zf-oauth2-doctrine",
+                "bushbaby/zf-oauth2-doctrine-mutatetablenames": "Allows configuration of the table names that this module uses"
+            },
+            "type": "library",
+            "extra": {
+                "zf": {
+                    "component": "ZF\\OAuth2\\Doctrine",
+                    "config-provider": "ZF\\OAuth2\\Doctrine\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ZF\\OAuth2\\Doctrine\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Doctrine OAuth2 Server Adapter for Apigility",
+            "keywords": [
+                "apigility",
+                "doctrine",
+                "oauth2"
+            ],
+            "time": "2018-04-06T19:39:58+00:00"
+        },
         {
             "name": "bshaffer/oauth2-server-php",
             "version": "v1.10.0",

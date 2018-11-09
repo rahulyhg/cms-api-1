@@ -712,4 +712,24 @@ return [
             'input_filter' => 'UserApi\\V1\\Rpc\\SendResetPassword\\Validator',
         ],
     ],
+    'zf-mvc-auth' => [
+        'authorization' => [
+            'UserApi\\V1\\Rest\\Users\\Controller' => [
+                'collection' => [
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => false,
+                    'PATCH' => false,
+                    'DELETE' => true,
+                ],
+                'entity' => [
+                    'GET' => true,
+                    'POST' => false,
+                    'PUT' => true,
+                    'PATCH' => false,
+                    'DELETE' => true,
+                ],
+            ],
+        ],
+    ],
 ];

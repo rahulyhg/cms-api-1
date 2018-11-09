@@ -4,6 +4,7 @@ namespace UserApi\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use UserApi\Type\UserStatus;
+use ZF\OAuth2\Doctrine\Entity\UserInterface;
 
 /**
  * @ORM\Entity
@@ -13,7 +14,7 @@ use UserApi\Type\UserStatus;
  * https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/annotations-reference.html#index
  * https://www.doctrine-project.org/projects/doctrine-orm/en/2.4/reference/basic-mapping.html#doctrine-mapping-types
  */
-class User
+class User implements UserInterface
 {
     const ERR_CODE_ALREADY_EXIST = 1;
     const ERR_MSG_ALREADY_EXIST = 'The email address has been taken.';
@@ -260,5 +261,52 @@ class User
     public function setFullname(string $fullname)
     {
         $this->fullname = $fullname;
+    }
+
+    protected $client;
+    protected $accessToken;
+    protected $authorizationCode;
+    protected $refreshToken;
+
+    /**
+     * @return mixed
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAccessToken()
+    {
+        return $this->accessToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAuthorizationCode()
+    {
+        return $this->authorizationCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRefreshToken()
+    {
+        return $this->refreshToken;
+    }
+
+    /**
+     * Convert the object to an array.
+     *
+     * @return array
+     */
+    public function getArrayCopy()
+    {
+        return get_object_vars($this);
     }
 }

@@ -761,4 +761,72 @@ return [
             'route_name' => 'cms-api.rpc.images',
         ],
     ],
+    'zf-mvc-auth' => [
+        'authorization' => [
+            'CmsApi\\V1\\Rest\\Sliders\\Controller' => [
+                'collection' => [
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => false,
+                    'PATCH' => false,
+                    'DELETE' => true,
+                ],
+                'entity' => [
+                    'GET' => true,
+                    'POST' => false,
+                    'PUT' => true,
+                    'PATCH' => false,
+                    'DELETE' => true,
+                ],
+            ],
+            'CmsApi\\V1\\Rest\\Menus\\Controller' => [
+                'collection' => [
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => false,
+                    'PATCH' => false,
+                    'DELETE' => true,
+                ],
+                'entity' => [
+                    'GET' => true,
+                    'POST' => false,
+                    'PUT' => true,
+                    'PATCH' => false,
+                    'DELETE' => true,
+                ],
+            ],
+            'CmsApi\\V1\\Rest\\Posts\\Controller' => [
+                'collection' => [
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => false,
+                    'PATCH' => false,
+                    'DELETE' => true,
+                ],
+                'entity' => [
+                    'GET' => true,
+                    'POST' => false,
+                    'PUT' => true,
+                    'PATCH' => false,
+                    'DELETE' => true,
+                ],
+            ],
+            'CmsApi\\V1\\Rest\\Portfolios\\Controller' => [
+                'collection' => [
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => false,
+                    'PATCH' => false,
+                    'DELETE' => true,
+                ],
+                'entity' => [
+                    'GET' => true,
+                    'POST' => false,
+                    'PUT' => true,
+                    'PATCH' => false,
+                    'DELETE' => true,
+                ],
+            ],
+        ],
+    ],
 ];

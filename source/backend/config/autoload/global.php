@@ -1,35 +1,34 @@
 <?php
-
-use Zend\Session\Storage\SessionArrayStorage;
-use Zend\Session\Validator\HttpUserAgent;
-use Zend\Session\Validator\RemoteAddr;
-
 return [
     'zf-content-negotiation' => [
         'selectors' => [],
     ],
-    'db' => [
-        'adapters' => [
-            'dummy' => [],
-        ],
-    ],
     'session_config' => [
-        'cookie_lifetime' => 60 * 60 * 1,               // Session cookie will expire in 1 hour.
-        'gc_maxlifetime' => 60 * 60 * 24 * 30,          // Session data will be stored on server maximum for 30 days.
+        'cookie_lifetime' => 3600,
+        'gc_maxlifetime' => 2592000,
     ],
     'session_manager' => [
-        'validators' => [                               // Session validators (used for security).
-            RemoteAddr::class,
-            HttpUserAgent::class,
+        'validators' => [
+            0 => \Zend\Session\Validator\RemoteAddr::class,
+            1 => \Zend\Session\Validator\HttpUserAgent::class,
         ],
     ],
     'session_storage' => [
-        'type' => SessionArrayStorage::class,
+        'type' => \Zend\Session\Storage\SessionArrayStorage::class,
     ],
     'upload_dir' => [
-        'tmp' => __DIR__.'/../../data/tmp',
-        'slider' => __DIR__.'/../../data/upload/slider',
-        'post' => __DIR__.'/../../data/upload/post',
-        'portfolio' => __DIR__.'/../../data/upload/portfolio',
-    ]
+        'tmp' => '/var/www/html/config/autoload/../../data/tmp',
+        'slider' => '/var/www/html/config/autoload/../../data/upload/slider',
+        'post' => '/var/www/html/config/autoload/../../data/upload/post',
+        'portfolio' => '/var/www/html/config/autoload/../../data/upload/portfolio',
+    ],
+    'zf-mvc-auth' => [
+        'authentication' => [
+            'map' => [
+                'PingApi\\V1' => 'oauth2_doctrine',
+                'CmsApi\\V1' => 'oauth2_doctrine',
+                'UserApi\\V1' => 'oauth2_doctrine',
+            ],
+        ],
+    ],
 ];

@@ -47,7 +47,8 @@
         "zendframework\/zend-session": "^2.7",
         "zfr/zfr-cors": "^1.5",
         "mtymek/mt-mail": "^1.5",
-        "zendframework/zend-i18n": "^2.9"
+        "zendframework/zend-i18n": "^2.9",
+        "api-skeletons/zf-oauth2-doctrine": "^3.1"
     },
     "require-dev": {
         "zendframework\/zend-developer-tools": "^1.2.1",

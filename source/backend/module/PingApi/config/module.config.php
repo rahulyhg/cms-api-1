@@ -1,14 +1,13 @@
 <?php
-
 return [
     'service_manager' => [
         'factories' => [
-            \UserApi\Service\EmailService::class => \UserApi\Factory\EmailServiceFactory::class,
+            'UserApi\\Service\\EmailService' => 'UserApi\\Factory\\EmailServiceFactory',
         ],
     ],
     'view_manager' => [
         'template_path_stack' => [
-            __DIR__.'/../view',
+            0 => __DIR__ . '/../view',
         ],
     ],
     'controllers' => [
@@ -69,5 +68,20 @@ return [
     ],
     'input_filter_specs' => [
         'PingApi\\V1\\Rpc\\TestEmail\\Validator' => [],
+    ],
+    'zf-mvc-auth' => [
+        'authorization' => [
+            'PingApi\\V1\\Rpc\\TestEmail\\Controller' => [
+                'actions' => [
+                    'testEmail' => [
+                        'GET' => true,
+                        'POST' => false,
+                        'PUT' => false,
+                        'PATCH' => false,
+                        'DELETE' => false,
+                    ],
+                ],
+            ],
+        ],
     ],
 ];
