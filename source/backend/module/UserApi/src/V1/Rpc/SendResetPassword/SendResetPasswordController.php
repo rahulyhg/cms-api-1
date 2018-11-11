@@ -27,7 +27,7 @@ class SendResetPasswordController extends AbstractActionController
             return [
                 'success' => true,
                 'result' => [],
-                'message' => '',
+                'messageText' => '',
             ];
         } catch (\RuntimeException $e) {
             return new ApiProblemResponse(

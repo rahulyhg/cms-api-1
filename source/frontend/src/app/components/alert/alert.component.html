@@ -1,0 +1,4 @@
+<div class="alert" [ngClass]="type" *ngIf="isShow">
+    <ng-content></ng-content>
+    <span *ngIf="canClose" class="close glyphicon glyphicon-remove" (click)="close($event)"></span>
+</div>

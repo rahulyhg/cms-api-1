@@ -23,16 +23,15 @@ class RegisterController extends AbstractActionController
     public function registerAction()
     {
         $data = $this->getInputFilter()->getValues();
-//        $inputFilter = $this->getEvent()->getParam('ZF\ContentValidation\InputFilter');
 
         try {
-            $user = $this->userService->register($data['email'], $data['fullname'], $data['password']);
+            $user = $this->userService->register($data['email'], $data['fullName'], $data['password']);
             $response = [
                 'success' => true,
                 'result' => [
                     'id' => $user->getId(),
                     'email' => $user->getEmail(),
-                    'fullname' => $user->getFullname(),
+                    'fullName' => $user->getFullName(),
                 ],
                 'message' => User::MSG_USER_SUCCESSFULLY_REGISTERED
             ];

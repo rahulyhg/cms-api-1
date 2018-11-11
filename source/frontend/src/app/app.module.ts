@@ -1,10 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { ElModule } from 'element-angular/release/element-angular.module';
 
-import { adminRouting } from './admin-route.module';
+import { adminRouting } from './admin.route';
 
 import { AdminComponent } from './components/admin.component';
 import { LoginFooterComponent } from './components/login-footer/login.footer.component';
@@ -14,10 +15,14 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
 
 import { EmailValidator } from './shared/email-validator.directive';
 import { AuthGuard } from './shared/auth.guard';
-import { AuthenticationService } from './services/authentication.service';
+import { AuthService } from './services/auth.service';
 import { RegisterComponent } from './pages/register/register.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
+import { AlertComponent } from './components/alert/alert.component';
+import { AuthInterceptor } from './shared/auth.interceptor';
+import { UserService } from './services/user.service';
+import { UnauthorizedInterceptor } from './shared/unauth.interceptor';
 
 @NgModule({
   declarations: [
@@ -30,15 +35,23 @@ import { NavigationComponent } from './components/navigation/navigation.componen
     FooterComponent,
     NavigationComponent,
     EmailValidator,
+    AlertComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     adminRouting,
     ElModule,
     BrowserAnimationsModule,
   ],
-  providers: [ AuthGuard, AuthenticationService ],
+  providers: [
+    AuthGuard,
+    AuthService,
+    UserService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
+  ],
   bootstrap: [ AdminComponent ]
 })
 export class AdminModule {

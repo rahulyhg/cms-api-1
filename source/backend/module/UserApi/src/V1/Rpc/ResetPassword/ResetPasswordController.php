@@ -42,7 +42,7 @@ class ResetPasswordController extends AbstractActionController
             return [
                 'success' => true,
                 'result' => [],
-                'message' => User::MSG_PASSWORD_CHANGED,
+                'messageText' => User::MSG_PASSWORD_CHANGED,
             ];
         } catch (\RuntimeException $e) {
             return new ApiProblemResponse(

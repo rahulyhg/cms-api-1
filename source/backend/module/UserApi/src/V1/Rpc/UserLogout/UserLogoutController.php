@@ -14,7 +14,7 @@ class UserLogoutController extends AbstractActionController
         return [
             'success' => true,
             'result' => [],
-            'message' => User::MSG_USER_SUCCESSFULLY_LOGGED_OUT
+            'messageText' => User::MSG_USER_SUCCESSFULLY_LOGGED_OUT
         ];
     }
 }

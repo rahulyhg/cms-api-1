@@ -8,6 +8,7 @@ use Application\Service\Factory\ImageManagerFactory;
 use Application\Service\Factory\MailComposerFactory;
 use Application\Service\MailComposer;
 use Application\Service\Utility;
+use UserApi\Initializer\iAuthAwareInitializer;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
@@ -53,5 +54,8 @@ return [
             Utility::class => InvokableFactory::class,
             Service\ImageManager::class => ImageManagerFactory::class,
         ],
+        'initializers' => array(
+            'iAuthAwareInterface' => iAuthAwareInitializer::class,
+        )
     ],
 ];

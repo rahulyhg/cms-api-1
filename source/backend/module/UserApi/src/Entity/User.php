@@ -54,7 +54,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=128)
      * @var string
      */
-    protected $fullname;
+    protected $fullName;
 
     /**
      * @ORM\Column(type="string", length=256)
@@ -101,7 +101,7 @@ class User implements UserInterface
     public function __construct(array $values)
     {
         $this->setEmail($values['email']);
-        $this->setFullname($values['fullname']);
+        $this->setFullName($values['fullname']);
         $this->setPassword($values['password']);
         $this->setCreatedAt($values['createdAt'] ?? new \DateTime());
         $this->setUpdatedAt($values['updatedAt'] ?? new \DateTime());
@@ -250,17 +250,17 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getFullname(): string
+    public function getFullName(): string
     {
-        return $this->fullname;
+        return $this->fullName;
     }
 
     /**
-     * @param string $fullname
+     * @param string $fullName
      */
-    public function setFullname(string $fullname)
+    public function setFullName(string $fullName)
     {
-        $this->fullname = $fullname;
+        $this->fullName = $fullName;
     }
 
     protected $client;

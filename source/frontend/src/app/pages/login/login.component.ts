@@ -1,58 +1,68 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthenticationService } from '../../services/authentication.service';
-import { AppErrorHandler } from '../../services/error-handler';
-import { Router } from '@angular/router';
-import { UserCredentialType } from '../../types/user.credential.type';
-import { RpcResponseType } from '../../types/rpc.response.type';
+import { AuthService } from '../../services/auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { OAuthResponse } from '../../types/oauth-response.type';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { OAuthCredentialType } from '../../models/oauth-credential.model';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
 })
 export class LoginComponent implements OnInit {
-  errorMessage: string = '';
-  isError: boolean = false;
-  registeredMessage: string = '';
-  isUserRegistered: boolean = false;
-  isLoading: boolean = false;
-  credential: UserCredentialType = {
-    email: '',
-    password: ''
-  };
+  isLoading = false;
+  form: FormGroup;
+  returnUrl: string;
 
-  constructor( private userAuth: AuthenticationService,
-               private router: Router ) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
   }
 
   ngOnInit() {
-    if (this.registeredMessage = localStorage.getItem('registeredUser')) {
-      localStorage.removeItem('registeredUser');
-      this.isUserRegistered = true;
-    }
+    this.form = this.fb.group({
+      username: [ '', [ Validators.required, Validators.email ] ],
+      password: [ '', [ Validators.required, Validators.minLength(6), Validators.maxLength(16) ] ],
+    });
+
+    this.authService.logout();
+    this.returnUrl = this.route.snapshot.queryParams[ 'returnUrl' ] || 'dashboard';
+
+    // const registeredUser = localStorage.getItem('registeredUser');
+    // if (registeredUser) {
+    //   localStorage.removeItem('registeredUser');
+    //   this.message('success', registeredUser);
+    // }
   }
 
-  login( event ) {
-    event.preventDefault();
-    if (this.isLoading) {
-      return false;
+  public login(): void {
+    if (this.form.invalid || this.isLoading) {
+      return;
     }
-    this.isLoading = true;
 
-    this.userAuth.login(this.credential)
+    this.isLoading = true;
+    this.authService
+      .login(new OAuthCredentialType(this.form.value))
       .subscribe(
-        ( res: AppErrorHandler|RpcResponseType ) => {
+        ( res: OAuthResponse ) => {
           this.isLoading = false;
-          if (res.result === false) {
-            this.isError = true;
-            this.errorMessage = res.message;
-          } else {
-            this.router.navigate([ 'dashboard' ]);
-          }
-        }
+          this.router.navigate([ this.returnUrl ]);
+        },
       );
   }
 
-  closeAlertMessage( event ) {
-    this.isError = false;
+  get f() {
+    return this.form.controls;
+  }
+
+  public fieldClassValidation( fieldName: any ): { valid: boolean, invalid: boolean } {
+    const isEdited = this.form.get(fieldName).dirty || this.form.get(fieldName).touched;
+    return {
+      valid: isEdited && this.form.get(fieldName).valid,
+      invalid: isEdited && this.form.get(fieldName).invalid
+    };
   }
 }

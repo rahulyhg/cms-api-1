@@ -30,13 +30,13 @@ class ActivateAccountController extends AbstractActionController
             $response = [
                 'success' => true,
                 'result' => [],
-                'message' => '',
+                'messageText' => '',
             ];
         } catch (\RuntimeException $e) {
             $response = [
                 'success' => false,
                 'result' => [],
-                'message' => $e->getMessage(),
+                'messageText' => $e->getMessage(),
             ];
         }
 

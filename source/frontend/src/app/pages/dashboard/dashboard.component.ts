@@ -1,33 +1,35 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthenticationService } from '../../services/authentication.service';
-import { RpcResponseType } from '../../types/rpc.response.type';
+import { AuthService } from '../../services/auth.service';
+import { RpcResponseType } from '../../types/rpc-response.type';
 import { Router } from '@angular/router';
+import { User } from '../../models/users.model';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: [ './dashboard.component.scss' ]
 })
 export class DashboardComponent implements OnInit {
-  isAllowed: boolean = false;
+  isAllowed = false;
+  currentUser: User;
 
   constructor(
-    private userService: AuthenticationService,
+    private userService: AuthService,
     private router: Router
-  ) { }
-
-  ngOnInit() {
-    this.userService.isLoggedIn().subscribe( (res: RpcResponseType) => {
-      this.isAllowed = res.success;
-      if (!res.success) {
-        this.onLogout();
-      }
-    });
+  ) {
   }
 
-  onLogout() {
-    this.userService.logout().subscribe( (res: RpcResponseType) => {
-      this.router.navigate(['login']);
-    });
+  ngOnInit() {
+    this.userService.isLoggedIn().subscribe(
+      (res: RpcResponseType) => {
+        this.isAllowed = res.success;
+        this.currentUser = new User(res.result);
+      }
+    );
+  }
+
+  public onLogout(): void {
+    this.userService.logout();
+    this.router.navigate([ 'login' ]);
   }
 }

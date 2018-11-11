@@ -1,5 +1,5 @@
 export interface RpcResponseType {
   success: boolean;
-  result: Array<any>;
+  result: any;
   message: string;
 }

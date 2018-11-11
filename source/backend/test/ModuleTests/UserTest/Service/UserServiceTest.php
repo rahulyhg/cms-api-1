@@ -140,7 +140,7 @@ class UserServiceTest extends TestCase
 
         $this->assertEquals($beforeRows + 1, $this->getConnection()->getRowCount('users'));
         $this->assertEquals($newUser['email'], $user->getEmail());
-        $this->assertEquals($newUser['fullname'], $user->getFullname());
+        $this->assertEquals($newUser['fullname'], $user->getFullName());
         $this->assertEquals(UserStatus::STATUS_ENABLE, $user->getStatus());
 
         $this->assertTrue(self::$userService->isPasswordCorrect($newUser['password'], $user->getPassword()));

@@ -6,11 +6,13 @@ use Application\Service\AppMail;
 use Application\Service\Utility;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use UserApi\Authentication\iAuthAwareInterface;
+use UserApi\Authentication\InvalidIdentityException;
 use UserApi\Entity\User;
 use UserApi\Type\UserStatus;
 use Zend\Crypt\Password\Bcrypt;
 
-class UserService implements UserServiceInterface
+class UserService implements UserServiceInterface, iAuthAwareInterface
 {
     /**
      * @var EntityManager
@@ -28,6 +30,8 @@ class UserService implements UserServiceInterface
      */
     private $email;
 
+    protected $authenticatedIdentity;
+
     public function __construct(
         EntityManager $entityManager,
         AppMail $email
@@ -39,6 +43,24 @@ class UserService implements UserServiceInterface
     private function getRepository(): EntityRepository
     {
         return $this->entityManager->getRepository(User::class);
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setAuthenticatedIdentity(User $user)
+    {
+        $this->authenticatedIdentity = $user;
+    }
+
+    /**
+     * @return User
+     */
+    public function getAuthenticatedIdentity()
+    {
+        if (! $this->authenticatedIdentity instanceof User)
+            throw new \RuntimeException('User Must be logged in', 3000);
+        return $this->authenticatedIdentity;
     }
 
     /**
@@ -246,7 +268,7 @@ class UserService implements UserServiceInterface
             $user->setIsEmailConfirmed(false);
         }
 
-        $user->setFullname($info['fullname']);
+        $user->setFullName($info['fullname']);
         $user->setUpdatedAt(new \DateTime());
 
         $this->entityManager->persist($user);
@@ -285,7 +307,7 @@ class UserService implements UserServiceInterface
             $user->getEmail(), [
             'email' => $user->getEmail(),
             'emailConfirmToken' => $user->getEmailConfirmToken(),
-            'fullname' => $user->getFullname(),
+            'fullname' => $user->getFullName(),
             'plainPassword' => $password,
         ]);
         return $user;
@@ -473,5 +495,4 @@ class UserService implements UserServiceInterface
             ->execute();
         return $this;
     }
-
 }

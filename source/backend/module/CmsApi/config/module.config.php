@@ -330,7 +330,7 @@ return [
                         'name' => \Zend\Validator\Regex::class,
                         'options' => [
                             'pattern' => '/^[a-zA-Z]+[a-zA-Z0-9_-]*$/',
-                            'message' => 'The slug is not valid format',
+                            'messageText' => 'The slug is not valid format',
                         ],
                     ],
                 ],

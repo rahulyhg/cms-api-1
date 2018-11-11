@@ -5,7 +5,6 @@ namespace AdminPanel;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use AdminPanel\Controller\AdminPanelController;
 use AdminPanel\Factory\AdminPanelControllerFactory;
-use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 
 return [
@@ -30,10 +29,6 @@ return [
     'controllers' => [
         'factories' => [
             AdminPanelController::class => AdminPanelControllerFactory::class,
-//            IndexController::class => \Zend\ServiceManager\Factory\InvokableFactory::class,
-//            IndexController::class => function (\Zend\ServiceManager\ServiceManager $container) {
-//                return new SomeModelAsService();
-//            },
         ],
     ],
     'doctrine' => [
@@ -54,10 +49,5 @@ return [
         'template_path_stack' => [
             __DIR__.'/../view'
         ],
-    ],
-//    'view_helpers' => [
-//        'invokables' => [
-//            'nariFormElement' => FormElement::class
-//        ]
-//    ]
+    ]
 ];

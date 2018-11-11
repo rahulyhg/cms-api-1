@@ -1,22 +1,35 @@
 <?php
 namespace UserApi\V1\Rpc\CheckUser;
 
+use UserApi\Entity\User;
+use UserApi\Service\UserService;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Session\Container;
 
 class CheckUserController extends AbstractActionController
 {
+    /**
+     * @var UserService
+     */
+    private $userService;
+
+    public function __construct(
+        UserService $userService
+    ) {
+        $this->userService = $userService;
+    }
+
     public function checkUserAction()
     {
-        $container = new Container('user');
+        /** @var User $authenticatedUser */
+        $authenticatedUser = $this->userService->getAuthenticatedIdentity();
         return [
-            'success' => (bool) $container->currentUser,
-            'result' => $container->currentUser ? [
-                'id' => $container->currentUser->getId(),
-                'email' => $container->currentUser->getEmail(),
-                'fullname' => $container->currentUser->getFullname(),
-            ] : [],
-            'message' => '',
+            'success' => true,
+            'result' =>  [
+                'id' => $authenticatedUser->getId(),
+                'email' => $authenticatedUser->getEmail(),
+                'fullName' => $authenticatedUser->getFullName(),
+            ],
+            'messageText' => '',
         ];
     }
 }

@@ -37,9 +37,9 @@ class UserLoginController extends AbstractActionController
                 'result' => [
                     'id' => $user->getId(),
                     'email' => $user->getEmail(),
-                    'fullname' => $user->getFullname(),
+                    'fullname' => $user->getFullName(),
                 ],
-                'message' => User::MSG_USER_SUCCESSFULLY_LOGGED_IN
+                'messageText' => User::MSG_USER_SUCCESSFULLY_LOGGED_IN
             ];
         } catch (\RuntimeException $e) {
             return new ApiProblemResponse(

@@ -32,7 +32,7 @@ class ResetPasswordLinkController extends AbstractActionController
             $response = [
                 'success' => false,
                 'result' => [],
-                'message' => User::ERR_MSG_IS_NO_ACTIVE,
+                'messageText' => User::ERR_MSG_IS_NO_ACTIVE,
             ];
 
             if ($user->getStatus()) {
@@ -42,14 +42,14 @@ class ResetPasswordLinkController extends AbstractActionController
                 $response = [
                     'success' => true,
                     'result' => ['id' => $user->getId()],
-                    'message' => '',
+                    'messageText' => '',
                 ];
             }
         } catch (\RuntimeException $e) {
             $response = [
                 'success' => false,
                 'result' => [],
-                'message' => $e->getMessage(),
+                'messageText' => $e->getMessage(),
             ];
         }
 

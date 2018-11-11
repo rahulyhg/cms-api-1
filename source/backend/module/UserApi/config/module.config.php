@@ -179,7 +179,11 @@ return [
                 'validators' => [
                     0 => [
                         'name' => \Zend\Validator\EmailAddress::class,
-                        'options' => [],
+                        'options' => [
+                            'useDeepMxCheck' => false,
+                            'useMxCheck' => false,
+                            'useDomainCheck' => false,
+                        ],
                     ],
                 ],
                 'filters' => [
@@ -229,7 +233,7 @@ return [
                         'options' => [],
                     ],
                 ],
-                'name' => 'fullname',
+                'name' => 'fullName',
                 'field_type' => 'string',
                 'error_message' => 'Each user account should have a name, Please enter a name.',
             ],
@@ -295,7 +299,7 @@ return [
                         'options' => [],
                     ],
                 ],
-                'name' => 'fullname',
+                'name' => 'fullName',
             ],
             1 => [
                 'required' => true,
@@ -728,6 +732,17 @@ return [
                     'PUT' => true,
                     'PATCH' => false,
                     'DELETE' => true,
+                ],
+            ],
+            'UserApi\\V1\\Rpc\\CheckUser\\Controller' => [
+                'actions' => [
+                    'checkUser' => [
+                        'GET' => true,
+                        'POST' => false,
+                        'PUT' => false,
+                        'PATCH' => false,
+                        'DELETE' => false,
+                    ],
                 ],
             ],
         ],

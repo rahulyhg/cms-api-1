@@ -98,7 +98,7 @@ class UsersResource extends AbstractResourceListener
             return [
                 'success' => true,
                 'result' => $user,
-                'message' => '',
+                'messageText' => '',
             ];
         } catch (\RuntimeException $e) {
             return new ApiProblem(422, $e->getMessage());

@@ -1,23 +1,35 @@
 <div class="login" el-row type="flex" justify="center" align="middle">
     <div class="panel" el-col span="6" [xs]="{span:24}" [sm]="{span:14}" [md]="{span:8}">
         <h1>Code Matrix Zone</h1>
-        <form (submit)="login($event)">
+        <form [formGroup]="form" (ngSubmit)="login()">
             <h3>Sign in to get in touch</h3>
 
-            <div class="alert error" *ngIf="isError">
-                <ul [innerHtml]="errorMessage"></ul>
-                <span class="close glyphicon glyphicon-remove" (click)="closeAlertMessage($event)"></span>
-            </div>
-            <div class="alert success" *ngIf="isUserRegistered">
-                <ul [innerHtml]="registeredMessage"></ul>
-                <span class="close glyphicon glyphicon-remove" (click)="closeAlertMessage($event)"></span>
-            </div>
+            <app-alert
+                    [type]="'error'"
+                    [isShow]="(form.dirty || form.touched) && form.invalid"
+                    [canClose]="false"
+            >
+                <div *ngIf="f.username.errors?.required">Email is required</div>
+                <div *ngIf="f.username.errors?.email">Email is not valid</div>
+                <div *ngIf="f.password.errors?.required">Password is required</div>
+                <div *ngIf="f.password.errors?.minlength">Password should be greater than 6</div>
+                <div *ngIf="f.password.errors?.maxlength">Password should be less than 16</div>
+            </app-alert>
+
 
             <div class="field-holder">
-                <input [(ngModel)]="credential.email" appEmailValidator maxlength="128"
-                       type="email" placeholder="Email" class="field email" name="email">
-                <input [(ngModel)]="credential.password" required minlength="6" maxlength="16"
-                       type="password" placeholder="Password" class="field password" name="password">
+                <input type="email"
+                       class="field email"
+                       formControlName="username"
+                       placeholder="Email"
+                       [ngClass]="fieldClassValidation('username')"
+                />
+                <input type="password"
+                       class="field password"
+                       formControlName="password"
+                       placeholder="Password"
+                       [ngClass]="fieldClassValidation('password')"
+                />
             </div>
 
             <button type="submit" class="btn purple lg" [el-loading]="isLoading">Log in</button>
