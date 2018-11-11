@@ -6,20 +6,23 @@
 
             <app-alert
                     [type]="'error'"
-                    [isShow]="(form.dirty || form.touched) && form.invalid"
+                    [isShow]="((form.dirty || form.touched) && form.invalid) || errorMessages.length"
                     [canClose]="false"
             >
                 <div *ngIf="f.email.errors?.required">Email is required</div>
                 <div *ngIf="f.email.errors?.email">Email is not valid</div>
                 <div *ngIf="f.fullName.errors?.required">Full name is required</div>
+                <div *ngIf="f.fullName.errors?.minlength">Full name should be greater than 5</div>
                 <div *ngIf="f.password.errors?.required">Password is required</div>
                 <div *ngIf="f.password.errors?.minlength">Password should be greater than 6</div>
                 <div *ngIf="f.password.errors?.maxlength">Password should be less than 16</div>
                 <div *ngIf="f.confirmPassword.errors?.required">Confirm password is required</div>
                 <div *ngIf="f.confirmPassword.errors?.match">Passwords are not match</div>
+                <div *ngFor="let error of errorMessages">{{error}}</div>
             </app-alert>
 
             <div class="field-holder">
+
                 <input type="email"
                        class="field email"
                        placeholder="Email"

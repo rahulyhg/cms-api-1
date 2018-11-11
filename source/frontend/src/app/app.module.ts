@@ -13,7 +13,6 @@ import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 
-import { EmailValidator } from './shared/email-validator.directive';
 import { AuthGuard } from './shared/auth.guard';
 import { AuthService } from './services/auth.service';
 import { RegisterComponent } from './pages/register/register.component';
@@ -22,7 +21,7 @@ import { NavigationComponent } from './components/navigation/navigation.componen
 import { AlertComponent } from './components/alert/alert.component';
 import { AuthInterceptor } from './shared/auth.interceptor';
 import { UserService } from './services/user.service';
-import { UnauthorizedInterceptor } from './shared/unauth.interceptor';
+import { ErrorHandlingInterceptor } from './shared/error-handling.interceptor';
 
 @NgModule({
   declarations: [
@@ -34,7 +33,6 @@ import { UnauthorizedInterceptor } from './shared/unauth.interceptor';
     PageNotFoundComponent,
     FooterComponent,
     NavigationComponent,
-    EmailValidator,
     AlertComponent,
   ],
   imports: [
@@ -50,7 +48,7 @@ import { UnauthorizedInterceptor } from './shared/unauth.interceptor';
     AuthService,
     UserService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorHandlingInterceptor, multi: true },
   ],
   bootstrap: [ AdminComponent ]
 })
