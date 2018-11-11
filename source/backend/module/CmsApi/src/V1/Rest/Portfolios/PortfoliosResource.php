@@ -4,6 +4,7 @@ namespace CmsApi\V1\Rest\Portfolios;
 use CmsApi\Service\PortfolioService;
 use Zend\Paginator\Adapter\ArrayAdapter;
 use ZF\ApiProblem\ApiProblem;
+use ZF\MvcAuth\Identity\AuthenticatedIdentity;
 use ZF\Rest\AbstractResourceListener;
 
 class PortfoliosResource extends AbstractResourceListener
@@ -111,8 +112,14 @@ class PortfoliosResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
+        if($this->getIdentity() instanceof AuthenticatedIdentity) {
+            $fetch = $this->portfolioService->fetchAll();
+        } else {
+            $fetch = $this->portfolioService->fetchAllPublished();
+        }
+
         return new PortfoliosCollection(
-            new ArrayAdapter($this->portfolioService->fetchAll())
+            new ArrayAdapter($fetch)
         );
     }
 

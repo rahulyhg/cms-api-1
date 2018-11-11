@@ -68,6 +68,15 @@ class PostService
     }
 
     /**
+     * @return Post[]
+     */
+    public function fetchAllPublished(): array
+    {
+        $posts = $this->getRepository()->findBy(['isPublished' => true]);
+        return $posts;
+    }
+
+    /**
      * @return Post
      */
     public function fetch(): Post

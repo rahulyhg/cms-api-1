@@ -68,6 +68,15 @@ class SliderService
     }
 
     /**
+     * @return Slider[]
+     */
+    public function fetchAllPublished(): array
+    {
+        $sliders = $this->getRepository()->findBy(['isEnable' => true]);
+        return $sliders;
+    }
+
+    /**
      * @return Slider
      */
     public function fetch(): Slider

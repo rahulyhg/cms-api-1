@@ -48,7 +48,7 @@ class Bootstrap
         if (file_exists(APPLICATION_PATH . '/config/development.config.php')) {
             $app_config = ArrayUtils::merge(
                 $app_config,
-                include APPLICATION_PATH . '/config/development.config.php'
+                include APPLICATION_PATH.'/config/development.config.php'
             );
         }
 

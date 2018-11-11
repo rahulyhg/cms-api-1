@@ -68,6 +68,15 @@ class PortfolioService
     }
 
     /**
+     * @return Portfolio[]
+     */
+    public function fetchAllPublished(): array
+    {
+        $portfolio = $this->getRepository()->findBy(['isPublished' => true]);
+        return $portfolio;
+    }
+
+    /**
      * @return Portfolio
      */
     public function fetch(): Portfolio

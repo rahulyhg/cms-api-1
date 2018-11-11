@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/index';
-import { catchError, tap } from 'rxjs/internal/operators';
+import { tap } from 'rxjs/internal/operators';
 
 import { RpcResponseType } from '../types/rpc-response.type';
 import { User } from '../models/users.model';

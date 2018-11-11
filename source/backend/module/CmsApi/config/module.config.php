@@ -121,9 +121,9 @@ return [
                 2 => 'DELETE',
             ],
             'collection_http_methods' => [
-                0 => 'GET',
-                1 => 'POST',
-                2 => 'DELETE',
+                0 => 'POST',
+                1 => 'DELETE',
+                2 => 'GET',
             ],
             'collection_query_whitelist' => [],
             'page_size' => 25,
@@ -765,7 +765,7 @@ return [
         'authorization' => [
             'CmsApi\\V1\\Rest\\Sliders\\Controller' => [
                 'collection' => [
-                    'GET' => true,
+                    'GET' => false,
                     'POST' => true,
                     'PUT' => false,
                     'PATCH' => false,
@@ -797,7 +797,7 @@ return [
             ],
             'CmsApi\\V1\\Rest\\Posts\\Controller' => [
                 'collection' => [
-                    'GET' => true,
+                    'GET' => false,
                     'POST' => true,
                     'PUT' => false,
                     'PATCH' => false,
@@ -813,7 +813,7 @@ return [
             ],
             'CmsApi\\V1\\Rest\\Portfolios\\Controller' => [
                 'collection' => [
-                    'GET' => true,
+                    'GET' => false,
                     'POST' => true,
                     'PUT' => false,
                     'PATCH' => false,

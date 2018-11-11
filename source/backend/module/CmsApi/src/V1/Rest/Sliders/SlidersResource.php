@@ -4,6 +4,7 @@ namespace CmsApi\V1\Rest\Sliders;
 use CmsApi\Service\SliderService;
 use Zend\Paginator\Adapter\ArrayAdapter;
 use ZF\ApiProblem\ApiProblem;
+use ZF\MvcAuth\Identity\AuthenticatedIdentity;
 use ZF\Rest\AbstractResourceListener;
 
 class SlidersResource extends AbstractResourceListener
@@ -109,8 +110,14 @@ class SlidersResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
+        if($this->getIdentity() instanceof AuthenticatedIdentity) {
+            $fetch = $this->sliderService->fetchAll();
+        } else {
+            $fetch = $this->sliderService->fetchAllPublished();
+        }
+
         return new SlidersCollection(
-            new ArrayAdapter($this->sliderService->fetchAll())
+            new ArrayAdapter($fetch)
         );
     }
 

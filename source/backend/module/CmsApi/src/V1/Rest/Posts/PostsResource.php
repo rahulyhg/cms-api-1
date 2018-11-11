@@ -4,6 +4,7 @@ namespace CmsApi\V1\Rest\Posts;
 use CmsApi\Service\PostService;
 use Zend\Paginator\Adapter\ArrayAdapter;
 use ZF\ApiProblem\ApiProblem;
+use ZF\MvcAuth\Identity\AuthenticatedIdentity;
 use ZF\Rest\AbstractResourceListener;
 
 class PostsResource extends AbstractResourceListener
@@ -110,8 +111,14 @@ class PostsResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
+        if($this->getIdentity() instanceof AuthenticatedIdentity) {
+            $fetch = $this->blogService->fetchAll();
+        } else {
+            $fetch = $this->blogService->fetchAllPublished();
+        }
+
         return new PostsCollection(
-            new ArrayAdapter($this->blogService->fetchAll())
+            new ArrayAdapter($fetch)
         );
     }
 
