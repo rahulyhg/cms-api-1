@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiBase: '',
-  client_id: '',
+  apiBase: 'http://cms.nabavi.nl',
+  client_id: 'testClientId',
 };
